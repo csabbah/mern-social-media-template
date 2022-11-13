@@ -35,8 +35,18 @@ const resolvers = {
       return Admin.findOne({ _id });
     },
 
-    master: async (parent, args) => {
-      return Master.find();
+    notes: async (parent, args) => {
+      return Note.find();
+    },
+
+    // IMPORTANT NOTE, when we create a Master model, it gets added to an Array considering more of them can be created
+    // Thus in typeDefs, we treat the query as an array and we do this in type Query: 'master: [Master]'
+    masters: async () => {
+      return Master.find().populate("notesArr");
+    },
+
+    master: async (parent, { _id }) => {
+      return Master.findOne({ _id }).populate("notesArr");
     },
   },
   Mutation: {

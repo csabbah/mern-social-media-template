@@ -7,17 +7,17 @@ const typeDefs = gql`
     email: String
   }
 
-  type User {
-    _id: ID
-    username: String
-    email: String
-  }
-
   type Master {
     _id: ID
     company: String
     notesArr: [Note]
     labelArr: [String]
+  }
+
+  type User {
+    _id: ID
+    username: String
+    email: String
   }
 
   type Note {
@@ -31,7 +31,9 @@ const typeDefs = gql`
     users: [User]
     admin(_id: ID!): Admin
     admins: [Admin]
-    master: Master
+    notes: [Note]
+    masters: [Master]
+    master(_id: ID!): Master
   }
 
   type Mutation {

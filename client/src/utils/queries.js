@@ -19,9 +19,34 @@ export const GET_ADMIN = gql`
 `;
 
 export const GET_ADMINS = gql`
+  query master($id: ID!) {
+    master(_id: $id) {
+      company
+      notesArr {
+        text
+      }
+    }
+  }
+`;
+
+export const GET_MASTER = gql`
   {
-    admins {
-      _id
+    masters {
+      company
+      notesArr {
+        text
+      }
+    }
+  }
+`;
+
+export const GET_MASTERS = gql`
+  {
+    masters {
+      company
+      notesArr {
+        text
+      }
     }
   }
 `;
