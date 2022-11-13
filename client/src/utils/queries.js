@@ -19,19 +19,17 @@ export const GET_ADMIN = gql`
 `;
 
 export const GET_ADMINS = gql`
-  query master($id: ID!) {
-    master(_id: $id) {
-      company
-      notesArr {
-        text
-      }
+  {
+    admins {
+      _id
+      email
     }
   }
 `;
 
 export const GET_MASTER = gql`
-  {
-    masters {
+  query master($id: ID!) {
+    master(_id: $id) {
       company
       notesArr {
         text
