@@ -18,6 +18,10 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
+    accountLevel: {
+      type: String,
+      default: "User",
+    },
   },
   // set this to use virtual below
   {
