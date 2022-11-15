@@ -1,32 +1,56 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 import { useMutation } from "@apollo/client";
-import { useQuery } from "@apollo/client";
+import { LOGIN_ADMIN, LOGIN_USER } from "../utils/mutations";
 
 import Auth from "../utils/auth";
 
 const Login = () => {
-  const [user, setUser] = useState({ email: "", password: "" });
-  const [admin, setAdmin] = useState({ email: "", password: "" });
+  const [errorUser, setErrorUser] = useState("");
+  const [errorAdmin, setErrorAdmin] = useState("");
 
-  const handleUserSubmit = (e) => {
+  const [loginAdmin, { adminErr }] = useMutation(LOGIN_ADMIN);
+  const [login, { userErr }] = useMutation(LOGIN_USER);
+
+  const handleUserSubmit = async (e) => {
     e.preventDefault();
 
-    // setUser({
-    //   email: e.target.userEmail.value,
-    //   password: e.target.userPass.value,
-    // });
-    console.log(user);
+    if (e.target.userEmail.value && e.target.userPass.value) {
+      try {
+        const { data } = await login({
+          variables: {
+            email: e.target.userEmail.value,
+            password: e.target.userPass.value,
+          },
+        });
+
+        Auth.login(data.login.token);
+      } catch (e) {
+        setErrorUser("Incorrect Credentials");
+      }
+    } else {
+      setErrorUser("Please fill in all required fields");
+    }
   };
 
-  const handleAdminSubmit = (e) => {
+  const handleAdminSubmit = async (e) => {
     e.preventDefault();
 
-    // setAdmin({
-    //   email: e.target.adminEmail.value,
-    //   password: e.target.adminPass.value,
-    // });
-    console.log(admin);
+    if (e.target.adminEmail.value && e.target.adminPass.value) {
+      try {
+        const { data } = await loginAdmin({
+          variables: {
+            email: e.target.adminEmail.value,
+            password: e.target.adminPass.value,
+          },
+        });
+
+        Auth.login(data.loginAdmin.token);
+      } catch (e) {
+        setErrorAdmin("Incorrect Credentials");
+      }
+    }
+    setErrorAdmin("Please fill in all required fields");
   };
 
   return (
@@ -34,35 +58,39 @@ const Login = () => {
       <form onSubmit={(e) => handleUserSubmit(e)}>
         <h5>User Login</h5>
         <input
-          onChange={(e) => setUser({ ...user, email: e.target.value })}
+          onChange={() => setErrorUser("")}
           name="userEmail"
           type="text"
           placeholder="Email Address"
         ></input>
         <input
-          onChange={(e) => setUser({ ...user, password: e.target.value })}
+          onChange={() => setErrorUser("")}
           name="userPass"
           type="password"
           placeholder="Password"
         ></input>
         <button type="submit">Login</button>
+        {errorUser && <p>{errorUser}</p>}
+        {userErr && <div>Failed to Login. Email or Password is incorrect</div>}
       </form>
       <hr></hr>
       <form onSubmit={(e) => handleAdminSubmit(e)}>
         <h5>Admin Login</h5>
         <input
-          onChange={(e) => setAdmin({ ...admin, email: e.target.value })}
+          onChange={() => setErrorAdmin("")}
           name="adminEmail"
           type="text"
           placeholder="Email Address"
         ></input>
         <input
-          onChange={(e) => setAdmin({ ...admin, password: e.target.value })}
+          onChange={() => setErrorAdmin("")}
           name="adminPass"
           type="password"
           placeholder="Password"
         ></input>
         <button type="submit">Login</button>
+        {errorAdmin && <p>{errorAdmin}</p>}
+        {adminErr && <div>Failed to Login. Email or Password is incorrect</div>}
       </form>
     </div>
   );

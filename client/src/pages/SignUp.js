@@ -74,7 +74,7 @@ const SignUp = () => {
           </div>
         )}
         {error && (
-          <div id="error-message">
+          <div>
             Failed to Signup. Possible Reason: Email or Username already exists
           </div>
         )}
