@@ -9,6 +9,8 @@ import SignUp from "./pages/SignUp";
 import NavBar from "./components/NavBar";
 
 import { setContext } from "@apollo/client/link/context";
+import { useQuery } from "@apollo/client";
+import { GET_USER } from "./utils/queries";
 
 import Auth from "./utils/auth";
 
@@ -46,15 +48,16 @@ let loggedIn =
     ? false
     : true;
 
-// Returns logged in Users Data including Email and Username
-// const getAccount = () => {
-//   return Auth.getProfile();
-// };
-// if (loggedIn) {
-//   getAccount();
-// }
+// Returns logged in Users Data including Email, Username and AccountLevel
+const getAccountLevel = () => {
+  return Auth.getProfile();
+};
+if (loggedIn) {
+  getAccountLevel();
+}
 
 function App() {
+  loggedIn && console.log(getAccountLevel());
   return (
     <ApolloProvider client={client}>
       <NavBar loggedIn={loggedIn} />

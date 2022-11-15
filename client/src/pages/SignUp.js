@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 
 import { useMutation } from "@apollo/client";
-import { useQuery } from "@apollo/client";
 
 import { ADD_USER } from "../utils/mutations";
 
