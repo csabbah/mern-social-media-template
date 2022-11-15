@@ -9,30 +9,35 @@ import Auth from "../utils/auth";
 
 const SignUp = () => {
   const [addUser, { error }] = useMutation(ADD_USER);
-  const [user, setUser] = useState({ email: "", username: "", password: "" });
   const [errorMessage, setErrorMessage] = useState("");
 
   const handleUserSubmit = async (e) => {
     e.preventDefault();
 
-    if (user.email && user.username && user.password) {
+    if (
+      e.target.userEmail.value &&
+      e.target.userName.value &&
+      e.target.userPass.value
+    ) {
       // use try/catch instead of promises to handle errors
       try {
         // execute addCompany mutation and pass in variable data from form
         const { data } = await addUser({
-          variables: { ...user },
+          variables: {
+            username: e.target.userName.value,
+            password: e.target.userPass.value,
+            email: e.target.userEmail.value,
+          },
         });
 
         Auth.login(data.addUser.token);
       } catch (e) {
         // Clear state
-        setUser({ email: "", username: "", password: "" });
+        console.log(e);
       }
     } else {
       setErrorMessage("Please fill in all fields");
     }
-
-    console.log(user);
   };
 
   return (
@@ -40,19 +45,25 @@ const SignUp = () => {
       <form onSubmit={(e) => handleUserSubmit(e)}>
         <h5>User Signup</h5>
         <input
-          onChange={(e) => setUser({ ...user, email: e.target.value })}
+          onChange={(e) => {
+            setErrorMessage("");
+          }}
           name="userEmail"
           type="text"
           placeholder="Email Address"
         ></input>
         <input
-          onChange={(e) => setUser({ ...user, username: e.target.value })}
+          onChange={(e) => {
+            setErrorMessage("");
+          }}
           name="userName"
           type="text"
           placeholder="Username"
         ></input>
         <input
-          onChange={(e) => setUser({ ...user, password: e.target.value })}
+          onChange={(e) => {
+            setErrorMessage("");
+          }}
           name="userPass"
           type="password"
           placeholder="Password"
@@ -65,8 +76,7 @@ const SignUp = () => {
         )}
         {error && (
           <div id="error-message">
-            Failed to add Signup. Possible Reason: Name, Email or Username
-            already exists
+            Failed to Signup. Possible Reason: Email or Username already exists
           </div>
         )}
       </form>
