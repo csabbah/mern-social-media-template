@@ -3,6 +3,10 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 import Home from "./pages/Home";
 import About from "./pages/About";
+import Login from "./pages/Login";
+import SignUp from "./pages/SignUp";
+
+import NavBar from "./components/NavBar";
 
 import { setContext } from "@apollo/client/link/context";
 
@@ -43,10 +47,13 @@ const client = new ApolloClient({
 function App() {
   return (
     <ApolloProvider client={client}>
+      <NavBar />
       <Router>
         <>
           <Switch>
             <Route exact path="/" component={Home} />
+            <Route exact path="/login" component={Login} />
+            <Route exact path="/signup" component={SignUp} />
             {/* User can only access About route (page) IF they are logged in */}
             {/* {loggedIn && <Route exact path="/about" component={About} />} */}
             <Route render={() => <h1 className="display-2">Wrong page!</h1>} />
