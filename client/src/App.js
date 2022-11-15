@@ -10,6 +10,8 @@ import NavBar from "./components/NavBar";
 
 import { setContext } from "@apollo/client/link/context";
 
+import Auth from "./utils/auth";
+
 import {
   ApolloProvider,
   ApolloClient,
@@ -37,17 +39,25 @@ const client = new ApolloClient({
 });
 
 // Check first if user is logged in, 'if (loggedIn) { then do this }'
-// let loggedIn =
-//   localStorage.getItem("id_token") == null
-//     ? false
-//     : localStorage.getItem("id_token") == "undefined"
-//     ? false
-//     : true;
+let loggedIn =
+  localStorage.getItem("id_token") == null
+    ? false
+    : localStorage.getItem("id_token") == "undefined"
+    ? false
+    : true;
+
+// Returns logged in Users Data including Email and Username
+// const getAccount = () => {
+//   return Auth.getProfile();
+// };
+// if (loggedIn) {
+//   getAccount();
+// }
 
 function App() {
   return (
     <ApolloProvider client={client}>
-      <NavBar />
+      <NavBar loggedIn={loggedIn} />
       <Router>
         <>
           <Switch>
