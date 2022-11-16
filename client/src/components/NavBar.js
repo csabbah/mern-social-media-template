@@ -2,7 +2,6 @@ import React from "react";
 import Auth from "../utils/auth";
 
 const NavBar = ({ loggedIn, accountLevel }) => {
-  console.log(accountLevel);
   return (
     <nav>
       {accountLevel == "Admin" && (

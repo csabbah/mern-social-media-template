@@ -10,8 +10,6 @@ import AdminDashboard from "./pages/AdminDashboard";
 import NavBar from "./components/NavBar";
 
 import { setContext } from "@apollo/client/link/context";
-import { useQuery } from "@apollo/client";
-import { GET_USER } from "./utils/queries";
 
 import Auth from "./utils/auth";
 
@@ -64,6 +62,7 @@ function App() {
         loggedIn={loggedIn}
         accountLevel={loggedIn ? getAccountLevel() : "Not logged in"}
       />
+
       <Router>
         <>
           <Switch>
