@@ -131,3 +131,8 @@ select:-webkit-autofill:focus {
   opacity: 1;
   transition: 0.4s all ease-in-out;
 }
+
+.nav.active {
+  color: blue;
+  text-decoration: underline;
+}

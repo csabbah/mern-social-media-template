@@ -2,15 +2,37 @@ import React from "react";
 import Auth from "../utils/auth";
 
 const NavBar = ({ loggedIn, accountLevel }) => {
+  const pathname = window.location.pathname;
+
+  console.log(pathname);
   return (
     <nav>
+      <p>Devlp</p>
+      <a className={`nav ${pathname == "/" && "active"}`} href="/">
+        Home
+      </a>
       {accountLevel == "Admin" && (
-        <a href="/admin-dashboard">Admin Dashboard</a>
+        <a
+          className={`nav ${pathname == "/admin-dashboard" && "active"}`}
+          href="/admin-dashboard"
+        >
+          Admin Dashboard
+        </a>
       )}
       {!loggedIn && (
         <>
-          <a href="/login">Login</a>
-          <a href="/signup">Signup</a>
+          <a
+            className={`nav ${pathname == "/login" && "active"}`}
+            href="/login"
+          >
+            Login
+          </a>
+          <a
+            className={`nav ${pathname == "/signup" && "active"}`}
+            href="/signup"
+          >
+            Signup
+          </a>
         </>
       )}
 
