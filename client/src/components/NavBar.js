@@ -1,15 +1,17 @@
 import React from "react";
 import Auth from "../utils/auth";
 
-const NavBar = ({ loggedIn }) => {
+const NavBar = ({ loggedIn, accountLevel }) => {
+  console.log(accountLevel);
   return (
     <nav>
+      {accountLevel == "Admin" && (
+        <a href="/admin-dashboard">Admin Dashboard</a>
+      )}
       {!loggedIn && (
         <>
           <a href="/login">Login</a>
-          <a style={{ marginLeft: "10px" }} href="/signup">
-            Signup
-          </a>
+          <a href="/signup">Signup</a>
         </>
       )}
 

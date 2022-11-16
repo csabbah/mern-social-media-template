@@ -2,32 +2,37 @@ import React, { useState, useEffect } from "react";
 
 import { useMutation } from "@apollo/client";
 
-import { ADD_USER } from "../utils/mutations";
+import { ADD_ADMIN } from "../utils/mutations";
 
 import Auth from "../utils/auth";
 
-const SignUp = () => {
-  const [addUser, { error }] = useMutation(ADD_USER);
+const AdminDashboard = () => {
+  const [addAdmin, { error }] = useMutation(ADD_ADMIN);
   const [errorMessage, setErrorMessage] = useState("");
+  const [update, setUpdate] = useState("");
 
   const handleUserSubmit = async (e) => {
     e.preventDefault();
 
     if (
-      e.target.userEmail.value &&
-      e.target.userName.value &&
-      e.target.userPass.value
+      e.target.adminEmail.value &&
+      e.target.adminName.value &&
+      e.target.adminPass.value
     ) {
       try {
-        const { data } = await addUser({
+        await addAdmin({
           variables: {
-            username: e.target.userName.value,
-            password: e.target.userPass.value,
-            email: e.target.userEmail.value,
+            username: e.target.adminName.value,
+            password: e.target.adminPass.value,
+            email: e.target.adminEmail.value,
           },
         });
+        document.querySelector(".adminForm").reset();
+        setUpdate("Admin added!");
 
-        Auth.login(data.addUser.token);
+        setTimeout(() => {
+          setUpdate("");
+        }, 2500);
       } catch (e) {
         // Clear state
         console.log(e);
@@ -39,52 +44,49 @@ const SignUp = () => {
 
   return (
     <div>
-      <form onSubmit={(e) => handleUserSubmit(e)}>
-        <h5>User Signup</h5>
-        <label htmlFor="userEmail">Email</label>
+      <form className="adminForm" onSubmit={(e) => handleUserSubmit(e)}>
+        <h5>Add new Admin</h5>
+        <label htmlFor="adminEmail">Email</label>
         <input
-          id="userEmail"
+          id="adminEmail"
           onChange={(e) => {
             setErrorMessage("");
           }}
-          name="userEmail"
+          name="adminEmail"
           type="text"
           placeholder="Email Address"
         ></input>
-        <label htmlFor="userName">Username</label>
+        <label htmlFor="adminName">Username</label>
         <input
-          id="userName"
+          id="adminName"
           onChange={(e) => {
             setErrorMessage("");
           }}
-          name="userName"
+          name="adminName"
           type="text"
           placeholder="Username"
         ></input>
-        <label htmlFor="userPass">Password</label>
+        <label htmlFor="adminPass">Password</label>
         <input
-          id="userPass"
+          id="adminPass"
           onChange={(e) => {
             setErrorMessage("");
           }}
-          name="userPass"
+          name="adminPass"
           type="password"
           placeholder="Password"
         ></input>
         <button type="submit">Sign Up</button>
-        {errorMessage && (
-          <div>
-            <p className="error-text">{errorMessage}</p>
-          </div>
-        )}
+        {update && <p>{update}</p>}
+        {errorMessage && <p className="error-text">{errorMessage}</p>}
         {error && (
-          <div>
+          <p>
             Failed to Signup. Possible Reason: Email or Username already exists
-          </div>
+          </p>
         )}
       </form>
     </div>
   );
 };
 
-export default SignUp;
+export default AdminDashboard;
