@@ -57,13 +57,17 @@ const Login = () => {
     <div>
       <form onSubmit={(e) => handleUserSubmit(e)}>
         <h5>User Login</h5>
+        <label htmlFor="userEmail">Email</label>
         <input
+          id="userEmail"
           onChange={() => setErrorUser("")}
           name="userEmail"
           type="text"
           placeholder="Email Address"
         ></input>
+        <label htmlFor="userPass">Password</label>
         <input
+          id="userPass"
           onChange={() => setErrorUser("")}
           name="userPass"
           type="password"
@@ -76,13 +80,17 @@ const Login = () => {
       <hr></hr>
       <form onSubmit={(e) => handleAdminSubmit(e)}>
         <h5>Admin Login</h5>
+        <label htmlFor="adminEmail">Email</label>
         <input
+          id="adminEmail"
           onChange={() => setErrorAdmin("")}
           name="adminEmail"
           type="text"
           placeholder="Email Address"
         ></input>
+        <label htmlFor="adminPass">Password</label>
         <input
+          id="adminPass"
           onChange={() => setErrorAdmin("")}
           name="adminPass"
           type="password"

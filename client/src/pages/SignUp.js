@@ -43,7 +43,9 @@ const SignUp = () => {
     <div>
       <form onSubmit={(e) => handleUserSubmit(e)}>
         <h5>User Signup</h5>
+        <label htmlFor="userEmail">Email</label>
         <input
+          id="userEmail"
           onChange={(e) => {
             setErrorMessage("");
           }}
@@ -51,7 +53,9 @@ const SignUp = () => {
           type="text"
           placeholder="Email Address"
         ></input>
+        <label htmlFor="userName">Username</label>
         <input
+          id="userName"
           onChange={(e) => {
             setErrorMessage("");
           }}
@@ -59,7 +63,9 @@ const SignUp = () => {
           type="text"
           placeholder="Username"
         ></input>
+        <label htmlFor="userPass">Password</label>
         <input
+          id="userPass"
           onChange={(e) => {
             setErrorMessage("");
           }}
