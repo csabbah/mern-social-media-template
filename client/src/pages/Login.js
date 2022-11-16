@@ -29,14 +29,16 @@ const Login = () => {
         setErrorUser("Incorrect Credentials");
       }
     } else {
-      setErrorUser("Please fill in all required fields");
+      return setErrorUser("Please fill in all required fields");
     }
   };
 
   const handleAdminSubmit = async (e) => {
     e.preventDefault();
 
+    console.log(e.target.adminEmail.value, e.target.adminPass.value);
     if (e.target.adminEmail.value && e.target.adminPass.value) {
+      console.log("true");
       try {
         const { data } = await loginAdmin({
           variables: {
@@ -47,9 +49,11 @@ const Login = () => {
 
         Auth.login(data.loginAdmin.token);
       } catch (e) {
-        setErrorAdmin("Incorrect Credentials");
+        return setErrorAdmin("Incorrect Credentials");
       }
     }
+    console.log("false");
+
     setErrorAdmin("Please fill in all required fields");
   };
 
