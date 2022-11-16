@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from "react";
 
-import { useMutation } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 
 import { ADD_ADMIN } from "../utils/mutations";
+import { GET_ADMINS } from "../utils/queries";
 
 import Auth from "../utils/auth";
 
 const AdminDashboard = () => {
   const [addAdmin, { error }] = useMutation(ADD_ADMIN);
+  const { loading, data } = useQuery(GET_ADMINS);
+  const admins = data?.admins || [];
+
   const [errorMessage, setErrorMessage] = useState("");
   const [update, setUpdate] = useState("");
 
@@ -85,6 +89,20 @@ const AdminDashboard = () => {
           </p>
         )}
       </form>
+      {/* Returns active Admins */}
+      {!loading && (
+        <ul>
+          <h5>Active Admins</h5>
+          {admins.map((item, i) => {
+            return (
+              <li key={i}>
+                {item.email}
+                <button onClick={() => console.log(item._id)}>X</button>
+              </li>
+            );
+          })}
+        </ul>
+      )}
     </div>
   );
 };

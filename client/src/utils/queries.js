@@ -23,6 +23,7 @@ export const GET_ADMINS = gql`
     admins {
       _id
       email
+      username
     }
   }
 `;
