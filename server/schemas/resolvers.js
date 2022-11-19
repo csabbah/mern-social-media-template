@@ -84,8 +84,8 @@ const resolvers = {
       return { token, admin };
     },
 
-    addMaster: async (parent, { company }) => {
-      const master = await Master.create({ company });
+    addMaster: async () => {
+      const master = await Master.create();
 
       return { master };
     },
