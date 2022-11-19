@@ -67,8 +67,8 @@ function App() {
         <>
           <Switch>
             <Route exact path="/" component={Home} />
-            <Route exact path="/login" component={Login} />
-            <Route exact path="/signup" component={SignUp} />
+            {!loggedIn && <Route exact path="/login" component={Login} />}
+            {!loggedIn && <Route exact path="/signup" component={SignUp} />}
             {loggedIn && getAccountLevel() == "Admin" && (
               <Route exact path="/admin-dashboard" component={AdminDashboard} />
             )}

@@ -6,8 +6,7 @@ import { LOGIN_ADMIN, LOGIN_USER } from "../utils/mutations";
 import Auth from "../utils/auth";
 
 const Login = () => {
-  const [errorUser, setErrorUser] = useState("");
-  const [errorAdmin, setErrorAdmin] = useState("");
+  const [error, setError] = useState("");
 
   const [loginAdmin, { adminErr }] = useMutation(LOGIN_ADMIN);
   const [login, { userErr }] = useMutation(LOGIN_USER);
@@ -25,46 +24,32 @@ const Login = () => {
         });
 
         Auth.login(data.login.token);
-      } catch (e) {
-        setErrorUser("Incorrect Credentials");
+      } catch (err) {
+        try {
+          const { data } = await loginAdmin({
+            variables: {
+              email: e.target.userEmail.value,
+              password: e.target.userPass.value,
+            },
+          });
+          Auth.login(data.loginAdmin.token);
+        } catch (e) {
+          setError("Incorrect Credentials");
+        }
       }
     } else {
-      return setErrorUser("Please fill in all required fields");
+      return setError("Please fill in all required fields");
     }
-  };
-
-  const handleAdminSubmit = async (e) => {
-    e.preventDefault();
-
-    console.log(e.target.adminEmail.value, e.target.adminPass.value);
-    if (e.target.adminEmail.value && e.target.adminPass.value) {
-      console.log("true");
-      try {
-        const { data } = await loginAdmin({
-          variables: {
-            email: e.target.adminEmail.value,
-            password: e.target.adminPass.value,
-          },
-        });
-
-        Auth.login(data.loginAdmin.token);
-      } catch (e) {
-        return setErrorAdmin("Incorrect Credentials");
-      }
-    }
-    console.log("false");
-
-    setErrorAdmin("Please fill in all required fields");
   };
 
   return (
     <div>
       <form onSubmit={(e) => handleUserSubmit(e)}>
-        <h5>User Login</h5>
+        <h5>Login</h5>
         <label htmlFor="userEmail">Email</label>
         <input
           id="userEmail"
-          onChange={() => setErrorUser("")}
+          onChange={() => setError("")}
           name="userEmail"
           type="text"
           placeholder="Email Address"
@@ -72,17 +57,17 @@ const Login = () => {
         <label htmlFor="userPass">Password</label>
         <input
           id="userPass"
-          onChange={() => setErrorUser("")}
+          onChange={() => setError("")}
           name="userPass"
           type="password"
           placeholder="Password"
         ></input>
         <button type="submit">Login</button>
-        {errorUser && <p>{errorUser}</p>}
+        {error && <p>{error}</p>}
         {userErr && <div>Failed to Login. Email or Password is incorrect</div>}
       </form>
       <hr></hr>
-      <form onSubmit={(e) => handleAdminSubmit(e)}>
+      {/* <form onSubmit={(e) => handleAdminSubmit(e)}>
         <h5>Admin Login</h5>
         <label htmlFor="adminEmail">Email</label>
         <input
@@ -103,7 +88,7 @@ const Login = () => {
         <button type="submit">Login</button>
         {errorAdmin && <p>{errorAdmin}</p>}
         {adminErr && <div>Failed to Login. Email or Password is incorrect</div>}
-      </form>
+  </form> */}
     </div>
   );
 };
