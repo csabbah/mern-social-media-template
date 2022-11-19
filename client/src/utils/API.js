@@ -9,11 +9,15 @@ export const fetchFacts = async () => {
     },
   };
 
-  const data = await fetch(
-    "https://random-facts4.p.rapidapi.com/get?count=5",
-    options
-  );
-  return data.json();
+  try {
+    const data = await fetch(
+      "https://random-facts4.p.rapidapi.com/get?count=5",
+      options
+    );
+    return data.json();
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 // SUBSCRIBED - Famous quotes - Free = 1,000 requests/month, no request frequency limit
@@ -27,25 +31,34 @@ export const fetchQuotes = async () => {
       "X-RapidAPI-Host": "famous-quotes4.p.rapidapi.com",
     },
   };
-  const data = await fetch(
-    "https://famous-quotes4.p.rapidapi.com/random?category=all&count=2",
-    options
-  );
-  return data.json();
+
+  try {
+    const data = await fetch(
+      "https://famous-quotes4.p.rapidapi.com/random?category=all&count=2",
+      options
+    );
+    return data.json();
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 export const fetchWords = async () => {
-  const wordDb = await fetch("https://random-word-api.herokuapp.com/all");
+  try {
+    const wordDb = await fetch("https://random-word-api.herokuapp.com/all");
 
-  let words = await wordDb.json();
-  let chosenWord = words[Math.ceil(Math.random() * words.length)];
+    let words = await wordDb.json();
+    let chosenWord = words[Math.ceil(Math.random() * words.length)];
 
-  // https://dictionaryapi.dev/
-  const data = await fetch(
-    `https://api.dictionaryapi.dev/api/v2/entries/en/${chosenWord}`
-  );
+    // https://dictionaryapi.dev/
+    const data = await fetch(
+      `https://api.dictionaryapi.dev/api/v2/entries/en/${chosenWord}`
+    );
 
-  return data.json();
+    return data.json();
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 // IMPORTANT NOTE

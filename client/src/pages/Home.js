@@ -74,7 +74,7 @@ const Home = () => {
         ) : (
           <p>Loading...</p>
         )}
-        {facts.length > 1 ? (
+        {facts && facts.length > 1 ? (
           <ul style={{ marginTop: "50px" }}>
             <p>Your daily facts:</p>
             {facts.map((fact, i) => {
