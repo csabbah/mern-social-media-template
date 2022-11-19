@@ -84,6 +84,10 @@ const resolvers = {
       return { token, admin };
     },
 
+    removeAdmin: async (parent, { id }) => {
+      await Admin.findByIdAndDelete(id);
+    },
+
     addMaster: async () => {
       const master = await Master.create();
 

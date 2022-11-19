@@ -2,12 +2,13 @@ import React, { useState, useEffect } from "react";
 
 import { useMutation, useQuery } from "@apollo/client";
 
-import { ADD_ADMIN } from "../utils/mutations";
+import { ADD_ADMIN, REMOVE_ADMIN } from "../utils/mutations";
 import { GET_ADMINS } from "../utils/queries";
 
 import Auth from "../utils/auth";
 
 const AdminDashboard = () => {
+  const [removeAdmin, { removeErr }] = useMutation(REMOVE_ADMIN);
   const [addAdmin, { error }] = useMutation(ADD_ADMIN);
   const { loading, data } = useQuery(GET_ADMINS);
   const admins = data?.admins || [];
@@ -43,6 +44,23 @@ const AdminDashboard = () => {
       }
     } else {
       setErrorMessage("Please fill in all fields");
+    }
+  };
+
+  const deleteAdmin = async (id) => {
+    try {
+      await removeAdmin({
+        variables: {
+          id: id,
+        },
+      });
+      setUpdate("Admin removed!");
+      setTimeout(() => {
+        window.location.reload();
+      }, 2500);
+    } catch (e) {
+      // Clear state
+      console.log(e);
     }
   };
 
@@ -93,11 +111,11 @@ const AdminDashboard = () => {
       {!loading && (
         <ul>
           <h5>Active Admins</h5>
-          {admins.map((item, i) => {
+          {admins.map((admin, i) => {
             return (
               <li key={i}>
-                {item.email}
-                <button onClick={() => console.log(item._id)}>X</button>
+                {admin.email}
+                <button onClick={() => deleteAdmin(admin._id)}>X</button>
               </li>
             );
           })}

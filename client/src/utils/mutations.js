@@ -32,6 +32,14 @@ export const ADD_ADMIN = gql`
   }
 `;
 
+export const REMOVE_ADMIN = gql`
+  mutation removeAdmin($id: String!) {
+    removeAdmin(id: $id) {
+      token
+    }
+  }
+`;
+
 export const ADD_USER = gql`
   mutation addUser($username: String!, $email: String!, $password: String!) {
     addUser(username: $username, email: $email, password: $password) {
