@@ -2,13 +2,14 @@ import React, { useState, useEffect } from "react";
 
 import { useMutation, useQuery } from "@apollo/client";
 
-import { ADD_ADMIN, REMOVE_ADMIN } from "../utils/mutations";
+import { ADD_ADMIN, REMOVE_ADMIN, ADD_MASTER } from "../utils/mutations";
 import { GET_ADMINS } from "../utils/queries";
 
 import Auth from "../utils/auth";
 
 const AdminDashboard = () => {
-  const [removeAdmin, { removeErr }] = useMutation(REMOVE_ADMIN);
+  const [addMaster] = useMutation(ADD_MASTER);
+  const [removeAdmin] = useMutation(REMOVE_ADMIN);
   const [addAdmin, { error }] = useMutation(ADD_ADMIN);
   const { loading, data } = useQuery(GET_ADMINS);
   const admins = data?.admins || [];
@@ -55,6 +56,21 @@ const AdminDashboard = () => {
         },
       });
       setUpdate("Admin removed!");
+      setTimeout(() => {
+        window.location.reload();
+      }, 2500);
+    } catch (e) {
+      // Clear state
+      console.log(e);
+    }
+  };
+
+  const addMasterModel = async (e) => {
+    e.preventDefault();
+
+    try {
+      await addMaster();
+      setUpdate("Master Added!");
       setTimeout(() => {
         window.location.reload();
       }, 2500);
@@ -121,6 +137,11 @@ const AdminDashboard = () => {
           })}
         </ul>
       )}
+
+      <form onSubmit={(e) => addMasterModel(e)}>
+        <h5>Add master</h5>
+        <button>Add</button>
+      </form>
     </div>
   );
 };

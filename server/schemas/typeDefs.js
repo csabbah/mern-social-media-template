@@ -41,7 +41,7 @@ const typeDefs = gql`
     addUser(username: String!, email: String!, password: String!): Auth
     addAdmin(username: String!, email: String!, password: String!): Auth
     removeAdmin(id: String!): Auth
-    addMaster(company: String): Master
+    addMaster: Master
     addNote(text: String!, masterId: String!): Note
   }
 

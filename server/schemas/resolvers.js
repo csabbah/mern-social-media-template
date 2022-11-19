@@ -89,9 +89,9 @@ const resolvers = {
     },
 
     addMaster: async () => {
-      const master = await Master.create();
+      const master = await Master.create({});
 
-      return { master };
+      return master;
     },
 
     addNote: async (parent, args) => {
