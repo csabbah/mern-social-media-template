@@ -1,15 +1,51 @@
-export const test = async () => {
+// SUBSCRIBED - Facts / No premium option, unlimited requests, no request frequency limit
+// https://rapidapi.com/brianweidl/api/random-facts4/
+export const fetchFacts = async () => {
   const options = {
     method: "GET",
     headers: {
       "X-RapidAPI-Key": "ffae5646afmshec63d61fbd07b2fp17ee73jsn3371d91d22c0",
-      "X-RapidAPI-Host": "anime-db.p.rapidapi.com",
+      "X-RapidAPI-Host": "random-facts4.p.rapidapi.com",
     },
   };
-  return fetch(
-    "https://anime-db.p.rapidapi.com/anime?page=1&size=10&search=Fullmetal&genres=Fantasy%2CDrama&sortBy=ranking&sortOrder=asc",
+
+  const data = await fetch(
+    "https://random-facts4.p.rapidapi.com/get?count=5",
     options
   );
+  return data.json();
+};
+
+// SUBSCRIBED - Famous quotes - Free = 1,000 requests/month, no request frequency limit
+// https://rapidapi.com/saicoder/api/famous-quotes4/
+
+export const fetchQuotes = async () => {
+  const options = {
+    method: "GET",
+    headers: {
+      "X-RapidAPI-Key": "ffae5646afmshec63d61fbd07b2fp17ee73jsn3371d91d22c0",
+      "X-RapidAPI-Host": "famous-quotes4.p.rapidapi.com",
+    },
+  };
+  const data = await fetch(
+    "https://famous-quotes4.p.rapidapi.com/random?category=all&count=2",
+    options
+  );
+  return data.json();
+};
+
+export const fetchWords = async () => {
+  const wordDb = await fetch("https://random-word-api.herokuapp.com/all");
+
+  let words = await wordDb.json();
+  let chosenWord = words[Math.ceil(Math.random() * words.length)];
+
+  // https://dictionaryapi.dev/
+  const data = await fetch(
+    `https://api.dictionaryapi.dev/api/v2/entries/en/${chosenWord}`
+  );
+
+  return data.json();
 };
 
 // IMPORTANT NOTE
@@ -24,15 +60,9 @@ export const test = async () => {
 // SUBSCRIBED - Geography / Free = 1 request/second & 100 requests/day
 // https://rapidapi.com/natkapral/api/countries-cities/
 
-// SUBSCRIBED - Vocabulary / Free = 2,500 requests/day, no request frequency limit
-// https://rapidapi.com/dpventures/api/wordsapi/pricing
-
-// SUBSCRIBED - Facts / No premium option, unlimited requests, no request frequency limit
-// https://rapidapi.com/brianweidl/api/random-facts4/
-
 // SUBSCRIBED - Articles (Good one) - Free = 50 requests/month, no request frequency limit
 // Users can input their city to return local news
 // https://rapidapi.com/letscrape-6bRBa3QguO5/api/real-time-news-data/pricing
 
-// SUBSCRIBED - Famous quotes - Free = 1,000 requests/month, no request frequency limit
-// https://rapidapi.com/saicoder/api/famous-quotes4/
+// SUBSCRIBED - Vocabulary / Free = 2,500 requests/day, no request frequency limit
+// https://rapidapi.com/dpventures/api/wordsapi/pricing

@@ -16,6 +16,9 @@
     "concurrently": "^5.1.0"
   },
   "dependencies": {
-    "bcryptjs": "^2.4.3"
+    "assert": "^2.0.0",
+    "bcryptjs": "^2.4.3",
+    "buffer": "^6.0.3",
+    "google-dictionary-api": "^1.0.8"
   }
 }

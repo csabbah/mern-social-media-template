@@ -91,11 +91,13 @@ const resolvers = {
     },
 
     addNote: async (parent, args) => {
+      // Create the note which adds it to the DB in general
       const note = await Note.create({
         text: args.text,
         masterId: args.masterId,
       });
 
+      // Then add the newly created note into the Master model sub-array
       const updatedMaster = await Master.findOneAndUpdate(
         { _id: args.masterId },
         { $addToSet: { notesArr: note } },
