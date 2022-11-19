@@ -4,7 +4,7 @@ import Auth from "../utils/auth";
 const NavBar = ({ loggedIn, accountLevel }) => {
   const pathname = window.location.pathname;
 
-  console.log(pathname);
+  // console.log(pathname); Returns endpoint path
   return (
     <nav>
       <p>Devlp</p>

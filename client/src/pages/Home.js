@@ -37,7 +37,7 @@ const Home = () => {
                 let utter = new SpeechSynthesisUtterance();
                 utter.lang = "en-US";
                 utter.text = words[0].word;
-                utter.volume = 0.4;
+                utter.volume = 0.5;
 
                 window.speechSynthesis.speak(utter);
                 // event after text has been spoken

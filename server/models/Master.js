@@ -2,18 +2,17 @@ const { Schema, model } = require("mongoose");
 
 const masterSchema = new Schema(
   {
-    company: {
-      type: String,
-    },
     notesArr: [
       {
         type: Schema.Types.ObjectId,
         ref: "Note",
+        default: [],
       },
     ],
     labelArr: [
       {
         type: String,
+        default: [],
       },
     ],
   },

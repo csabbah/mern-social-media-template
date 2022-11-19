@@ -9,7 +9,6 @@ const typeDefs = gql`
 
   type Master {
     _id: ID
-    company: String
     notesArr: [Note]
     labelArr: [String]
   }

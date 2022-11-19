@@ -44,10 +44,18 @@ export const ADD_USER = gql`
   }
 `;
 
+// export const ADD_MASTER = gql`
+//   mutation addMaster($company: String!) {
+//     addMaster(company: $company) {
+//       company
+//     }
+//   }
+// `;
+
 export const ADD_MASTER = gql`
-  mutation addMaster($company: String!) {
-    addMaster(company: $company) {
-      company
+  mutation addMaster {
+    addMaster {
+      _id
     }
   }
 `;
