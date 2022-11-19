@@ -31,7 +31,6 @@ export const GET_ADMINS = gql`
 export const GET_MASTER = gql`
   query master($id: ID!) {
     master(_id: $id) {
-      company
       notesArr {
         text
       }
@@ -42,7 +41,7 @@ export const GET_MASTER = gql`
 export const GET_MASTERS = gql`
   {
     masters {
-      company
+      _id
       notesArr {
         text
       }

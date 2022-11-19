@@ -2,21 +2,31 @@ import React, { useState, useEffect } from "react";
 
 import { useMutation, useQuery } from "@apollo/client";
 
-import { ADD_ADMIN, REMOVE_ADMIN, ADD_MASTER } from "../utils/mutations";
-import { GET_ADMINS } from "../utils/queries";
+import {
+  ADD_ADMIN,
+  REMOVE_ADMIN,
+  ADD_MASTER,
+  ADD_NOTE,
+} from "../utils/mutations";
+import { GET_ADMINS, GET_MASTERS } from "../utils/queries";
 
 import Auth from "../utils/auth";
 
 const AdminDashboard = () => {
+  const [addNote, { noteErr }] = useMutation(ADD_NOTE);
   const [addMaster] = useMutation(ADD_MASTER);
-  const [removeAdmin] = useMutation(REMOVE_ADMIN);
   const [addAdmin, { error }] = useMutation(ADD_ADMIN);
-  const { loading, data } = useQuery(GET_ADMINS);
-  const admins = data?.admins || [];
 
+  const [removeAdmin] = useMutation(REMOVE_ADMIN);
   const [errorMessage, setErrorMessage] = useState("");
   const [update, setUpdate] = useState("");
 
+  const QueryMultiple = () => {
+    const masters = useQuery(GET_MASTERS);
+    const admins = useQuery(GET_ADMINS);
+    return { masters, admins };
+  };
+  const { masters, admins } = QueryMultiple();
   const handleUserSubmit = async (e) => {
     e.preventDefault();
 
@@ -80,9 +90,33 @@ const AdminDashboard = () => {
     }
   };
 
+  const addNoteToMaster = async (e) => {
+    e.preventDefault();
+
+    try {
+      await addNote({
+        variables: {
+          masterId: masters.data.masters[0]._id,
+          text: e.target.text.value,
+        },
+      });
+      setUpdate("Note added to master!");
+      setTimeout(() => {
+        window.location.reload();
+      }, 2500);
+    } catch (e) {
+      // Clear state
+      console.log(e);
+    }
+  };
   return (
     <div>
-      <form className="adminForm" onSubmit={(e) => handleUserSubmit(e)}>
+      {/* Create an Admin Model */}
+      <form
+        style={{ marginTop: "50px" }}
+        className="adminForm"
+        onSubmit={(e) => handleUserSubmit(e)}
+      >
         <h5>Add new Admin</h5>
         <label htmlFor="adminEmail">Email</label>
         <input
@@ -124,10 +158,10 @@ const AdminDashboard = () => {
         )}
       </form>
       {/* Returns active Admins */}
-      {!loading && (
-        <ul>
+      {!admins.loading && (
+        <ul style={{ marginTop: "15px" }}>
           <h5>Active Admins</h5>
-          {admins.map((admin, i) => {
+          {admins.data.admins.map((admin, i) => {
             return (
               <li key={i}>
                 {admin.email}
@@ -137,11 +171,27 @@ const AdminDashboard = () => {
           })}
         </ul>
       )}
-
-      <form onSubmit={(e) => addMasterModel(e)}>
+      {/* Create a Masters model */}
+      <form style={{ marginTop: "50px" }} onSubmit={(e) => addMasterModel(e)}>
         <h5>Add master</h5>
         <button>Add</button>
       </form>
+      {/* Manually add a Note to the Master model */}
+      <form style={{ marginTop: "50px" }} onSubmit={(e) => addNoteToMaster(e)}>
+        <h5>Add new note to master</h5>
+        <label htmlFor="Note Text">Note Text</label>
+        <input id="Note Text" name="text" placeholder="Note text"></input>
+        <button>Add</button>
+      </form>
+      {/* Returns active Notes */}
+      {!masters.loading && (
+        <ul style={{ marginTop: "15px" }}>
+          <h5>Active Notes</h5>
+          {masters.data.masters[0].notesArr.map((note, i) => {
+            return <li key={i}>{note.text}</li>;
+          })}
+        </ul>
+      )}
     </div>
   );
 };
