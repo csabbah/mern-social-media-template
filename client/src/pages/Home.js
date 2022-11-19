@@ -26,12 +26,28 @@ const Home = () => {
   return (
     <div>
       Home Page
-      <button onClick={() => {}}>Search</button>
+      <button onClick={() => console.log(true)}>Search</button>
       <div>
         {words[0] ? (
           <div style={{ marginTop: "50px" }}>
             <p>Your Vocabulary:</p>
             <p>Word: {words[0].word}</p>
+            <button
+              onClick={() => {
+                let utter = new SpeechSynthesisUtterance();
+                utter.lang = "en-US";
+                utter.text = words[0].word;
+                utter.volume = 0.4;
+
+                window.speechSynthesis.speak(utter);
+                // event after text has been spoken
+                // utter.onend = function () {
+                //   alert("Speech has finished");
+                // };
+              }}
+            >
+              Read loud
+            </button>
             {words[0].meanings ? (
               <div>
                 {words[0].meanings.map((item) => {
