@@ -28,10 +28,6 @@ body {
   margin: 0;
 }
 
-body {
-  overflow-x: hidden;
-}
-
 a {
   color: inherit;
   text-decoration: none;
@@ -135,4 +131,76 @@ select:-webkit-autofill:focus {
 .nav.active {
   color: blue;
   text-decoration: underline;
+}
+
+.vocab-wrapper {
+  display: flex;
+  gap: 10px;
+  width: 500px;
+  height: 125px;
+  padding: 10px;
+  overflow-x: scroll;
+  scroll-snap-type: x mandatory;
+  background-color: rgb(255, 175, 175);
+}
+
+.vocab-card {
+  min-width: 480px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  scroll-snap-align: center;
+  cursor: pointer;
+  background-color: transparent;
+  perspective: 1000px;
+  padding: 5px;
+}
+
+.vocab-card p {
+  margin-bottom: 0;
+}
+
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.8s;
+  transform-style: preserve-3d;
+}
+
+/* .vocab-card:hover .flip-card-inner {
+  transform: rotateY(180deg);
+} */
+.flip-card-inner.active {
+  transform: rotateY(180deg);
+}
+
+.card-back-inner {
+  text-align: start;
+}
+
+.card-front,
+.card-back {
+  border-radius: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden; /* Safari */
+  backface-visibility: hidden;
+  box-shadow: 0 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.card-front {
+  background-color: #bbb;
+  color: black;
+}
+
+.card-back {
+  background-color: dodgerblue;
+  color: white;
+  transform: rotateY(180deg);
 }

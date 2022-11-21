@@ -13,21 +13,106 @@ const Home = () => {
     state(await func());
   };
 
-  useEffect(() => {
-    fetchFunc(setFacts, fetchFacts);
-    fetchFunc(setQuotes, fetchQuotes);
-    fetchFunc(setWords, fetchWords);
-  }, []);
+  // useEffect(() => {
+  //   fetchFunc(setFacts, fetchFacts);
+  //   fetchFunc(setQuotes, fetchQuotes);
+  //   fetchFunc(setWords, fetchWords);
+  // }, []);
 
-  if (words.title == "No Definitions Found") {
-    fetchFunc(setWords, fetchWords);
-  }
+  // if (words.title == "No Definitions Found") {
+  //   fetchFunc(setWords, fetchWords);
+  // }
 
+  const [flipCard, setFlipCard] = useState({
+    firstCard: false,
+    secondCard: false,
+    thirdCard: false,
+  });
+
+  console.log(flipCard);
   return (
     <div>
       Home Page
       <button onClick={() => console.log(true)}>Search</button>
       <div>
+        <div className="vocab-wrapper">
+          <div
+            onClick={(e) => {
+              setFlipCard((prevState) => ({
+                ...flipCard,
+                firstCard: !prevState.firstCard,
+              }));
+            }}
+            className="vocab-card"
+          >
+            <div
+              className={`flip-card-inner ${
+                flipCard.firstCard == true && "active"
+              }`}
+            >
+              <div className="card-front">
+                <p>Word</p>
+              </div>
+              <div className="card-back">
+                <div className="card-back-inner">
+                  <p>This is the definition of the word.</p>
+                  <p>Noun</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            onClick={(e) => {
+              setFlipCard((prevState) => ({
+                ...flipCard,
+                secondCard: !prevState.secondCard,
+              }));
+            }}
+            className="vocab-card"
+          >
+            <div
+              className={`flip-card-inner ${
+                flipCard.secondCard == true && "active"
+              }`}
+            >
+              <div className="card-front">
+                <p>Word</p>
+              </div>
+              <div className="card-back">
+                <div className="card-back-inner">
+                  <p>This is the definition of the word.</p>
+                  <p>Noun</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            onClick={(e) => {
+              setFlipCard((prevState) => ({
+                ...flipCard,
+                thirdCard: !prevState.thirdCard,
+              }));
+            }}
+            className="vocab-card"
+          >
+            <div
+              className={`flip-card-inner ${
+                flipCard.thirdCard == true && "active"
+              }`}
+            >
+              <div className="card-front">
+                <p>Word</p>
+              </div>
+              <div className="card-back">
+                <div className="card-back-inner">
+                  <p>This is the definition of the word.</p>
+                  <p>Noun</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {words[0] ? (
           <div style={{ marginTop: "50px" }}>
             <p>Your Vocabulary:</p>
