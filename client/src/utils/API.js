@@ -43,6 +43,29 @@ export const fetchQuotes = async () => {
   }
 };
 
+// function getMultipleRandom(arr, num) {
+//   const shuffled = [...arr].sort(() => 0.5 - Math.random());
+
+//   return shuffled.slice(0, num);
+// }
+
+// let wordsArr = getMultipleRandom(words, 5);
+
+// const fetchReq1 = fetch(
+//   `https://api.dictionaryapi.dev/api/v2/entries/en/${wordsArr[1]}`
+// ).then((res) => res.json());
+// const fetchReq2 = fetch(
+//   `https://api.dictionaryapi.dev/api/v2/entries/en/${wordsArr[2]}`
+// ).then((res) => res.json());
+// const fetchReq3 = fetch(
+//   `https://api.dictionaryapi.dev/api/v2/entries/en/${wordsArr[3]}`
+// ).then((res) => res.json());
+
+// const allData = Promise.all([fetchReq1, fetchReq2, fetchReq3]);
+// allData.then((res) => res);
+
+// return allData;
+
 export const fetchWords = async () => {
   try {
     const wordDb = await fetch("https://random-word-api.herokuapp.com/all");
