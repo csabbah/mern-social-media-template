@@ -75,3 +75,11 @@ export const ADD_QUOTE = gql`
     }
   }
 `;
+
+export const ADD_FACT = gql`
+  mutation addFact($text: String!, $genre: String!, $masterId: String!) {
+    addFact(text: $text, genre: $genre, masterId: $masterId) {
+      _id
+    }
+  }
+`;

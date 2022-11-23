@@ -12,7 +12,7 @@ const typeDefs = gql`
     quotesArr: [Quotes]
     geoArr: [String]
     vocabArr: [String]
-    factsArr: [String]
+    factsArr: [Facts]
   }
 
   type User {
@@ -28,12 +28,20 @@ const typeDefs = gql`
     masterId: String
   }
 
+  type Facts {
+    _id: ID
+    text: String
+    genre: String
+    masterId: String
+  }
+
   type Query {
     user: User
     users: [User]
     admin(_id: ID!): Admin
     admins: [Admin]
     quotes: [Quotes]
+    facts: [Facts]
     masters: [Master]
     master(_id: ID!): Master
   }
@@ -46,6 +54,7 @@ const typeDefs = gql`
     removeAdmin(id: String!): Auth
     addMaster: Master
     addQuote(text: String!, author: String!, masterId: String!): Quotes
+    addFact(text: String!, genre: String!, masterId: String!): Facts
   }
 
   type Auth {

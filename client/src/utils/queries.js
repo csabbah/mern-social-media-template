@@ -32,6 +32,11 @@ export const GET_MASTER = gql`
   query master($id: ID!) {
     master(_id: $id) {
       quotesArr {
+        author
+        text
+      }
+      factsArr {
+        genre
         text
       }
     }
@@ -44,6 +49,10 @@ export const GET_MASTERS = gql`
       _id
       quotesArr {
         author
+        text
+      }
+      factsArr {
+        genre
         text
       }
     }

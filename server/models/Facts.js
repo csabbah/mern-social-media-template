@@ -5,6 +5,9 @@ const factSchema = new Schema(
     text: {
       type: String,
     },
+    genre: {
+      type: String,
+    },
     masterId: {
       type: String,
     },

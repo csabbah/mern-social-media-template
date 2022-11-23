@@ -48,14 +48,18 @@ const resolvers = {
       return Quotes.find();
     },
 
+    facts: async (parent, args) => {
+      return Facts.find();
+    },
+
     // IMPORTANT NOTE, when we create a Master model, it gets added to an Array considering more of them can be created
     // Thus in typeDefs, we treat the query as an array and we do this in type Query: 'master: [Master]'
     masters: async () => {
-      return Master.find().populate("quotesArr");
+      return Master.find().populate("quotesArr").populate("factsArr");
     },
 
     master: async (parent, { _id }) => {
-      return Master.findOne({ _id }).populate("quotesArr");
+      return Master.findOne({ _id }).populate("quotesArr").populate("factsArr");
     },
   },
   Mutation: {
@@ -116,9 +120,31 @@ const resolvers = {
         { _id: args.masterId },
         { $addToSet: { quotesArr: quote } },
         { new: true }
-      ).populate("quotesArr");
+      )
+        .populate("quotesArr")
+        .populate("factsArr");
 
       return { updatedMaster, quote };
+    },
+
+    addFact: async (parent, args) => {
+      // Create the quote which adds it to the DB in general
+      const fact = await Facts.create({
+        text: args.text,
+        genre: args.genre,
+        masterId: args.masterId,
+      });
+
+      // Then add the newly created quote into the Master model sub-array
+      const updatedMaster = await Master.findOneAndUpdate(
+        { _id: args.masterId },
+        { $addToSet: { factsArr: fact } },
+        { new: true }
+      )
+        .populate("quotesArr")
+        .populate("factsArr");
+
+      return { updatedMaster, fact };
     },
 
     addUser: async (parent, args) => {
