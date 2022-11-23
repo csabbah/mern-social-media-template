@@ -31,6 +31,25 @@ const VocabWrapper = ({ words }) => {
               <div className="card-front">
                 <p>
                   {words[0].word} / {words[0].meanings[0].partOfSpeech}
+                  <button
+                    onClick={(e) => {
+                      // stopPropagation will ensure when this button is clicked
+                      // It doesn't trigger the onclick above it
+                      e.stopPropagation();
+                      let utter = new SpeechSynthesisUtterance();
+                      utter.lang = "en-US";
+                      utter.text = words[0].word;
+                      utter.volume = 0.5;
+
+                      window.speechSynthesis.speak(utter);
+                      // event after text has been spoken
+                      // utter.onend = function () {
+                      //   alert("Speech has finished");
+                      // };
+                    }}
+                  >
+                    Read loud
+                  </button>{" "}
                 </p>
               </div>
               <div className="card-back">
