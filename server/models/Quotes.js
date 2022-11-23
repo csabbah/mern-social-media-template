@@ -5,6 +5,9 @@ const quotesSchema = new Schema(
     text: {
       type: String,
     },
+    author: {
+      type: String,
+    },
     masterId: {
       type: String,
     },

@@ -23,8 +23,9 @@ const typeDefs = gql`
 
   type Quotes {
     _id: ID
-    masterId: String
     text: String
+    author: String
+    masterId: String
   }
 
   type Query {
@@ -44,7 +45,7 @@ const typeDefs = gql`
     addAdmin(username: String!, email: String!, password: String!): Auth
     removeAdmin(id: String!): Auth
     addMaster: Master
-    addQuote(text: String!, masterId: String!): Quotes
+    addQuote(text: String!, author: String!, masterId: String!): Quotes
   }
 
   type Auth {

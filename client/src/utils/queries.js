@@ -43,6 +43,7 @@ export const GET_MASTERS = gql`
     masters {
       _id
       quotesArr {
+        author
         text
       }
     }

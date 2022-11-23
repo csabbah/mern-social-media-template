@@ -10,6 +10,7 @@ const {
 
 const { AuthenticationError } = require("apollo-server-express");
 const { signToken } = require("../utils/auth");
+const { aggregate } = require("../models/Master");
 
 const resolvers = {
   Query: {
@@ -106,6 +107,7 @@ const resolvers = {
       // Create the quote which adds it to the DB in general
       const quote = await Quotes.create({
         text: args.text,
+        author: args.author,
         masterId: args.masterId,
       });
 

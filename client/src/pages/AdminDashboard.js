@@ -97,6 +97,7 @@ const AdminDashboard = () => {
       await addQuote({
         variables: {
           masterId: masters.data.masters[0]._id,
+          author: e.target.Author.value,
           text: e.target.text.value,
         },
       });
@@ -182,6 +183,12 @@ const AdminDashboard = () => {
         <h5>Add new Quote to master</h5>
         <label htmlFor="quote Text">quote Text</label>
         <input id="quote Text" name="text" placeholder="Quote Text"></input>
+        <label htmlFor="quote Author">quote Author</label>
+        <input
+          id="quote Author"
+          name="Author"
+          placeholder="Quote Author"
+        ></input>
         <button>Add</button>
       </form>
       {/* Returns active Quotes */}
@@ -189,7 +196,11 @@ const AdminDashboard = () => {
         <ul style={{ marginTop: "15px" }}>
           <h5>Active Quotes</h5>
           {masters.data.masters[0].quotesArr.map((quote, i) => {
-            return <li key={i}>{quote.text}</li>;
+            return (
+              <li key={i}>
+                {quote.text} {quote.author && quote.author}
+              </li>
+            );
           })}
         </ul>
       )}
