@@ -1,4 +1,12 @@
-const { User, Admin, Master, Note } = require("../models");
+const {
+  User,
+  Admin,
+  Master,
+  Quotes,
+  Vocab,
+  Facts,
+  Geography,
+} = require("../models");
 
 const { AuthenticationError } = require("apollo-server-express");
 const { signToken } = require("../utils/auth");
@@ -35,18 +43,18 @@ const resolvers = {
       return Admin.findOne({ _id });
     },
 
-    notes: async (parent, args) => {
-      return Note.find();
+    quotes: async (parent, args) => {
+      return Quotes.find();
     },
 
     // IMPORTANT NOTE, when we create a Master model, it gets added to an Array considering more of them can be created
     // Thus in typeDefs, we treat the query as an array and we do this in type Query: 'master: [Master]'
     masters: async () => {
-      return Master.find().populate("notesArr");
+      return Master.find().populate("quotesArr");
     },
 
     master: async (parent, { _id }) => {
-      return Master.findOne({ _id }).populate("notesArr");
+      return Master.findOne({ _id }).populate("quotesArr");
     },
   },
   Mutation: {
@@ -94,21 +102,21 @@ const resolvers = {
       return master;
     },
 
-    addNote: async (parent, args) => {
-      // Create the note which adds it to the DB in general
-      const note = await Note.create({
+    addQuote: async (parent, args) => {
+      // Create the quote which adds it to the DB in general
+      const quote = await Quotes.create({
         text: args.text,
         masterId: args.masterId,
       });
 
-      // Then add the newly created note into the Master model sub-array
+      // Then add the newly created quote into the Master model sub-array
       const updatedMaster = await Master.findOneAndUpdate(
         { _id: args.masterId },
-        { $addToSet: { notesArr: note } },
+        { $addToSet: { quotesArr: quote } },
         { new: true }
-      ).populate("notesArr");
+      ).populate("quotesArr");
 
-      return { updatedMaster, note };
+      return { updatedMaster, quote };
     },
 
     addUser: async (parent, args) => {

@@ -6,14 +6,14 @@ import {
   ADD_ADMIN,
   REMOVE_ADMIN,
   ADD_MASTER,
-  ADD_NOTE,
+  ADD_QUOTE,
 } from "../utils/mutations";
 import { GET_ADMINS, GET_MASTERS } from "../utils/queries";
 
 import Auth from "../utils/auth";
 
 const AdminDashboard = () => {
-  const [addNote, { noteErr }] = useMutation(ADD_NOTE);
+  const [addQuote, { quotesErr }] = useMutation(ADD_QUOTE);
   const [addMaster] = useMutation(ADD_MASTER);
   const [addAdmin, { error }] = useMutation(ADD_ADMIN);
 
@@ -90,17 +90,17 @@ const AdminDashboard = () => {
     }
   };
 
-  const addNoteToMaster = async (e) => {
+  const addQuoteToMaster = async (e) => {
     e.preventDefault();
 
     try {
-      await addNote({
+      await addQuote({
         variables: {
           masterId: masters.data.masters[0]._id,
           text: e.target.text.value,
         },
       });
-      setUpdate("Note added to master!");
+      setUpdate("Quote added to master!");
       setTimeout(() => {
         window.location.reload();
       }, 2500);
@@ -109,6 +109,7 @@ const AdminDashboard = () => {
       console.log(e);
     }
   };
+
   return (
     <div>
       {/* Create an Admin Model */}
@@ -176,19 +177,19 @@ const AdminDashboard = () => {
         <h5>Add master</h5>
         <button>Add</button>
       </form>
-      {/* Manually add a Note to the Master model */}
-      <form style={{ marginTop: "50px" }} onSubmit={(e) => addNoteToMaster(e)}>
-        <h5>Add new note to master</h5>
-        <label htmlFor="Note Text">Note Text</label>
-        <input id="Note Text" name="text" placeholder="Note text"></input>
+      {/* Manually add a Quote to the Master model */}
+      <form style={{ marginTop: "50px" }} onSubmit={(e) => addQuoteToMaster(e)}>
+        <h5>Add new Quote to master</h5>
+        <label htmlFor="quote Text">quote Text</label>
+        <input id="quote Text" name="text" placeholder="Quote Text"></input>
         <button>Add</button>
       </form>
-      {/* Returns active Notes */}
+      {/* Returns active Quotes */}
       {!masters.loading && (
         <ul style={{ marginTop: "15px" }}>
-          <h5>Active Notes</h5>
-          {masters.data.masters[0].notesArr.map((note, i) => {
-            return <li key={i}>{note.text}</li>;
+          <h5>Active Quotes</h5>
+          {masters.data.masters[0].quotesArr.map((quote, i) => {
+            return <li key={i}>{quote.text}</li>;
           })}
         </ul>
       )}

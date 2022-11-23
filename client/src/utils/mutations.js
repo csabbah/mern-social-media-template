@@ -68,9 +68,9 @@ export const ADD_MASTER = gql`
   }
 `;
 
-export const ADD_NOTE = gql`
-  mutation addNote($text: String!, $masterId: String!) {
-    addNote(text: $text, masterId: $masterId) {
+export const ADD_QUOTE = gql`
+  mutation addQuote($text: String!, $masterId: String!) {
+    addQuote(text: $text, masterId: $masterId) {
       _id
     }
   }

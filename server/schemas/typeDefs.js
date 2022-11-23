@@ -9,8 +9,10 @@ const typeDefs = gql`
 
   type Master {
     _id: ID
-    notesArr: [Note]
-    labelArr: [String]
+    quotesArr: [Quotes]
+    geoArr: [String]
+    vocabArr: [String]
+    factsArr: [String]
   }
 
   type User {
@@ -19,7 +21,7 @@ const typeDefs = gql`
     email: String
   }
 
-  type Note {
+  type Quotes {
     _id: ID
     masterId: String
     text: String
@@ -30,7 +32,7 @@ const typeDefs = gql`
     users: [User]
     admin(_id: ID!): Admin
     admins: [Admin]
-    notes: [Note]
+    quotes: [Quotes]
     masters: [Master]
     master(_id: ID!): Master
   }
@@ -42,7 +44,7 @@ const typeDefs = gql`
     addAdmin(username: String!, email: String!, password: String!): Auth
     removeAdmin(id: String!): Auth
     addMaster: Master
-    addNote(text: String!, masterId: String!): Note
+    addQuote(text: String!, masterId: String!): Quotes
   }
 
   type Auth {

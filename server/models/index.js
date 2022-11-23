@@ -1,6 +1,9 @@
 const User = require("./User");
 const Master = require("./Master");
 const Admin = require("./Admin");
-const Note = require("./Note");
+const Quotes = require("./Quotes");
+const Vocab = require("./Vocab");
+const Geography = require("./Geography");
+const Facts = require("./Facts");
 
-module.exports = { User, Master, Admin, Note };
+module.exports = { User, Master, Admin, Quotes, Vocab, Geography, Facts };
