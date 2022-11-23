@@ -4,17 +4,16 @@ const FactWrapper = ({ facts }) => {
   return (
     <div>
       {facts.length > 1 ? (
-        <ul style={{ marginTop: "50px" }}>
-          <p>Your daily facts:</p>
+        <div className="facts-wrapper">
           {facts.map((fact, i) => {
             return (
-              <li key={i}>
-                <p>Category: {fact.topic}</p>
+              <div className="facts-card" key={i}>
+                <p>{fact.topic}</p>
                 <p>{fact.description}</p>
-              </li>
+              </div>
             );
           })}
-        </ul>
+        </div>
       ) : (
         <p>Loading...</p>
       )}

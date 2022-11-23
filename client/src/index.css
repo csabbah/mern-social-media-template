@@ -133,15 +133,18 @@ select:-webkit-autofill:focus {
   text-decoration: underline;
 }
 
+/* ----------------------- Vocabulary Section */
 .vocab-wrapper {
   display: flex;
   gap: 10px;
   width: 500px;
-  height: 125px;
+  max-height: 500px;
+  min-height: 200px;
   padding: 10px;
   overflow-x: scroll;
+  border-radius: 20px;
+
   scroll-snap-type: x mandatory;
-  background-color: rgb(255, 175, 175);
 }
 
 .vocab-card {
@@ -195,12 +198,67 @@ select:-webkit-autofill:focus {
 }
 
 .card-front {
-  background-color: #bbb;
+  background-color: palegreen;
   color: black;
 }
 
 .card-back {
-  background-color: dodgerblue;
+  background-color: rgb(90, 208, 90);
   color: white;
   transform: rotateY(180deg);
+}
+/* ----------------------- Fact Section */
+.facts-wrapper {
+  display: flex;
+  gap: 25px;
+  width: 500px;
+  max-height: 500px;
+  min-height: 200px;
+  padding: 10px;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  border-radius: 20px;
+}
+
+.facts-card {
+  min-width: 480px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  scroll-snap-align: center;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 20px;
+  background-color: orange;
+  box-shadow: 0 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+/* ----------------------- Quote Section */
+
+.quotes-wrapper {
+  display: flex;
+  gap: 25px;
+  width: 500px;
+  max-height: 500px;
+  min-height: 200px;
+  padding: 10px;
+  overflow-x: scroll;
+  scroll-snap-type: x mandatory;
+  border-radius: 20px;
+}
+
+.quotes-card {
+  min-width: 480px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  scroll-snap-align: center;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 20px;
+  background-color: yellow;
+  box-shadow: 0 0 0 5px rgba(0, 0, 0, 0.2);
 }
