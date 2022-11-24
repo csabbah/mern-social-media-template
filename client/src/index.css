@@ -262,3 +262,31 @@ select:-webkit-autofill:focus {
   background-color: yellow;
   box-shadow: 0 0 0 5px rgba(0, 0, 0, 0.2);
 }
+
+/* ----------------------- Quote Section */
+
+.geo-wrapper {
+  display: flex;
+  gap: 25px;
+  width: 500px;
+  max-height: 500px;
+  min-height: 200px;
+  padding: 10px;
+  overflow-x: scroll;
+  scroll-snap-type: x mandatory;
+  border-radius: 20px;
+}
+
+.geo-card {
+  min-width: 480px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  scroll-snap-align: center;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 20px;
+  background-color: rgb(203, 104, 203);
+  box-shadow: 0 0 0 5px rgba(0, 0, 0, 0.2);
+}

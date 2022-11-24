@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import VocabWrapper from "../components/VocabWrapper";
 import FactWrapper from "../components/FactWrapper";
 import QuotesWrapper from "../components/QuotesWrapper";
+import GeoWrapper from "../components/GeoWrapper";
 
 import Auth from "../utils/auth";
 
@@ -34,6 +35,7 @@ const Home = () => {
       <VocabWrapper words={words}></VocabWrapper>
       <QuotesWrapper quotes={quotes} />
       <FactWrapper facts={facts} />
+      <GeoWrapper geo={"test"} />
     </div>
   );
 };
