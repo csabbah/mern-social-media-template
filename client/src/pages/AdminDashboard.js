@@ -97,84 +97,54 @@ const AdminDashboard = () => {
     }
   };
 
-  const addQuoteToMaster = async (e) => {
+  const addDataToMaster = async (e) => {
     e.preventDefault();
 
     try {
-      await addQuote({
-        variables: {
-          masterId: masters.data.masters[0]._id,
-          author: e.target.author.value,
-          text: e.target.text.value,
-        },
-      });
-      setUpdate("Quote added to master!");
-      setTimeout(() => {
-        window.location.reload();
-      }, 2500);
-    } catch (e) {
-      // Clear state
-      console.log(e);
-    }
-  };
+      if (e.target.name == "Geography") {
+        await addGeo({
+          variables: {
+            masterId: masters.data.masters[0]._id,
+            country: e.target.country.value,
+            flag: e.target.flag.value,
+            continent: e.target.continent.value,
+            phoneCode: e.target.phoneCode.value,
+            capital: e.target.capital.value,
+          },
+        });
+      }
+      if (e.target.name == "Vocabulary") {
+        await addVocab({
+          variables: {
+            masterId: masters.data.masters[0]._id,
+            text: e.target.text.value,
+            definition: e.target.definition.value,
+            typeOfSpeech: e.target.typeOfSpeech.value,
+          },
+        });
+      }
 
-  const addFactToMaster = async (e) => {
-    e.preventDefault();
+      if (e.target.name == "Fact") {
+        await addFact({
+          variables: {
+            masterId: masters.data.masters[0]._id,
+            genre: e.target.genre.value,
+            text: e.target.text.value,
+          },
+        });
+      }
 
-    try {
-      await addFact({
-        variables: {
-          masterId: masters.data.masters[0]._id,
-          genre: e.target.genre.value,
-          text: e.target.text.value,
-        },
-      });
-      setUpdate("Fact added to master!");
-      setTimeout(() => {
-        window.location.reload();
-      }, 2500);
-    } catch (e) {
-      // Clear state
-      console.log(e);
-    }
-  };
-  const addVocabToMaster = async (e) => {
-    e.preventDefault();
+      if (e.target.name == "Quote") {
+        await addQuote({
+          variables: {
+            masterId: masters.data.masters[0]._id,
+            author: e.target.author.value,
+            text: e.target.text.value,
+          },
+        });
+      }
 
-    try {
-      await addVocab({
-        variables: {
-          masterId: masters.data.masters[0]._id,
-          text: e.target.text.value,
-          definition: e.target.definition.value,
-          typeOfSpeech: e.target.typeOfSpeech.value,
-        },
-      });
-      setUpdate("Vocab added to master!");
-      setTimeout(() => {
-        window.location.reload();
-      }, 2500);
-    } catch (e) {
-      // Clear state
-      console.log(e);
-    }
-  };
-
-  const addGeoToMaster = async (e) => {
-    e.preventDefault();
-
-    try {
-      await addGeo({
-        variables: {
-          masterId: masters.data.masters[0]._id,
-          country: e.target.country.value,
-          flag: e.target.flag.value,
-          continent: e.target.continent.value,
-          phoneCode: e.target.phoneCode.value,
-          capital: e.target.capital.value,
-        },
-      });
-      setUpdate("Geography added to master!");
+      setUpdate(`${e.target.name} added to master!`);
       setTimeout(() => {
         window.location.reload();
       }, 2500);
@@ -252,13 +222,17 @@ const AdminDashboard = () => {
         <button>Add</button>
       </form>
       {/* Manually add a Quote to the Master model */}
-      <form style={{ marginTop: "50px" }} onSubmit={(e) => addQuoteToMaster(e)}>
+      <form
+        name="Quote"
+        style={{ marginTop: "50px" }}
+        onSubmit={(e) => addDataToMaster(e)}
+      >
         <h5>Add new Quote to master</h5>
-        <label htmlFor="quote Text">quote Text</label>
-        <input id="quote Text" name="text" placeholder="Quote Text"></input>
-        <label htmlFor="quote Author">quote Author</label>
+        <label htmlFor="quoteText">quote Text</label>
+        <input id="quoteText" name="text" placeholder="Quote Text"></input>
+        <label htmlFor="quoteAuthor">quote Author</label>
         <input
-          id="quote Author"
+          id="quoteAuthor"
           name="author"
           placeholder="Quote Author"
         ></input>
@@ -278,12 +252,16 @@ const AdminDashboard = () => {
         </ul>
       )}
       {/* Manually add a Fact to the Master model */}
-      <form style={{ marginTop: "50px" }} onSubmit={(e) => addFactToMaster(e)}>
+      <form
+        name="Fact"
+        style={{ marginTop: "50px" }}
+        onSubmit={(e) => addDataToMaster(e)}
+      >
         <h5>Add new Fact to master</h5>
-        <label htmlFor="Fact Text">Fact Text</label>
-        <input id="Fact Text" name="text" placeholder="Fact Text"></input>
-        <label htmlFor="Fact Genre">Fact Genre</label>
-        <input id="Fact Genre" name="genre" placeholder="Fact Genre"></input>
+        <label htmlFor="FactText">Fact Text</label>
+        <input id="FactText" name="text" placeholder="Fact Text"></input>
+        <label htmlFor="FactGenre">Fact Genre</label>
+        <input id="FactGenre" name="genre" placeholder="Fact Genre"></input>
         <button>Add</button>
       </form>
       {/* Returns active Facts */}
@@ -300,19 +278,23 @@ const AdminDashboard = () => {
         </ul>
       )}
       {/* Manually add a Vocab to the Master model */}
-      <form style={{ marginTop: "50px" }} onSubmit={(e) => addVocabToMaster(e)}>
+      <form
+        name="Vocabulary"
+        style={{ marginTop: "50px" }}
+        onSubmit={(e) => addDataToMaster(e)}
+      >
         <h5>Add new Vocab to master</h5>
-        <label htmlFor="Vocab Text">Vocab Text</label>
-        <input id="Vocab Text" name="text" placeholder="Vocab Text"></input>
-        <label htmlFor="Vocab Genre">Vocab Genre</label>
+        <label htmlFor="VocabText">Vocab Text</label>
+        <input id="VocabText" name="text" placeholder="Vocab Text"></input>
+        <label htmlFor="VocabGenre">Vocab Genre</label>
         <input
-          id="Vocab Genre"
+          id="VocabGenre"
           name="definition"
           placeholder="Vocab Genre"
         ></input>
-        <label htmlFor="Vocab typeOfSpeech">Vocab typeOfSpeech</label>
+        <label htmlFor="VocabtypeOfSpeech">Vocab typeOfSpeech</label>
         <input
-          id="Vocab typeOfSpeech"
+          id="VocabtypeOfSpeech"
           name="typeOfSpeech"
           placeholder="Vocab typeOfSpeech"
         ></input>
@@ -332,7 +314,11 @@ const AdminDashboard = () => {
         </ul>
       )}
       {/* Manually add Geography to the Master model */}
-      <form style={{ marginTop: "50px" }} onSubmit={(e) => addGeoToMaster(e)}>
+      <form
+        name="Geography"
+        style={{ marginTop: "50px" }}
+        onSubmit={(e) => addDataToMaster(e)}
+      >
         <h5>Add new Geography to master</h5>
         <label htmlFor="country">Country</label>
         <input id="country" name="text" placeholder="Country"></input>
@@ -349,7 +335,7 @@ const AdminDashboard = () => {
       {/* Returns active Geography */}
       {!masters.loading && (
         <ul style={{ marginTop: "15px" }}>
-          <h5>Active Vocabulary</h5>
+          <h5>Active Geography</h5>
           {masters.data.masters[0].geoArr.map((geo, i) => {
             return (
               <li key={i}>
