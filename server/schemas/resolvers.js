@@ -56,20 +56,26 @@ const resolvers = {
       return Vocab.find();
     },
 
+    geo: async (parent, args) => {
+      return Geography.find();
+    },
+
     // IMPORTANT NOTE, when we create a Master model, it gets added to an Array considering more of them can be created
     // Thus in typeDefs, we treat the query as an array and we do this in type Query: 'master: [Master]'
     masters: async () => {
       return Master.find()
         .populate("quotesArr")
         .populate("factsArr")
-        .populate("vocabArr");
+        .populate("vocabArr")
+        .populate("geoArr");
     },
 
     master: async (parent, { _id }) => {
       return Master.findOne({ _id })
         .populate("quotesArr")
         .populate("factsArr")
-        .populate("vocabArr");
+        .populate("vocabArr")
+        .populate("geoArr");
     },
   },
   Mutation: {
@@ -133,7 +139,8 @@ const resolvers = {
       )
         .populate("quotesArr")
         .populate("factsArr")
-        .populate("vocabArr");
+        .populate("vocabArr")
+        .populate("geoArr");
 
       return { updatedMaster, quote };
     },
@@ -154,7 +161,8 @@ const resolvers = {
       )
         .populate("quotesArr")
         .populate("factsArr")
-        .populate("vocabArr");
+        .populate("vocabArr")
+        .populate("geoArr");
 
       return { updatedMaster, fact };
     },
@@ -176,9 +184,35 @@ const resolvers = {
       )
         .populate("quotesArr")
         .populate("factsArr")
-        .populate("vocabArr");
+        .populate("vocabArr")
+        .populate("geoArr");
 
       return { updatedMaster, vocab };
+    },
+
+    addGeo: async (parent, args) => {
+      // Create the quote which adds it to the DB in general
+      const geo = await Geography.create({
+        flag: args.flag,
+        country: args.country,
+        masterId: args.masterId,
+        capital: args.capital,
+        phoneCode: args.phoneCode,
+        continent: args.continent,
+      });
+
+      // Then add the newly created quote into the Master model sub-array
+      const updatedMaster = await Master.findOneAndUpdate(
+        { _id: args.masterId },
+        { $addToSet: { geoArr: geo } },
+        { new: true }
+      )
+        .populate("quotesArr")
+        .populate("factsArr")
+        .populate("vocabArr")
+        .populate("geoArr");
+
+      return { updatedMaster, geo };
     },
 
     addUser: async (parent, args) => {

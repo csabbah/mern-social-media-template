@@ -101,3 +101,25 @@ export const ADD_VOCAB = gql`
     }
   }
 `;
+
+export const ADD_GEO = gql`
+  mutation addGeo(
+    $country: String!
+    $capital: String!
+    $phoneCode: String!
+    $masterId: String!
+    $continent: String!
+    $flag: String!
+  ) {
+    addGeo(
+      country: $country
+      capital: $capital
+      phoneCode: $phoneCode
+      masterId: $masterId
+      continent: $continent
+      flag: $flag
+    ) {
+      _id
+    }
+  }
+`;

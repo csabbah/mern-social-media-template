@@ -10,7 +10,7 @@ const typeDefs = gql`
   type Master {
     _id: ID
     quotesArr: [Quotes]
-    geoArr: [String]
+    geoArr: [Geography]
     vocabArr: [Vocab]
     factsArr: [Facts]
   }
@@ -26,6 +26,16 @@ const typeDefs = gql`
     text: String
     typeOfSpeech: String
     definition: String
+    masterId: String
+  }
+
+  type Geography {
+    _id: ID
+    flag: String
+    country: String
+    capital: String
+    continent: String
+    phoneCode: String
     masterId: String
   }
 
@@ -49,8 +59,9 @@ const typeDefs = gql`
     admin(_id: ID!): Admin
     admins: [Admin]
     quotes: [Quotes]
-    vocabs: [Vocab]
     facts: [Facts]
+    vocabs: [Vocab]
+    geo: [Geography]
     masters: [Master]
     master(_id: ID!): Master
   }
@@ -70,6 +81,14 @@ const typeDefs = gql`
       text: String!
       masterId: String!
     ): Vocab
+    addGeo(
+      flag: String!
+      country: String!
+      capital: String!
+      continent: String!
+      phoneCode: String!
+      masterId: String!
+    ): Geography
   }
 
   type Auth {
