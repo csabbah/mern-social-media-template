@@ -9,6 +9,7 @@ import {
   ADD_QUOTE,
   ADD_FACT,
   ADD_VOCAB,
+  ADD_GEO,
 } from "../utils/mutations";
 import { GET_ADMINS, GET_MASTERS } from "../utils/queries";
 
@@ -18,6 +19,7 @@ const AdminDashboard = () => {
   const [addQuote, { quotesErr }] = useMutation(ADD_QUOTE);
   const [addFact, { factsErr }] = useMutation(ADD_FACT);
   const [addVocab, { vocabErr }] = useMutation(ADD_VOCAB);
+  const [addGeo, { geoErr }] = useMutation(ADD_GEO);
 
   const [addMaster] = useMutation(ADD_MASTER);
   const [addAdmin, { error }] = useMutation(ADD_ADMIN);
@@ -149,6 +151,30 @@ const AdminDashboard = () => {
         },
       });
       setUpdate("Vocab added to master!");
+      setTimeout(() => {
+        window.location.reload();
+      }, 2500);
+    } catch (e) {
+      // Clear state
+      console.log(e);
+    }
+  };
+
+  const addGeoToMaster = async (e) => {
+    e.preventDefault();
+
+    try {
+      await addGeo({
+        variables: {
+          masterId: masters.data.masters[0]._id,
+          country: e.target.country.value,
+          flag: e.target.flag.value,
+          continent: e.target.continent.value,
+          phoneCode: e.target.phoneCode.value,
+          capital: e.target.capital.value,
+        },
+      });
+      setUpdate("Geography added to master!");
       setTimeout(() => {
         window.location.reload();
       }, 2500);
@@ -300,6 +326,35 @@ const AdminDashboard = () => {
             return (
               <li key={i}>
                 {vocab.text} {vocab.definition} {vocab.typeOfSpeech}
+              </li>
+            );
+          })}
+        </ul>
+      )}
+      {/* Manually add Geography to the Master model */}
+      <form style={{ marginTop: "50px" }} onSubmit={(e) => addGeoToMaster(e)}>
+        <h5>Add new Geography to master</h5>
+        <label htmlFor="country">Country</label>
+        <input id="country" name="text" placeholder="Country"></input>
+        <label htmlFor="flag">flag</label>
+        <input id="flag" name="flag" placeholder="Flag"></input>
+        <label htmlFor="continent">Continent</label>
+        <input id="continent" name="continent" placeholder="Continent"></input>
+        <label htmlFor="phoneCode">Phone Code</label>
+        <input id="phoneCode" name="phoneCode" placeholder="Phone Code"></input>
+        <label htmlFor="capital">Capital</label>
+        <input id="capital" name="capital" placeholder="Capital"></input>
+        <button>Add</button>
+      </form>
+      {/* Returns active Geography */}
+      {!masters.loading && (
+        <ul style={{ marginTop: "15px" }}>
+          <h5>Active Vocabulary</h5>
+          {masters.data.masters[0].geoArr.map((geo, i) => {
+            return (
+              <li key={i}>
+                {geo.country} {geo.capital} {geo.continent} {geo.phoneCode}
+                {geo.flag}
               </li>
             );
           })}
