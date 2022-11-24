@@ -83,3 +83,21 @@ export const ADD_FACT = gql`
     }
   }
 `;
+
+export const ADD_VOCAB = gql`
+  mutation addVocab(
+    $text: String!
+    $typeOfSpeech: String!
+    $definition: String!
+    $masterId: String!
+  ) {
+    addVocab(
+      text: $text
+      typeOfSpeech: $typeOfSpeech
+      definition: $definition
+      masterId: $masterId
+    ) {
+      _id
+    }
+  }
+`;

@@ -52,14 +52,24 @@ const resolvers = {
       return Facts.find();
     },
 
+    vocabs: async (parent, args) => {
+      return Vocab.find();
+    },
+
     // IMPORTANT NOTE, when we create a Master model, it gets added to an Array considering more of them can be created
     // Thus in typeDefs, we treat the query as an array and we do this in type Query: 'master: [Master]'
     masters: async () => {
-      return Master.find().populate("quotesArr").populate("factsArr");
+      return Master.find()
+        .populate("quotesArr")
+        .populate("factsArr")
+        .populate("vocabArr");
     },
 
     master: async (parent, { _id }) => {
-      return Master.findOne({ _id }).populate("quotesArr").populate("factsArr");
+      return Master.findOne({ _id })
+        .populate("quotesArr")
+        .populate("factsArr")
+        .populate("vocabArr");
     },
   },
   Mutation: {
@@ -122,7 +132,8 @@ const resolvers = {
         { new: true }
       )
         .populate("quotesArr")
-        .populate("factsArr");
+        .populate("factsArr")
+        .populate("vocabArr");
 
       return { updatedMaster, quote };
     },
@@ -142,9 +153,32 @@ const resolvers = {
         { new: true }
       )
         .populate("quotesArr")
-        .populate("factsArr");
+        .populate("factsArr")
+        .populate("vocabArr");
 
       return { updatedMaster, fact };
+    },
+
+    addVocab: async (parent, args) => {
+      // Create the quote which adds it to the DB in general
+      const vocab = await Vocab.create({
+        text: args.text,
+        definition: args.definition,
+        masterId: args.masterId,
+        partOfSpeech: args.partOfSpeech,
+      });
+
+      // Then add the newly created quote into the Master model sub-array
+      const updatedMaster = await Master.findOneAndUpdate(
+        { _id: args.masterId },
+        { $addToSet: { vocabArr: vocab } },
+        { new: true }
+      )
+        .populate("quotesArr")
+        .populate("factsArr")
+        .populate("vocabArr");
+
+      return { updatedMaster, vocab };
     },
 
     addUser: async (parent, args) => {

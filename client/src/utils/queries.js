@@ -39,6 +39,11 @@ export const GET_MASTER = gql`
         genre
         text
       }
+      vocabArr {
+        text
+        definition
+        typeOfSpeech
+      }
     }
   }
 `;
@@ -54,6 +59,11 @@ export const GET_MASTERS = gql`
       factsArr {
         genre
         text
+      }
+      vocabArr {
+        text
+        definition
+        typeOfSpeech
       }
     }
   }

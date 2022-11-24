@@ -5,6 +5,12 @@ const vocabSchema = new Schema(
     text: {
       type: String,
     },
+    typeOfSpeech: {
+      type: String,
+    },
+    definition: {
+      type: String,
+    },
     masterId: {
       type: String,
     },

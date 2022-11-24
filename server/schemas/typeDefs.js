@@ -11,7 +11,7 @@ const typeDefs = gql`
     _id: ID
     quotesArr: [Quotes]
     geoArr: [String]
-    vocabArr: [String]
+    vocabArr: [Vocab]
     factsArr: [Facts]
   }
 
@@ -19,6 +19,14 @@ const typeDefs = gql`
     _id: ID
     username: String
     email: String
+  }
+
+  type Vocab {
+    _id: ID
+    text: String
+    typeOfSpeech: String
+    definition: String
+    masterId: String
   }
 
   type Quotes {
@@ -41,6 +49,7 @@ const typeDefs = gql`
     admin(_id: ID!): Admin
     admins: [Admin]
     quotes: [Quotes]
+    vocabs: [Vocab]
     facts: [Facts]
     masters: [Master]
     master(_id: ID!): Master
@@ -55,6 +64,12 @@ const typeDefs = gql`
     addMaster: Master
     addQuote(text: String!, author: String!, masterId: String!): Quotes
     addFact(text: String!, genre: String!, masterId: String!): Facts
+    addVocab(
+      typeOfSpeech: String!
+      definition: String!
+      text: String!
+      masterId: String!
+    ): Vocab
   }
 
   type Auth {
