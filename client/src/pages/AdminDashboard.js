@@ -7,6 +7,7 @@ import {
   REMOVE_ADMIN,
   ADD_MASTER,
   ADD_QUOTE,
+  ADD_FACT,
 } from "../utils/mutations";
 import { GET_ADMINS, GET_MASTERS } from "../utils/queries";
 
@@ -14,6 +15,7 @@ import Auth from "../utils/auth";
 
 const AdminDashboard = () => {
   const [addQuote, { quotesErr }] = useMutation(ADD_QUOTE);
+  const [addFact, { factsErr }] = useMutation(ADD_FACT);
   const [addMaster] = useMutation(ADD_MASTER);
   const [addAdmin, { error }] = useMutation(ADD_ADMIN);
 
@@ -97,11 +99,32 @@ const AdminDashboard = () => {
       await addQuote({
         variables: {
           masterId: masters.data.masters[0]._id,
-          author: e.target.Author.value,
+          author: e.target.author.value,
           text: e.target.text.value,
         },
       });
       setUpdate("Quote added to master!");
+      setTimeout(() => {
+        window.location.reload();
+      }, 2500);
+    } catch (e) {
+      // Clear state
+      console.log(e);
+    }
+  };
+
+  const addFactToMaster = async (e) => {
+    e.preventDefault();
+
+    try {
+      await addFact({
+        variables: {
+          masterId: masters.data.masters[0]._id,
+          genre: e.target.genre.value,
+          text: e.target.text.value,
+        },
+      });
+      setUpdate("Fact added to master!");
       setTimeout(() => {
         window.location.reload();
       }, 2500);
@@ -186,7 +209,7 @@ const AdminDashboard = () => {
         <label htmlFor="quote Author">quote Author</label>
         <input
           id="quote Author"
-          name="Author"
+          name="author"
           placeholder="Quote Author"
         ></input>
         <button>Add</button>
@@ -199,6 +222,27 @@ const AdminDashboard = () => {
             return (
               <li key={i}>
                 {quote.text} {quote.author && quote.author}
+              </li>
+            );
+          })}
+        </ul>
+      )}
+      <form style={{ marginTop: "50px" }} onSubmit={(e) => addFactToMaster(e)}>
+        <h5>Add new Fact to master</h5>
+        <label htmlFor="Fact Text">Fact Text</label>
+        <input id="Fact Text" name="text" placeholder="Fact Text"></input>
+        <label htmlFor="Fact Genre">Fact Genre</label>
+        <input id="Fact Genre" name="genre" placeholder="Fact Genre"></input>
+        <button>Add</button>
+      </form>
+      {/* Returns active Facts */}
+      {!masters.loading && (
+        <ul style={{ marginTop: "15px" }}>
+          <h5>Active Facts</h5>
+          {masters.data.masters[0].factsArr.map((fact, i) => {
+            return (
+              <li key={i}>
+                {fact.text} {fact.genre && fact.genre}
               </li>
             );
           })}
