@@ -123,3 +123,11 @@ export const ADD_GEO = gql`
     }
   }
 `;
+
+export const REMOVE_GEO = gql`
+  mutation removeGeo($masterId: String!, $geoId: String!) {
+    removeGeo(masterId: $masterId, geoId: $geoId) {
+      _id
+    }
+  }
+`;

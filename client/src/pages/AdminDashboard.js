@@ -10,6 +10,7 @@ import {
   ADD_FACT,
   ADD_VOCAB,
   ADD_GEO,
+  REMOVE_GEO,
 } from "../utils/mutations";
 import { GET_ADMINS, GET_MASTERS } from "../utils/queries";
 
@@ -20,6 +21,7 @@ const AdminDashboard = () => {
   const [addFact, { factsErr }] = useMutation(ADD_FACT);
   const [addVocab, { vocabErr }] = useMutation(ADD_VOCAB);
   const [addGeo, { geoErr }] = useMutation(ADD_GEO);
+  const [removeGeo, { removeGeoErr }] = useMutation(REMOVE_GEO);
 
   const [addMaster] = useMutation(ADD_MASTER);
   const [addAdmin, { error }] = useMutation(ADD_ADMIN);
@@ -154,6 +156,24 @@ const AdminDashboard = () => {
     }
   };
 
+  const removeFromMaster = async (id) => {
+    try {
+      await removeGeo({
+        variables: {
+          masterId: masters.data.masters[0]._id,
+          geoId: id,
+        },
+      });
+
+      setTimeout(() => {
+        window.location.reload();
+      }, 2500);
+    } catch (e) {
+      // Clear state
+      console.log(e);
+    }
+  };
+
   return (
     <div>
       {/* Create an Admin Model */}
@@ -229,12 +249,16 @@ const AdminDashboard = () => {
       >
         <h5>Add new Quote to master</h5>
         <label htmlFor="quoteText">quote Text</label>
-        <input id="quoteText" name="text" placeholder="Quote Text"></input>
+        <input
+          id="quoteText"
+          name="text"
+          placeholder="This too shall pass"
+        ></input>
         <label htmlFor="quoteAuthor">quote Author</label>
         <input
           id="quoteAuthor"
           name="author"
-          placeholder="Quote Author"
+          placeholder="Theodore Roosevelt"
         ></input>
         <button>Add</button>
       </form>
@@ -246,6 +270,7 @@ const AdminDashboard = () => {
             return (
               <li key={i}>
                 {quote.text} {quote.author && quote.author}
+                <button onClick={() => console.log(quote._id)}>X</button>
               </li>
             );
           })}
@@ -259,9 +284,9 @@ const AdminDashboard = () => {
       >
         <h5>Add new Fact to master</h5>
         <label htmlFor="FactText">Fact Text</label>
-        <input id="FactText" name="text" placeholder="Fact Text"></input>
-        <label htmlFor="FactGenre">Fact Genre</label>
-        <input id="FactGenre" name="genre" placeholder="Fact Genre"></input>
+        <input id="FactText" name="text" placeholder="The sun is big"></input>
+        <label htmlFor="FactGenre">Astromony</label>
+        <input id="FactGenre" name="genre" placeholder="Astronomy"></input>
         <button>Add</button>
       </form>
       {/* Returns active Facts */}
@@ -272,6 +297,7 @@ const AdminDashboard = () => {
             return (
               <li key={i}>
                 {fact.text} {fact.genre && fact.genre}
+                <button onClick={() => console.log(fact._id)}>X</button>
               </li>
             );
           })}
@@ -284,19 +310,19 @@ const AdminDashboard = () => {
         onSubmit={(e) => addDataToMaster(e)}
       >
         <h5>Add new Vocab to master</h5>
-        <label htmlFor="VocabText">Vocab Text</label>
-        <input id="VocabText" name="text" placeholder="Vocab Text"></input>
-        <label htmlFor="VocabGenre">Vocab Genre</label>
+        <label htmlFor="VocabWord">Word</label>
+        <input id="VocabWord" name="text" placeholder="Box"></input>
+        <label htmlFor="VocabDefinition">Definition</label>
         <input
-          id="VocabGenre"
+          id="VocabDefinition"
           name="definition"
-          placeholder="Vocab Genre"
+          placeholder="To open an object"
         ></input>
-        <label htmlFor="VocabtypeOfSpeech">Vocab typeOfSpeech</label>
+        <label htmlFor="VocabtypeOfSpeech">Type of Speech</label>
         <input
           id="VocabtypeOfSpeech"
           name="typeOfSpeech"
-          placeholder="Vocab typeOfSpeech"
+          placeholder="Noun"
         ></input>
         <button>Add</button>
       </form>
@@ -308,6 +334,7 @@ const AdminDashboard = () => {
             return (
               <li key={i}>
                 {vocab.text} {vocab.definition} {vocab.typeOfSpeech}
+                <button onClick={() => console.log(vocab._id)}>X</button>
               </li>
             );
           })}
@@ -321,15 +348,19 @@ const AdminDashboard = () => {
       >
         <h5>Add new Geography to master</h5>
         <label htmlFor="country">Country</label>
-        <input id="country" name="text" placeholder="Country"></input>
+        <input id="country" name="text" placeholder="Canada"></input>
         <label htmlFor="flag">flag</label>
-        <input id="flag" name="flag" placeholder="Flag"></input>
+        <input id="flag" name="flag" placeholder="Image"></input>
         <label htmlFor="continent">Continent</label>
-        <input id="continent" name="continent" placeholder="Continent"></input>
+        <input
+          id="continent"
+          name="continent"
+          placeholder="North America"
+        ></input>
         <label htmlFor="phoneCode">Phone Code</label>
-        <input id="phoneCode" name="phoneCode" placeholder="Phone Code"></input>
+        <input id="phoneCode" name="phoneCode" placeholder="+1"></input>
         <label htmlFor="capital">Capital</label>
-        <input id="capital" name="capital" placeholder="Capital"></input>
+        <input id="capital" name="capital" placeholder="Ottawa"></input>
         <button>Add</button>
       </form>
       {/* Returns active Geography */}
@@ -341,6 +372,7 @@ const AdminDashboard = () => {
               <li key={i}>
                 {geo.country} {geo.capital} {geo.continent} {geo.phoneCode}
                 {geo.flag}
+                <button onClick={() => removeFromMaster(geo._id)}>X</button>
               </li>
             );
           })}

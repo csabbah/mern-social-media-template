@@ -89,6 +89,7 @@ const typeDefs = gql`
       phoneCode: String!
       masterId: String!
     ): Geography
+    removeGeo(masterId: String!, geoId: String!): Master
   }
 
   type Auth {

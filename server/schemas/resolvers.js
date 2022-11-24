@@ -215,6 +215,23 @@ const resolvers = {
       return { updatedMaster, geo };
     },
 
+    removeGeo: async (parent, args) => {
+      const updatedGeoArr = await Master.findOneAndUpdate(
+        { _id: args.masterId },
+        { $pull: { geoArr: args.geoId } },
+        { new: true }
+      );
+      return updatedGeoArr;
+    },
+
+    // updateNote: async (parent, { _id, text }) => {
+    //   return await Note.updateOne(
+    //     { _id: _id },
+    //     { $set: { text } },
+    //     { new: true }
+    //   );
+    // },
+
     addUser: async (parent, args) => {
       const user = await User.create(args);
       const token = signToken(user);
