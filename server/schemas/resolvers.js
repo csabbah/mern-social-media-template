@@ -215,10 +215,21 @@ const resolvers = {
       return { updatedMaster, geo };
     },
 
-    removeGeo: async (parent, args) => {
+    removeItem: async (parent, args) => {
       const updatedGeoArr = await Master.findOneAndUpdate(
         { _id: args.masterId },
-        { $pull: { geoArr: args.geoId } },
+        {
+          $pull:
+            args.arr == "geo"
+              ? { geoArr: args.itemId }
+              : args.arr == "vocab"
+              ? { vocabArr: args.itemId }
+              : args.arr == "fact"
+              ? { factsArr: args.itemId }
+              : args.arr == "quote"
+              ? { quotesArr: args.itemId }
+              : "",
+        },
         { new: true }
       );
       return updatedGeoArr;

@@ -21,7 +21,7 @@ const AdminDashboard = () => {
   const [addFact, { factsErr }] = useMutation(ADD_FACT);
   const [addVocab, { vocabErr }] = useMutation(ADD_VOCAB);
   const [addGeo, { geoErr }] = useMutation(ADD_GEO);
-  const [removeGeo, { removeGeoErr }] = useMutation(REMOVE_GEO);
+  const [removeItem, { removeGeoErr }] = useMutation(REMOVE_GEO);
 
   const [addMaster] = useMutation(ADD_MASTER);
   const [addAdmin, { error }] = useMutation(ADD_ADMIN);
@@ -156,12 +156,13 @@ const AdminDashboard = () => {
     }
   };
 
-  const removeFromMaster = async (id) => {
+  const removeFromMaster = async (id, arr) => {
     try {
-      await removeGeo({
+      await removeItem({
         variables: {
           masterId: masters.data.masters[0]._id,
-          geoId: id,
+          itemId: id,
+          arr: arr,
         },
       });
 
@@ -270,7 +271,9 @@ const AdminDashboard = () => {
             return (
               <li key={i}>
                 {quote.text} {quote.author && quote.author}
-                <button onClick={() => console.log(quote._id)}>X</button>
+                <button onClick={() => removeFromMaster(quote._id, "quote")}>
+                  X
+                </button>
               </li>
             );
           })}
@@ -297,7 +300,9 @@ const AdminDashboard = () => {
             return (
               <li key={i}>
                 {fact.text} {fact.genre && fact.genre}
-                <button onClick={() => console.log(fact._id)}>X</button>
+                <button onClick={() => removeFromMaster(fact._id, "fact")}>
+                  X
+                </button>
               </li>
             );
           })}
@@ -334,7 +339,9 @@ const AdminDashboard = () => {
             return (
               <li key={i}>
                 {vocab.text} {vocab.definition} {vocab.typeOfSpeech}
-                <button onClick={() => console.log(vocab._id)}>X</button>
+                <button onClick={() => removeFromMaster(vocab._id, "vocab")}>
+                  X
+                </button>
               </li>
             );
           })}
@@ -372,7 +379,9 @@ const AdminDashboard = () => {
               <li key={i}>
                 {geo.country} {geo.capital} {geo.continent} {geo.phoneCode}
                 {geo.flag}
-                <button onClick={() => removeFromMaster(geo._id)}>X</button>
+                <button onClick={() => removeFromMaster(geo._id, "geo")}>
+                  X
+                </button>
               </li>
             );
           })}

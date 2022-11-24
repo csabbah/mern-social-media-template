@@ -125,8 +125,8 @@ export const ADD_GEO = gql`
 `;
 
 export const REMOVE_GEO = gql`
-  mutation removeGeo($masterId: String!, $geoId: String!) {
-    removeGeo(masterId: $masterId, geoId: $geoId) {
+  mutation removeItem($masterId: String!, $itemId: String!, $arr: String!) {
+    removeItem(masterId: $masterId, itemId: $itemId, arr: $arr) {
       _id
     }
   }
