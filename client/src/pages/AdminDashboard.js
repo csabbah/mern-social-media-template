@@ -271,7 +271,9 @@ const AdminDashboard = () => {
             return (
               <li key={i}>
                 {quote.text} {quote.author && quote.author}
-                <button onClick={() => removeFromMaster(quote._id, "quote")}>
+                <button
+                  onClick={() => removeFromMaster(quote._id, "quotesArr")}
+                >
                   X
                 </button>
               </li>
@@ -300,7 +302,7 @@ const AdminDashboard = () => {
             return (
               <li key={i}>
                 {fact.text} {fact.genre && fact.genre}
-                <button onClick={() => removeFromMaster(fact._id, "fact")}>
+                <button onClick={() => removeFromMaster(fact._id, "factsArr")}>
                   X
                 </button>
               </li>
@@ -339,7 +341,7 @@ const AdminDashboard = () => {
             return (
               <li key={i}>
                 {vocab.text} {vocab.definition} {vocab.typeOfSpeech}
-                <button onClick={() => removeFromMaster(vocab._id, "vocab")}>
+                <button onClick={() => removeFromMaster(vocab._id, "vocabArr")}>
                   X
                 </button>
               </li>
@@ -379,7 +381,7 @@ const AdminDashboard = () => {
               <li key={i}>
                 {geo.country} {geo.capital} {geo.continent} {geo.phoneCode}
                 {geo.flag}
-                <button onClick={() => removeFromMaster(geo._id, "geo")}>
+                <button onClick={() => removeFromMaster(geo._id, "geoArr")}>
                   X
                 </button>
               </li>

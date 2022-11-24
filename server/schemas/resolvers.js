@@ -219,16 +219,8 @@ const resolvers = {
       const updatedGeoArr = await Master.findOneAndUpdate(
         { _id: args.masterId },
         {
-          $pull:
-            args.arr == "geo"
-              ? { geoArr: args.itemId }
-              : args.arr == "vocab"
-              ? { vocabArr: args.itemId }
-              : args.arr == "fact"
-              ? { factsArr: args.itemId }
-              : args.arr == "quote"
-              ? { quotesArr: args.itemId }
-              : "",
+          // Args.arr returns the (array) paramater we are pushing into
+          $pull: { [args.arr]: args.itemId },
         },
         { new: true }
       );
