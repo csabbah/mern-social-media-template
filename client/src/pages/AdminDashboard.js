@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import { useMutation, useQuery } from "@apollo/client";
 
+import axios from "axios";
 import {
   ADD_ADMIN,
   REMOVE_ADMIN,
@@ -17,6 +18,9 @@ import { GET_ADMINS, GET_MASTERS } from "../utils/queries";
 import Auth from "../utils/auth";
 
 const AdminDashboard = () => {
+  const [file, setFile] = useState(null);
+  const [imageUrl, setImageUrl] = useState(null);
+
   const [addQuote, { quotesErr }] = useMutation(ADD_QUOTE);
   const [addFact, { factsErr }] = useMutation(ADD_FACT);
   const [addVocab, { vocabErr }] = useMutation(ADD_VOCAB);
@@ -99,21 +103,47 @@ const AdminDashboard = () => {
     }
   };
 
+  const uploadImgToCloud = async (e) => {
+    console.log(e.target.country);
+    // For cloud hosting
+    const data = new FormData();
+    data.append("file", file);
+    data.append("upload_preset", "uploads");
+
+    try {
+      // The post method to upload an image to Cloudinary
+      const uploadRes = await axios.post(
+        // csabbah is our Cloud name (Can be found in the Cloudinary/Dashboard)
+        "https://api.cloudinary.com/v1_1/csabbah/image/upload",
+        data
+      );
+
+      // Extract the cloud link (that was generated above)
+      const { url } = uploadRes.data;
+
+      await addGeo({
+        variables: {
+          masterId: masters.data.masters[0]._id,
+          country: e.target.country.value,
+          flag: url,
+          continent: e.target.continent.value,
+          phoneCode: e.target.phoneCode.value,
+          capital: e.target.capital.value,
+        },
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const addDataToMaster = async (e) => {
     e.preventDefault();
 
     try {
       if (e.target.name == "Geography") {
-        await addGeo({
-          variables: {
-            masterId: masters.data.masters[0]._id,
-            country: e.target.country.value,
-            flag: e.target.flag.value,
-            continent: e.target.continent.value,
-            phoneCode: e.target.phoneCode.value,
-            capital: e.target.capital.value,
-          },
-        });
+        // Geography would require use of cloudinary services
+        // So a separate function is created for it
+        uploadImgToCloud(e);
       }
       if (e.target.name == "Vocabulary") {
         await addVocab({
@@ -359,7 +389,13 @@ const AdminDashboard = () => {
         <label htmlFor="country">Country</label>
         <input id="country" name="text" placeholder="Canada"></input>
         <label htmlFor="flag">flag</label>
-        <input id="flag" name="flag" placeholder="Image"></input>
+        <input
+          type="file"
+          accept="image/png, image/jpeg"
+          onChange={(e) => {
+            setFile(e.target.files[0]);
+          }}
+        />
         <label htmlFor="continent">Continent</label>
         <input
           id="continent"
@@ -380,7 +416,11 @@ const AdminDashboard = () => {
             return (
               <li key={i}>
                 {geo.country} {geo.capital} {geo.continent} {geo.phoneCode}
-                {geo.flag}
+                <img
+                  style={{ width: "100px" }}
+                  src={geo.flag}
+                  alt={geo.country}
+                ></img>
                 <button onClick={() => removeFromMaster(geo._id, "geoArr")}>
                   X
                 </button>
