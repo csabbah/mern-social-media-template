@@ -165,7 +165,7 @@ const resolvers = {
         text: args.text,
         definition: args.definition,
         masterId: args.masterId,
-        partOfSpeech: args.partOfSpeech,
+        typeOfSpeech: args.typeOfSpeech,
       });
 
       // Then add the newly created quote into the Master model sub-array

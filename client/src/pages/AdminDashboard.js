@@ -8,6 +8,7 @@ import {
   ADD_MASTER,
   ADD_QUOTE,
   ADD_FACT,
+  ADD_VOCAB,
 } from "../utils/mutations";
 import { GET_ADMINS, GET_MASTERS } from "../utils/queries";
 
@@ -16,6 +17,8 @@ import Auth from "../utils/auth";
 const AdminDashboard = () => {
   const [addQuote, { quotesErr }] = useMutation(ADD_QUOTE);
   const [addFact, { factsErr }] = useMutation(ADD_FACT);
+  const [addVocab, { vocabErr }] = useMutation(ADD_VOCAB);
+
   const [addMaster] = useMutation(ADD_MASTER);
   const [addAdmin, { error }] = useMutation(ADD_ADMIN);
 
@@ -133,6 +136,27 @@ const AdminDashboard = () => {
       console.log(e);
     }
   };
+  const addVocabToMaster = async (e) => {
+    e.preventDefault();
+
+    try {
+      await addVocab({
+        variables: {
+          masterId: masters.data.masters[0]._id,
+          text: e.target.text.value,
+          definition: e.target.definition.value,
+          typeOfSpeech: e.target.typeOfSpeech.value,
+        },
+      });
+      setUpdate("Vocab added to master!");
+      setTimeout(() => {
+        window.location.reload();
+      }, 2500);
+    } catch (e) {
+      // Clear state
+      console.log(e);
+    }
+  };
 
   return (
     <div>
@@ -227,6 +251,7 @@ const AdminDashboard = () => {
           })}
         </ul>
       )}
+      {/* Manually add a Fact to the Master model */}
       <form style={{ marginTop: "50px" }} onSubmit={(e) => addFactToMaster(e)}>
         <h5>Add new Fact to master</h5>
         <label htmlFor="Fact Text">Fact Text</label>
@@ -243,6 +268,38 @@ const AdminDashboard = () => {
             return (
               <li key={i}>
                 {fact.text} {fact.genre && fact.genre}
+              </li>
+            );
+          })}
+        </ul>
+      )}
+      {/* Manually add a Vocab to the Master model */}
+      <form style={{ marginTop: "50px" }} onSubmit={(e) => addVocabToMaster(e)}>
+        <h5>Add new Vocab to master</h5>
+        <label htmlFor="Vocab Text">Vocab Text</label>
+        <input id="Vocab Text" name="text" placeholder="Vocab Text"></input>
+        <label htmlFor="Vocab Genre">Vocab Genre</label>
+        <input
+          id="Vocab Genre"
+          name="definition"
+          placeholder="Vocab Genre"
+        ></input>
+        <label htmlFor="Vocab typeOfSpeech">Vocab typeOfSpeech</label>
+        <input
+          id="Vocab typeOfSpeech"
+          name="typeOfSpeech"
+          placeholder="Vocab typeOfSpeech"
+        ></input>
+        <button>Add</button>
+      </form>
+      {/* Returns active Vocab */}
+      {!masters.loading && (
+        <ul style={{ marginTop: "15px" }}>
+          <h5>Active Vocabulary</h5>
+          {masters.data.masters[0].vocabArr.map((vocab, i) => {
+            return (
+              <li key={i}>
+                {vocab.text} {vocab.definition} {vocab.typeOfSpeech}
               </li>
             );
           })}
