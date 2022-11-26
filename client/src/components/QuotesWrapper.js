@@ -26,7 +26,13 @@ const QuotesWrapper = ({ quotes, loggedIn, accountDetail, addNewLike }) => {
                   })}
                 {/* For reference - addNewLike(PostIdGoesHere) */}
                 {/* // TODO: Need to update this section - Would need to pass the real Object ID*/}
-                <button onClick={() => addNewLike(`quotes#-${i}`)}>Save</button>
+                {loggedIn ? (
+                  <button onClick={() => addNewLike(`quotes#-${i}`)}>
+                    Like
+                  </button>
+                ) : (
+                  <p>Login to like</p>
+                )}
               </div>
             );
           })}

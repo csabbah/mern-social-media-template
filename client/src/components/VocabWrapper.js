@@ -61,15 +61,19 @@ const VocabWrapper = ({ words, loggedIn, accountDetail, addNewLike }) => {
                     })}
                   {/* For reference - addNewLike(PostIdGoesHere) */}
                   {/* // TODO: Need to update this section - Would need to pass the real Object ID*/}
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
+                  {loggedIn ? (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
 
-                      addNewLike(`vocab#-1`);
-                    }}
-                  >
-                    Save
-                  </button>
+                        addNewLike(`vocab#-1`);
+                      }}
+                    >
+                      Like
+                    </button>
+                  ) : (
+                    <p>Login to like</p>
+                  )}
                 </p>
               </div>
               <div className="card-back">

@@ -24,7 +24,11 @@ const FactWrapper = ({ facts, loggedIn, accountDetail, addNewLike }) => {
                   })}
                 {/* For reference - addNewLike(PostIdGoesHere) */}
                 {/* // TODO: Need to update this section - Would need to pass the real Object ID*/}
-                <button onClick={() => addNewLike(`fact#-${i}`)}>Save</button>
+                {loggedIn ? (
+                  <button onClick={() => addNewLike(`fact#-${i}`)}>Like</button>
+                ) : (
+                  <p>Login to like</p>
+                )}
               </div>
             );
           })}
