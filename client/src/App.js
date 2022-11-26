@@ -66,6 +66,8 @@ function App() {
       <Router>
         <>
           <Switch>
+            {/* // TODO Create a new custom endpoint path to render a single post
+                // TODO Refer to MERN anime finder for how it ws done */}
             <Route exact path="/" component={Home} />
             {!loggedIn && <Route exact path="/login" component={Login} />}
             {!loggedIn && <Route exact path="/signup" component={SignUp} />}

@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 
 const VocabWrapper = ({ words }) => {
-  console.log(words);
-
   const [flipCard, setFlipCard] = useState({
     firstCard: false,
     secondCard: false,
@@ -11,7 +9,6 @@ const VocabWrapper = ({ words }) => {
 
   return (
     <div>
-      {console.log(words)}
       {words[0] ? (
         <div className="vocab-wrapper">
           <div

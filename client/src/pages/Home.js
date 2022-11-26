@@ -28,14 +28,47 @@ const Home = () => {
     fetchFunc(setWords, fetchWords);
   }
 
+  const getAccountLevel = () => {
+    return Auth.getProfile().data;
+  };
+
+  let loggedIn =
+    localStorage.getItem("id_token") == null
+      ? false
+      : localStorage.getItem("id_token") == "undefined"
+      ? false
+      : true;
+
+  if (loggedIn) {
+    getAccountLevel();
+  }
+
   return (
     <div>
       Home Page
-      <button onClick={() => console.log(true)}>Search</button>
-      <VocabWrapper words={words}></VocabWrapper>
-      <QuotesWrapper quotes={quotes} />
-      <FactWrapper facts={facts} />
-      <GeoWrapper geo={"test"} />
+      {/* // TODO Need to add addLike function (Use function from FactWrapper) */}
+      <VocabWrapper
+        loggedIn={loggedIn}
+        accountDetail={loggedIn && getAccountLevel()}
+        words={words}
+      />
+      {/* // TODO Need to add addLike function (Use function from FactWrapper) */}
+      <QuotesWrapper
+        loggedIn={loggedIn}
+        accountDetail={loggedIn && getAccountLevel()}
+        quotes={quotes}
+      />
+      <FactWrapper
+        loggedIn={loggedIn}
+        accountDetail={loggedIn && getAccountLevel()}
+        facts={facts}
+      />
+      {/* // TODO Need to add addLike function (Use function from FactWrapper) */}
+      <GeoWrapper
+        loggedIn={loggedIn}
+        accountDetail={loggedIn && getAccountLevel()}
+        geo={"test"}
+      />
     </div>
   );
 };

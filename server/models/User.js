@@ -22,6 +22,12 @@ const userSchema = new Schema(
       type: String,
       default: "User",
     },
+    favourited: [
+      {
+        type: String,
+        default: [],
+      },
+    ],
   },
   // set this to use virtual below
   {

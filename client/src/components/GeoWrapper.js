@@ -1,7 +1,6 @@
 import React from "react";
 
 const GeoWrapper = ({ geo }) => {
-  console.log(geo);
   return (
     <div>
       {/* {geo.length > 1 ? (
