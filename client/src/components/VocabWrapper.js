@@ -54,13 +54,13 @@ const VocabWrapper = ({ words, loggedIn, accountDetail, addNewLike }) => {
                   </button>
                   {!loading &&
                     data.likes.map((like) => {
-                      // TODO: Need to update this section
+                      // TODO: Need to update this section - Future, should be vocab._id
                       if (like.postId == `vocab#-1`) {
                         return <p>This post was liked</p>;
                       }
                     })}
                   {/* For reference - addNewLike(PostIdGoesHere) */}
-                  {/* // TODO: Need to update this section */}
+                  {/* // TODO: Need to update this section - Would need to pass the real Object ID*/}
                   <button
                     onClick={(e) => {
                       e.stopPropagation();

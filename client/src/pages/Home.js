@@ -53,7 +53,6 @@ const Home = () => {
     try {
       await addLike({
         variables: {
-          // TODO: Once you return data from DB, need to use the real object ID
           postId: postId,
           userId: loggedIn && getAccountLevel()._id,
           liked: true,

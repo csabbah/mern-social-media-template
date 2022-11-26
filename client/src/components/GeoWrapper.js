@@ -31,13 +31,13 @@ const GeoWrapper = ({ geo, loggedIn, accountDetail, addNewLike }) => {
           <p>Ottawa</p>
           {!loading &&
             data.likes.map((like) => {
-              // TODO: Need to update this section
+              // TODO: Need to update this section - Future, should be geo._id
               if (like.postId == `Geo1222`) {
                 return <p>This post was liked</p>;
               }
             })}
           {/* For reference - addNewLike(PostIdGoesHere) */}
-          {/* // TODO: Need to update this section */}
+          {/* // TODO: Need to update this section - Would need to pass the real Object ID*/}
           <button onClick={() => addNewLike("Geo1222")}>Save</button>
         </div>
       </div>

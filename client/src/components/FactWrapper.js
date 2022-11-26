@@ -17,13 +17,13 @@ const FactWrapper = ({ facts, loggedIn, accountDetail, addNewLike }) => {
                 <p>{fact.description}</p>
                 {!loading &&
                   data.likes.map((like) => {
-                    // TODO: Need to update this section
+                    // TODO: Need to update this section - Future, should be fact._id
                     if (like.postId == `fact#-${i}`) {
                       return <p>This post was liked</p>;
                     }
                   })}
                 {/* For reference - addNewLike(PostIdGoesHere) */}
-                {/* // TODO: Need to update this section */}
+                {/* // TODO: Need to update this section - Would need to pass the real Object ID*/}
                 <button onClick={() => addNewLike(`fact#-${i}`)}>Save</button>
               </div>
             );

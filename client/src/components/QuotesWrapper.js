@@ -19,13 +19,13 @@ const QuotesWrapper = ({ quotes, loggedIn, accountDetail, addNewLike }) => {
                 <p>{quote.text}</p>
                 {!loading &&
                   data.likes.map((like) => {
-                    // TODO: Need to update this section
+                    // TODO: Need to update this section - Future, should be quote._id
                     if (like.postId == `quotes#-${i}`) {
                       return <p>This post was liked</p>;
                     }
                   })}
                 {/* For reference - addNewLike(PostIdGoesHere) */}
-                {/* // TODO: Need to update this section */}
+                {/* // TODO: Need to update this section - Would need to pass the real Object ID*/}
                 <button onClick={() => addNewLike(`quotes#-${i}`)}>Save</button>
               </div>
             );
