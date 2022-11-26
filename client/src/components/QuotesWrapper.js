@@ -1,6 +1,11 @@
 import React from "react";
 
-const QuotesWrapper = ({ quotes }) => {
+import { useQuery } from "@apollo/client";
+import { GET_LIKES } from "../utils/queries";
+
+const QuotesWrapper = ({ quotes, loggedIn, accountDetail, addNewLike }) => {
+  const { loading, data } = useQuery(GET_LIKES);
+
   return (
     <div>
       {quotes.length > 1 ? (
@@ -12,6 +17,16 @@ const QuotesWrapper = ({ quotes }) => {
                   {quote.author} / {quote.category}
                 </p>
                 <p>{quote.text}</p>
+                {!loading &&
+                  data.likes.map((like) => {
+                    // TODO: Need to update this section
+                    if (like.postId == `quotes#-${i}`) {
+                      return <p>This post was liked</p>;
+                    }
+                  })}
+                {/* For reference - addNewLike(PostIdGoesHere) */}
+                {/* // TODO: Need to update this section */}
+                <button onClick={() => addNewLike(`quotes#-${i}`)}>Save</button>
               </div>
             );
           })}

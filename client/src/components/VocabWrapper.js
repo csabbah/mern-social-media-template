@@ -1,11 +1,16 @@
 import React, { useState } from "react";
 
-const VocabWrapper = ({ words }) => {
+import { useQuery } from "@apollo/client";
+import { GET_LIKES } from "../utils/queries";
+
+const VocabWrapper = ({ words, loggedIn, accountDetail, addNewLike }) => {
   const [flipCard, setFlipCard] = useState({
     firstCard: false,
     secondCard: false,
     thirdCard: false,
   });
+
+  const { loading, data } = useQuery(GET_LIKES);
 
   return (
     <div>
@@ -46,7 +51,25 @@ const VocabWrapper = ({ words }) => {
                     }}
                   >
                     Read loud
-                  </button>{" "}
+                  </button>
+                  {!loading &&
+                    data.likes.map((like) => {
+                      // TODO: Need to update this section
+                      if (like.postId == `vocab#-1`) {
+                        return <p>This post was liked</p>;
+                      }
+                    })}
+                  {/* For reference - addNewLike(PostIdGoesHere) */}
+                  {/* // TODO: Need to update this section */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+
+                      addNewLike(`vocab#-1`);
+                    }}
+                  >
+                    Save
+                  </button>
                 </p>
               </div>
               <div className="card-back">

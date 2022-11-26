@@ -9,6 +9,9 @@ import Auth from "../utils/auth";
 
 import { fetchFacts, fetchQuotes, fetchWords } from "../utils/API";
 
+import { useMutation } from "@apollo/client";
+import { ADD_LIKE } from "../utils/mutations";
+
 const Home = () => {
   const [facts, setFacts] = useState([]);
   const [quotes, setQuotes] = useState([]);
@@ -43,31 +46,54 @@ const Home = () => {
     getAccountLevel();
   }
 
+  const [addLike, { likeErr }] = useMutation(ADD_LIKE);
+
+  // TODO: Add function to not allow users to like a post again (check liked boolean)
+  const addNewLike = async (postId) => {
+    try {
+      await addLike({
+        variables: {
+          // TODO: Once you return data from DB, need to use the real object ID
+          postId: postId,
+          userId: loggedIn && getAccountLevel()._id,
+          liked: true,
+        },
+      });
+      setTimeout(() => {
+        window.location.reload();
+      }, 2500);
+    } catch (e) {
+      // Clear state
+      console.log(e);
+    }
+  };
+
   return (
     <div>
       Home Page
-      {/* // TODO Need to add addLike function (Use function from FactWrapper) */}
       <VocabWrapper
         loggedIn={loggedIn}
         accountDetail={loggedIn && getAccountLevel()}
         words={words}
+        addNewLike={addNewLike}
       />
-      {/* // TODO Need to add addLike function (Use function from FactWrapper) */}
       <QuotesWrapper
         loggedIn={loggedIn}
         accountDetail={loggedIn && getAccountLevel()}
         quotes={quotes}
+        addNewLike={addNewLike}
       />
       <FactWrapper
         loggedIn={loggedIn}
         accountDetail={loggedIn && getAccountLevel()}
         facts={facts}
+        addNewLike={addNewLike}
       />
-      {/* // TODO Need to add addLike function (Use function from FactWrapper) */}
       <GeoWrapper
         loggedIn={loggedIn}
         accountDetail={loggedIn && getAccountLevel()}
         geo={"test"}
+        addNewLike={addNewLike}
       />
     </div>
   );
