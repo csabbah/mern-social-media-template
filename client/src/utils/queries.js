@@ -10,6 +10,18 @@ export const GET_USER = gql`
   }
 `;
 
+export const GET_LIKES = gql`
+  {
+    likes {
+      postId
+      userId {
+        _id
+      }
+      liked
+    }
+  }
+`;
+
 export const GET_ADMIN = gql`
   query admin($id: ID!) {
     admin(_id: $id) {

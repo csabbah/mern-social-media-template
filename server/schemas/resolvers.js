@@ -6,11 +6,11 @@ const {
   Vocab,
   Facts,
   Geography,
+  Likes,
 } = require("../models");
 
 const { AuthenticationError } = require("apollo-server-express");
 const { signToken } = require("../utils/auth");
-const { aggregate } = require("../models/Master");
 
 const resolvers = {
   Query: {
@@ -37,6 +37,9 @@ const resolvers = {
       return User.find();
     },
 
+    likes: async () => {
+      return Likes.find();
+    },
     admins: async (parent, args) => {
       return Admin.find();
     },
@@ -121,6 +124,17 @@ const resolvers = {
       const master = await Master.create({});
 
       return master;
+    },
+
+    addLike: async (parent, args) => {
+      console.log(args);
+      const like = await Likes.create({
+        postId: args.postId,
+        userId: args.userId,
+        liked: args.liked,
+      });
+
+      return like;
     },
 
     addQuote: async (parent, args) => {

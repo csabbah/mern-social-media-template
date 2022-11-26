@@ -21,6 +21,13 @@ const typeDefs = gql`
     email: String
   }
 
+  type Likes {
+    _id: ID
+    postId: String
+    userId: User
+    liked: Boolean
+  }
+
   type Vocab {
     _id: ID
     text: String
@@ -56,6 +63,7 @@ const typeDefs = gql`
   type Query {
     user: User
     users: [User]
+    likes: [Likes]
     admin(_id: ID!): Admin
     admins: [Admin]
     quotes: [Quotes]
@@ -90,6 +98,7 @@ const typeDefs = gql`
       masterId: String!
     ): Geography
     removeItem(masterId: String!, itemId: String!, arr: String!): Master
+    addLike(postId: String!, userId: String!, liked: Boolean!): Likes
   }
 
   type Auth {

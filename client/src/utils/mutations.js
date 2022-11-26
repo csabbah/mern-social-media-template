@@ -52,6 +52,15 @@ export const ADD_USER = gql`
   }
 `;
 
+export const ADD_LIKE = gql`
+  mutation addLike($postId: String!, $userId: String!, $liked: Boolean!) {
+    addLike(postId: $postId, userId: $userId, liked: $liked) {
+      _id
+      postId
+    }
+  }
+`;
+
 // export const ADD_MASTER = gql`
 //   mutation addMaster($company: String!) {
 //     addMaster(company: $company) {

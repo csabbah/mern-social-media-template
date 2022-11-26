@@ -19,7 +19,6 @@ import Auth from "../utils/auth";
 
 const AdminDashboard = () => {
   const [file, setFile] = useState(null);
-  const [imageUrl, setImageUrl] = useState(null);
 
   const [addQuote, { quotesErr }] = useMutation(ADD_QUOTE);
   const [addFact, { factsErr }] = useMutation(ADD_FACT);
@@ -104,7 +103,6 @@ const AdminDashboard = () => {
   };
 
   const uploadImgToCloud = async (e) => {
-    console.log(e.target.country);
     // For cloud hosting
     const data = new FormData();
     data.append("file", file);
@@ -253,7 +251,7 @@ const AdminDashboard = () => {
           </p>
         )}
       </form>
-      {/* Returns active Admins */}
+      {/** Returns active Admins */}
       {!admins.loading && (
         <ul style={{ marginTop: "15px" }}>
           <h5>Active Admins</h5>
