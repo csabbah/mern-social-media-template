@@ -1,11 +1,14 @@
 import React from "react";
 
-import { useQuery } from "@apollo/client";
-import { GET_LIKES } from "../utils/queries";
-
-const GeoWrapper = ({ geo, loggedIn, accountDetail, addNewLike }) => {
-  const { loading, data } = useQuery(GET_LIKES);
-
+const GeoWrapper = ({
+  geo,
+  loggedIn,
+  userDetail,
+  handleLike,
+  postLikes,
+  userLoading,
+  postLoading,
+}) => {
   return (
     <div>
       {/* {geo.length > 1 ? (
@@ -25,25 +28,44 @@ const GeoWrapper = ({ geo, loggedIn, accountDetail, addNewLike }) => {
         <p>Loading...</p>
       )} */}
       <div className="geo-wrapper">
-        <div className="geo-card">
-          <p>Canada</p>
-          <p>Image of flag</p>
-          <p>Ottawa</p>
-          {!loading &&
-            data.likes.map((like) => {
-              // TODO: Need to update this section - Future, should be geo._id
-              if (like.postId == `Geo1222`) {
+        {!postLoading && (
+          <div className="geo-card">
+            <p>Canada</p>
+            <p>Image of flag</p>
+            <p>Ottawa</p>
+            {postLikes.map((like) => {
+              // CHeck if the post has LIKES in general (not just from the logged in user)
+              // TODO: Need to update this section - Future, should be fact._id
+              if (like.postId == `current-geo-post-id`) {
                 return <p>This post was liked</p>;
               }
             })}
-          {/* For reference - addNewLike(PostIdGoesHere) */}
-          {/* // TODO: Need to update this section - Would need to pass the real Object ID*/}
-          {loggedIn ? (
-            <button onClick={() => addNewLike("Geo1222")}>Like</button>
-          ) : (
-            <p>Login to like</p>
-          )}
-        </div>
+            {loggedIn && !userLoading ? (
+              <button
+                // Check if the USER liked the post
+                className={userDetail.user.likedArr
+                  .map((like) => {
+                    // TODO: Need to update this section - Future, should be geo._id
+                    if (like.postId == `current-geo-post-id`) {
+                      return `Checked`;
+                    }
+                  })
+                  // .join removes the comma that is added after/before 'Checked'
+                  .join("")}
+                onClick={(e) => {
+                  e.stopPropagation();
+
+                  /* // TODO: Need to update this section - Would need to pass the real Object ID*/
+                  handleLike("current-geo-post-id", e.target.className);
+                }}
+              >
+                Like
+              </button>
+            ) : (
+              <p>Login to like</p>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

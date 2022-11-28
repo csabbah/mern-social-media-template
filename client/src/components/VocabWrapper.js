@@ -1,16 +1,39 @@
 import React, { useState } from "react";
 
-import { useQuery } from "@apollo/client";
-import { GET_LIKES } from "../utils/queries";
-
-const VocabWrapper = ({ words, loggedIn, accountDetail, addNewLike }) => {
+const VocabWrapper = ({
+  words,
+  loggedIn,
+  accountDetail,
+  addNewLike,
+  likes,
+}) => {
   const [flipCard, setFlipCard] = useState({
     firstCard: false,
     secondCard: false,
     thirdCard: false,
   });
 
-  const { loading, data } = useQuery(GET_LIKES);
+  const handleLike = (currentPostId) => {
+    console.log(accountDetail);
+    // Before adding a like, check to see if likes exist
+    if (likes.length > 0) {
+      likes.forEach((like) => {
+        // Then check to see if the specific post is already liked by the user
+        if (
+          like.postId == currentPostId &&
+          like.userId._id == accountDetail._id
+        ) {
+          return addNewLike(currentPostId, like._id, true);
+        }
+      });
+      // If after above map method, it doesn't return true, then that means the
+      // like is new, so post (add) the like
+      addNewLike(currentPostId, null);
+    } else {
+      // If no likes exist at all, then execute function normally
+      addNewLike(currentPostId, null);
+    }
+  };
 
   return (
     <div>
@@ -42,31 +65,24 @@ const VocabWrapper = ({ words, loggedIn, accountDetail, addNewLike }) => {
                       utter.lang = "en-US";
                       utter.text = words[0].word;
                       utter.volume = 0.5;
-
                       window.speechSynthesis.speak(utter);
-                      // event after text has been spoken
-                      // utter.onend = function () {
-                      //   alert("Speech has finished");
-                      // };
                     }}
                   >
                     Read loud
                   </button>
-                  {!loading &&
-                    data.likes.map((like) => {
-                      // TODO: Need to update this section - Future, should be vocab._id
-                      if (like.postId == `vocab#-1`) {
-                        return <p>This post was liked</p>;
-                      }
-                    })}
-                  {/* For reference - addNewLike(PostIdGoesHere) */}
+                  {likes.map((like) => {
+                    // TODO: Need to update this section - Future, should be vocab._id
+                    if (like.postId == `current-vocab-post-id`) {
+                      return <p>This post was liked</p>;
+                    }
+                  })}
                   {/* // TODO: Need to update this section - Would need to pass the real Object ID*/}
                   {loggedIn ? (
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-
-                        addNewLike(`vocab#-1`);
+                        /* // TODO: Need to update this section - Would need to pass the real Object ID*/
+                        handleLike("current-vocab-post-id");
                       }}
                     >
                       Like

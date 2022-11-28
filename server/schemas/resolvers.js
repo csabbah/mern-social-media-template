@@ -16,9 +16,10 @@ const resolvers = {
   Query: {
     user: async (parent, args, context) => {
       if (context.user) {
-        const userData = await User.findOne({ _id: context.user._id }).select(
-          "-__v -password"
-        );
+        const userData = await User.findOne({ _id: context.user._id })
+          .select("-__v -password")
+          .populate("likedArr")
+          .populate("favouritedArr");
 
         return userData;
       }
@@ -127,14 +128,34 @@ const resolvers = {
     },
 
     addLike: async (parent, args) => {
-      console.log(args);
       const like = await Likes.create({
         postId: args.postId,
         userId: args.userId,
-        liked: args.liked,
       });
 
+      await User.findOneAndUpdate(
+        { _id: args.userId },
+        { $addToSet: { likedArr: like } },
+        { new: true }
+      ).populate("likedArr");
+
       return like;
+    },
+
+    removeLike: async (parent, { likeId, userId }) => {
+      // Delete the like
+      await Likes.findByIdAndDelete(likeId);
+
+      // Then remove it from the users array
+      const updateUserArr = await User.findOneAndUpdate(
+        { _id: userId },
+        {
+          $pull: { likedArr: likeId },
+        },
+        { new: true }
+      ).populate("likedArr");
+
+      return { updateUserArr };
     },
 
     addQuote: async (parent, args) => {

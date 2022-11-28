@@ -22,9 +22,16 @@ const userSchema = new Schema(
       type: String,
       default: "User",
     },
-    favourited: [
+    favouritedArr: [
       {
         type: String,
+        default: [],
+      },
+    ],
+    likedArr: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Likes",
         default: [],
       },
     ],

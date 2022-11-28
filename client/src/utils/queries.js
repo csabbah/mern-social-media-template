@@ -6,6 +6,10 @@ export const GET_USER = gql`
       _id
       username
       email
+      likedArr {
+        _id
+        postId
+      }
     }
   }
 `;
@@ -13,11 +17,11 @@ export const GET_USER = gql`
 export const GET_LIKES = gql`
   {
     likes {
+      _id
       postId
       userId {
         _id
       }
-      liked
     }
   }
 `;

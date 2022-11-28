@@ -9,10 +9,6 @@ const likedSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "User",
     },
-    liked: {
-      type: Boolean,
-      defaultValue: false,
-    },
   },
   // set this to use virtual below
   {

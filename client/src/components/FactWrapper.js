@@ -1,31 +1,50 @@
 import React from "react";
 
-import { useQuery } from "@apollo/client";
-import { GET_LIKES } from "../utils/queries";
-
-const FactWrapper = ({ facts, loggedIn, accountDetail, addNewLike }) => {
-  const { loading, data } = useQuery(GET_LIKES);
-
+const FactWrapper = ({
+  facts,
+  loggedIn,
+  userDetail,
+  handleLike,
+  postLikes,
+  postLoading,
+  userLoading,
+}) => {
   return (
     <div>
-      {facts.length > 1 ? (
+      {facts.length > 1 && !postLoading ? (
         <div className="facts-wrapper">
           {facts.map((fact, i) => {
             return (
               <div className="facts-card" key={i}>
                 <p>{fact.topic}</p>
                 <p>{fact.description}</p>
-                {!loading &&
-                  data.likes.map((like) => {
-                    // TODO: Need to update this section - Future, should be fact._id
-                    if (like.postId == `fact#-${i}`) {
-                      return <p>This post was liked</p>;
-                    }
-                  })}
-                {/* For reference - addNewLike(PostIdGoesHere) */}
-                {/* // TODO: Need to update this section - Would need to pass the real Object ID*/}
-                {loggedIn ? (
-                  <button onClick={() => addNewLike(`fact#-${i}`)}>Like</button>
+                {postLikes.map((like) => {
+                  // CHeck if the post has LIKES in general (not just from the logged in user)
+                  // TODO: Need to update this section - Future, should be fact._id
+                  if (like.postId == `current-fact-post-id`) {
+                    return <p>This post was liked</p>;
+                  }
+                })}
+                {loggedIn && !userLoading ? (
+                  <button
+                    // Check if the USER liked the post
+                    className={userDetail.user.likedArr
+                      .map((like) => {
+                        // TODO: Need to update this section - Future, should be fact._id
+                        if (like.postId == `current-fact-post-id`) {
+                          return `Checked`;
+                        }
+                      })
+                      // .join removes the comma that is added after/before 'Checked'
+                      .join("")}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      /* // TODO: Need to update this section - Would need to pass the real Object ID*/
+                      handleLike("current-fact-post-id", e.target.className);
+                    }}
+                  >
+                    Like
+                  </button>
                 ) : (
                   <p>Login to like</p>
                 )}
