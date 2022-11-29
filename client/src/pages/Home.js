@@ -67,6 +67,7 @@ const Home = () => {
   const [addLike, { likeErr }] = useMutation(ADD_LIKE);
   const [removeLike, { removeLikeErr }] = useMutation(REMOVE_LIKE);
 
+  // The function to handle whether to add a like or to remove a like
   const handleLike = (currentPostId, className) => {
     // Before adding a like, check to see if likes exist
     if (!loading) {
@@ -89,6 +90,38 @@ const Home = () => {
     }
   };
 
+  // Check if a user liked a given post, if so, add a specific class which will be check in the above function
+  // To determine if a new like should be added or removed
+  const returnUserLike = (currentPostId) => {
+    if (loggedIn && !user.loading) {
+      return (
+        <button
+          // Check if the USER liked the post
+          className={
+            loggedIn &&
+            user.data.user.likedArr
+              .map((like) => {
+                if (like.postId == currentPostId) {
+                  return `Checked`;
+                }
+              })
+              // .join removes the comma that is added after/before 'Checked'
+              .join("")
+          }
+          onClick={(e) => {
+            e.stopPropagation();
+            handleLike(currentPostId, e.target.className);
+          }}
+        >
+          Like
+        </button>
+      );
+    } else {
+      return <p>Login to like</p>;
+    }
+  };
+
+  // The function to add a like to the DB and the users arr
   const addNewLike = async (postId) => {
     try {
       return await addLike({
@@ -103,6 +136,7 @@ const Home = () => {
     }
   };
 
+  // The function to remove a like from the DB and the users arr
   const removeCurrentLike = async (likeId) => {
     try {
       return await removeLike({
@@ -117,7 +151,8 @@ const Home = () => {
     }
   };
 
-  const returnLikes = (activePostId) => {
+  // Returns the amount of likes a post has
+  const returnPostLikes = (activePostId) => {
     let counter = [];
     if (!loading) {
       data.likes.map((like) => {
@@ -152,19 +187,13 @@ const Home = () => {
         likes={!loading && data.likes}
       /> */}
       <FactWrapper
-        loggedIn={loggedIn}
-        userLoading={user != null && user.loading}
-        userDetail={loggedIn && user.data}
-        returnLikes={returnLikes}
         facts={facts}
-        handleLike={handleLike}
+        returnUserLike={returnUserLike}
+        returnPostLikes={returnPostLikes}
       />
       <GeoWrapper
-        loggedIn={loggedIn}
-        userLoading={user != null && user.loading}
-        userDetail={loggedIn && user.data}
-        returnLikes={returnLikes}
-        handleLike={handleLike}
+        returnUserLike={returnUserLike}
+        returnPostLikes={returnPostLikes}
         geo={"test"}
       />
     </div>

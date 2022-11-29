@@ -1,13 +1,6 @@
 import React from "react";
 
-const FactWrapper = ({
-  facts,
-  loggedIn,
-  userDetail,
-  handleLike,
-  userLoading,
-  returnLikes,
-}) => {
+const FactWrapper = ({ facts, returnUserLike, returnPostLikes }) => {
   return (
     <div>
       {facts.length > 1 ? (
@@ -18,32 +11,13 @@ const FactWrapper = ({
                 <p>{fact.topic}</p>
                 <p>{fact.description}</p>
                 <p>
-                  This post was liked {returnLikes(`current-fact-post-id`)}{" "}
+                  {/* // TODO: Need to update this section - Would need to pass the real post ID*/}
+                  This post was liked {returnPostLikes(`current-fact-post-id`)}{" "}
                   amount of times
                 </p>
-                {loggedIn && !userLoading ? (
-                  <button
-                    // Check if the USER liked the post
-                    className={userDetail.user.likedArr
-                      .map((like) => {
-                        // TODO: Need to update this section - Future, should be fact._id
-                        if (like.postId == `current-fact-post-id`) {
-                          return `Checked`;
-                        }
-                      })
-                      // .join removes the comma that is added after/before 'Checked'
-                      .join("")}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      /* // TODO: Need to update this section - Would need to pass the real Object ID*/
-                      handleLike("current-fact-post-id", e.target.className);
-                    }}
-                  >
-                    Like
-                  </button>
-                ) : (
-                  <p>Login to like</p>
-                )}
+                {/* <p>This post was liked: {counter.length} of times</p> */}
+                {/* // TODO: Need to update this section - Would need to pass the real post ID*/}
+                {returnUserLike(`current-fact-post-id`)}
               </div>
             );
           })}
