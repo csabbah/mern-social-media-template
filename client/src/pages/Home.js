@@ -69,21 +69,23 @@ const Home = () => {
 
   const handleLike = (currentPostId, className) => {
     // Before adding a like, check to see if likes exist
-    if (user.data.user.likedArr.length > 0) {
-      // Then check to see if the specific post is already liked by the user
-      if (className == "Checked") {
-        user.data.user.likedArr.forEach((like) => {
-          if (currentPostId == like.postId) {
-            console.log("Remove Like");
-            return removeCurrentLike(like._id);
-          }
-        });
+    if (!loading) {
+      if (user.data.user.likedArr.length > 0) {
+        // Then check to see if the specific post is already liked by the user
+        if (className == "Checked") {
+          user.data.user.likedArr.forEach((like) => {
+            if (currentPostId == like.postId) {
+              console.log("Remove Like");
+              return removeCurrentLike(like._id);
+            }
+          });
+        } else {
+          addNewLike(currentPostId);
+        }
       } else {
+        //   If no likes exist at all, then execute function normally
         addNewLike(currentPostId);
       }
-    } else {
-      //   If no likes exist at all, then execute function normally
-      addNewLike(currentPostId);
     }
   };
 
@@ -115,6 +117,21 @@ const Home = () => {
     }
   };
 
+  const returnLikes = (activePostId) => {
+    let counter = [];
+    if (!loading) {
+      data.likes.map((like) => {
+        // Check if the post has LIKES in general (not just from the logged in user)
+        if (like.postId == activePostId) {
+          // Push the like (which also contains the usersId)
+          counter.push(like);
+        }
+      });
+    }
+    // Return the length of the counter which is the likes amount
+    return counter.length;
+  };
+
   return (
     <div>
       Home Page
@@ -136,21 +153,19 @@ const Home = () => {
       /> */}
       <FactWrapper
         loggedIn={loggedIn}
-        userDetail={loggedIn && user.data}
         userLoading={user != null && user.loading}
-        postLoading={loading}
+        userDetail={loggedIn && user.data}
+        returnLikes={returnLikes}
         facts={facts}
         handleLike={handleLike}
-        postLikes={!loading && data.likes}
       />
       <GeoWrapper
         loggedIn={loggedIn}
         userLoading={user != null && user.loading}
-        postLoading={loading}
         userDetail={loggedIn && user.data}
+        returnLikes={returnLikes}
         handleLike={handleLike}
         geo={"test"}
-        postLikes={!loading && data.likes}
       />
     </div>
   );

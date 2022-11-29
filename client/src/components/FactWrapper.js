@@ -5,26 +5,22 @@ const FactWrapper = ({
   loggedIn,
   userDetail,
   handleLike,
-  postLikes,
-  postLoading,
   userLoading,
+  returnLikes,
 }) => {
   return (
     <div>
-      {facts.length > 1 && !postLoading ? (
+      {facts.length > 1 ? (
         <div className="facts-wrapper">
           {facts.map((fact, i) => {
             return (
               <div className="facts-card" key={i}>
                 <p>{fact.topic}</p>
                 <p>{fact.description}</p>
-                {postLikes.map((like) => {
-                  // CHeck if the post has LIKES in general (not just from the logged in user)
-                  // TODO: Need to update this section - Future, should be fact._id
-                  if (like.postId == `current-fact-post-id`) {
-                    return <p>This post was liked</p>;
-                  }
-                })}
+                <p>
+                  This post was liked {returnLikes(`current-fact-post-id`)}{" "}
+                  amount of times
+                </p>
                 {loggedIn && !userLoading ? (
                   <button
                     // Check if the USER liked the post
