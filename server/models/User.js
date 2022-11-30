@@ -35,6 +35,13 @@ const userSchema = new Schema(
         default: [],
       },
     ],
+    commentsArr: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Comments",
+        default: [],
+      },
+    ],
   },
   // set this to use virtual below
   {

@@ -20,6 +20,7 @@ const typeDefs = gql`
     username: String
     email: String
     likedArr: [Likes]
+    commentsArr: [Comments]
   }
 
   type Likes {
@@ -27,6 +28,12 @@ const typeDefs = gql`
     conjointId: String
     postId: String
     userId: User
+  }
+  type Comments {
+    _id: ID
+    postId: String
+    userId: User
+    text: String
   }
 
   type Vocab {
@@ -101,6 +108,8 @@ const typeDefs = gql`
     removeItem(masterId: String!, itemId: String!, arr: String!): Master
     addLike(postId: String!, userId: String!, conjointId: String!): Likes
     removeLike(likeId: String!, userId: String!): Likes
+    addComment(postId: String!, userId: String!, text: String!): Comments
+    removeComment(commentId: String!, userId: String!): Comments
   }
 
   type Auth {

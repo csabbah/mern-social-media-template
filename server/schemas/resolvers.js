@@ -7,6 +7,7 @@ const {
   Facts,
   Geography,
   Likes,
+  Comments,
 } = require("../models");
 
 const { AuthenticationError } = require("apollo-server-express");
@@ -19,7 +20,8 @@ const resolvers = {
         const userData = await User.findOne({ _id: context.user._id })
           .select("-__v -password")
           .populate("likedArr")
-          .populate("favouritedArr");
+          .populate("favouritedArr")
+          .populate("commentsArr");
 
         return userData;
       }
@@ -155,6 +157,38 @@ const resolvers = {
         },
         { new: true }
       ).populate("likedArr");
+
+      return { updateUserArr };
+    },
+
+    addComment: async (parent, args) => {
+      const comment = await Comments.create({
+        text: args.text,
+        postId: args.postId,
+        userId: args.userId,
+      });
+
+      await User.findOneAndUpdate(
+        { _id: args.userId },
+        { $addToSet: { commentsArr: comment } },
+        { new: true }
+      ).populate("commentsArr");
+
+      return comment;
+    },
+
+    removeComment: async (parent, { commentId, userId }) => {
+      // Delete the comment
+      await Comments.findByIdAndDelete(commentId);
+
+      // Then remove it from the users array
+      const updateUserArr = await User.findOneAndUpdate(
+        { _id: userId },
+        {
+          $pull: { commentsArr: commentId },
+        },
+        { new: true }
+      ).populate("commentsArr");
 
       return { updateUserArr };
     },

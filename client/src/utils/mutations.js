@@ -69,6 +69,23 @@ export const REMOVE_LIKE = gql`
   }
 `;
 
+export const ADD_COMMENT = gql`
+  mutation addComment($postId: String!, $userId: String!, $text: String!) {
+    addComment(postId: $postId, userId: $userId, text: $text) {
+      _id
+      postId
+    }
+  }
+`;
+
+export const REMOVE_COMMENT = gql`
+  mutation removeComment($commentId: String!, $userId: String!) {
+    removeComment(commentId: $commentId, userId: $userId) {
+      _id
+    }
+  }
+`;
+
 // export const ADD_MASTER = gql`
 //   mutation addMaster($company: String!) {
 //     addMaster(company: $company) {

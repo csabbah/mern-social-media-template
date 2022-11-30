@@ -6,5 +6,16 @@ const Vocab = require("./Vocab");
 const Geography = require("./Geography");
 const Facts = require("./Facts");
 const Likes = require("./Likes");
+const Comments = require("./Comments");
 
-module.exports = { User, Master, Admin, Quotes, Vocab, Geography, Likes };
+module.exports = {
+  User,
+  Master,
+  Admin,
+  Quotes,
+  Vocab,
+  Geography,
+  Likes,
+  Facts,
+  Comments,
+};
