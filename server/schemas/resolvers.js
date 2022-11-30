@@ -129,6 +129,7 @@ const resolvers = {
 
     addLike: async (parent, args) => {
       const like = await Likes.create({
+        conjointId: args.conjointId,
         postId: args.postId,
         userId: args.userId,
       });

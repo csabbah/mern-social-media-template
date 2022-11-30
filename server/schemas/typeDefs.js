@@ -24,6 +24,7 @@ const typeDefs = gql`
 
   type Likes {
     _id: ID
+    conjointId: String
     postId: String
     userId: User
   }
@@ -98,7 +99,7 @@ const typeDefs = gql`
       masterId: String!
     ): Geography
     removeItem(masterId: String!, itemId: String!, arr: String!): Master
-    addLike(postId: String!, userId: String!): Likes
+    addLike(postId: String!, userId: String!, conjointId: String!): Likes
     removeLike(likeId: String!, userId: String!): Likes
   }
 

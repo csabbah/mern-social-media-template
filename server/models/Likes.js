@@ -2,6 +2,10 @@ const { Schema, model } = require("mongoose");
 
 const likedSchema = new Schema(
   {
+    conjointId: {
+      type: String,
+      unique: true,
+    },
     postId: {
       type: String,
     },

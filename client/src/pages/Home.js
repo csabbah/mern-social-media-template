@@ -4,7 +4,7 @@ import VocabWrapper from "../components/VocabWrapper";
 import FactWrapper from "../components/FactWrapper";
 import QuotesWrapper from "../components/QuotesWrapper";
 import GeoWrapper from "../components/GeoWrapper";
-
+import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import Auth from "../utils/auth";
 
 import { fetchFacts, fetchQuotes, fetchWords } from "../utils/API";
@@ -68,15 +68,14 @@ const Home = () => {
   const [removeLike, { removeLikeErr }] = useMutation(REMOVE_LIKE);
 
   // The function to handle whether to add a like or to remove a like
-  const handleLike = (currentPostId, className) => {
+  const handleLike = (currentPostId, remove) => {
     // Before adding a like, check to see if likes exist
     if (!loading) {
       if (user.data.user.likedArr.length > 0) {
         // Then check to see if the specific post is already liked by the user
-        if (className == "Checked") {
+        if (remove) {
           user.data.user.likedArr.forEach((like) => {
             if (currentPostId == like.postId) {
-              console.log("Remove Like");
               return removeCurrentLike(like._id);
             }
           });
@@ -84,7 +83,7 @@ const Home = () => {
           addNewLike(currentPostId);
         }
       } else {
-        //   If no likes exist at all, then execute function normally
+        // If no likes exist at all, then execute function normally
         addNewLike(currentPostId);
       }
     }
@@ -92,28 +91,41 @@ const Home = () => {
 
   // Check if a user liked a given post, if so, add a specific class which will be check in the above function
   // To determine if a new like should be added or removed
-  const returnUserLike = (currentPostId) => {
+  const returnUserLike = (currentPostId, specificPost) => {
     if (loggedIn && !user.loading) {
       return (
         <button
           // Check if the USER liked the post
-          className={
-            loggedIn &&
-            user.data.user.likedArr
-              .map((like) => {
-                if (like.postId == currentPostId) {
-                  return `Checked`;
-                }
-              })
-              // .join removes the comma that is added after/before 'Checked'
-              .join("")
-          }
+          className={`likeBtn ${user.data.user.likedArr
+            .map((like) => {
+              if (like.postId == currentPostId) {
+                return `Checked`;
+              }
+            })
+            // .join removes the comma that is added after/before 'Checked'
+            .join("")}`}
           onClick={(e) => {
+            let value = parseInt(
+              document.querySelector(`.${specificPost}`).innerText
+            );
+            // Stop any other event above the button from triggering
             e.stopPropagation();
-            handleLike(currentPostId, e.target.className);
+            if (e.target.className.includes("Checked")) {
+              document.querySelector(`.${specificPost}`).innerText = value -= 1;
+              e.target.className = `likeBtn`;
+              handleLike(currentPostId, true);
+            } else {
+              document.querySelector(`.${specificPost}`).innerText = value += 1;
+              e.target.className = "likeBtn Checked";
+
+              handleLike(currentPostId, false);
+            }
           }}
         >
-          Like
+          {/* CSS will determine which icon below will appear
+          If button is checked, Fill heart will display, else, Outline will display */}
+          <AiFillHeart className="fillHeart" />
+          <AiOutlineHeart className="outlineHeart" />
         </button>
       );
     } else {
@@ -124,22 +136,23 @@ const Home = () => {
   // The function to add a like to the DB and the users arr
   const addNewLike = async (postId) => {
     try {
-      return await addLike({
+      await addLike({
         variables: {
           postId: postId,
+          conjointId: `${postId}-${getAccountLevel()._id}`,
           userId: getAccountLevel()._id,
         },
       });
     } catch (e) {
       // Clear state
-      console.log(e);
+      // console.log(e);
     }
   };
 
   // The function to remove a like from the DB and the users arr
   const removeCurrentLike = async (likeId) => {
     try {
-      return await removeLike({
+      await removeLike({
         variables: {
           likeId: likeId,
           userId: getAccountLevel()._id,
@@ -147,7 +160,7 @@ const Home = () => {
       });
     } catch (e) {
       // Clear state
-      console.log(e);
+      // console.log(e);
     }
   };
 
@@ -162,9 +175,9 @@ const Home = () => {
           counter.push(like);
         }
       });
+      // Return the length of the counter which is the likes amount
+      return counter.length;
     }
-    // Return the length of the counter which is the likes amount
-    return counter.length;
   };
 
   return (
@@ -187,7 +200,7 @@ const Home = () => {
         likes={!loading && data.likes}
       /> */}
       <FactWrapper
-        facts={facts}
+        facts={facts && facts}
         returnUserLike={returnUserLike}
         returnPostLikes={returnPostLikes}
       />

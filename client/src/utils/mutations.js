@@ -53,8 +53,8 @@ export const ADD_USER = gql`
 `;
 
 export const ADD_LIKE = gql`
-  mutation addLike($postId: String!, $userId: String!) {
-    addLike(postId: $postId, userId: $userId) {
+  mutation addLike($postId: String!, $userId: String!, $conjointId: String!) {
+    addLike(postId: $postId, userId: $userId, conjointId: $conjointId) {
       _id
       postId
     }

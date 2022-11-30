@@ -290,3 +290,17 @@ select:-webkit-autofill:focus {
   background-color: rgb(203, 104, 203);
   box-shadow: 0 0 0 5px rgba(0, 0, 0, 0.2);
 }
+
+.fillHeart,
+.outlineHeart {
+  pointer-events: none;
+}
+/* If button is checked, display one SVG over the other*/
+.likeBtn.Checked > .fillHeart,
+.likeBtn > .outlineHeart {
+  display: unset;
+}
+.likeBtn.Checked > .outlineHeart,
+.likeBtn > .fillHeart {
+  display: none;
+}
