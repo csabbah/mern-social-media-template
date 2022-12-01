@@ -67,22 +67,20 @@ const Home = ({ account }) => {
   // The function to handle whether to add a like or to remove a like
   const handleLike = (currentPostId, remove) => {
     // Before adding a like, check to see if likes exist
-    if (!loading) {
-      if (loggedIn && userData.loading && user.user.likedArr.length > 0) {
-        // Then check to see if the specific post is already liked by the user
-        if (remove) {
-          user.user.likedArr.forEach((like) => {
-            if (currentPostId == like.postId) {
-              return removeCurrentLike(like._id);
-            }
-          });
-        } else {
-          addNewLike(currentPostId);
-        }
+    if (!userData.loading) {
+      // Then check to see if the specific post is already liked by the user
+      if (remove) {
+        user.likedArr.forEach((like) => {
+          if (currentPostId == like.postId) {
+            return removeCurrentLike(like._id);
+          }
+        });
       } else {
-        // If no likes exist at all, then execute function normally
         addNewLike(currentPostId);
       }
+    } else {
+      // If no likes exist at all, then execute function normally
+      addNewLike(currentPostId);
     }
   };
 
@@ -141,7 +139,7 @@ const Home = ({ account }) => {
       });
     } catch (e) {
       // Clear state
-      // console.log(e);
+      console.log(e);
     }
   };
 
@@ -156,14 +154,14 @@ const Home = ({ account }) => {
       });
     } catch (e) {
       // Clear state
-      // console.log(e);
+      console.log(e);
     }
   };
 
   // Returns the amount of likes a post has
   const returnPostLikes = (activePostId) => {
     let counter = [];
-    if (!loading) {
+    if (!loading && data) {
       data.likes.map((like) => {
         // Check if the post has LIKES in general (not just from the logged in user)
         if (like.postId == activePostId) {

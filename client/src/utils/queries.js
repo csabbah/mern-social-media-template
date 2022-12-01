@@ -46,6 +46,7 @@ export const GET_LIKES = gql`
   {
     likes {
       _id
+      conjointId
       postId
       userId {
         _id

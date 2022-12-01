@@ -141,6 +141,13 @@ const resolvers = {
     },
 
     addLike: async (parent, args) => {
+      // Since unique: true doesn't seem to work, we...
+      // manually add the function to check if the like exist in the database
+      let conjointId = await Likes.findOne({ conjointId: args.conjointId });
+      if (conjointId) {
+        throw new AuthenticationError("Like exists");
+      }
+
       const like = await Likes.create({
         conjointId: args.conjointId,
         postId: args.postId,
