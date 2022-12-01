@@ -48,11 +48,12 @@ let loggedIn =
     : true;
 
 // Returns logged in Users Data including Email, Username and AccountLevel
-const getAccountLevel = () => {
-  return Auth.getProfile().data.accountLevel;
+const getAccount = () => {
+  let userData = Auth.getProfile();
+  return userData;
 };
 if (loggedIn) {
-  getAccountLevel();
+  getAccount();
 }
 
 function App() {
@@ -60,7 +61,9 @@ function App() {
     <ApolloProvider client={client}>
       <NavBar
         loggedIn={loggedIn}
-        accountLevel={loggedIn ? getAccountLevel() : "Not logged in"}
+        accountLevel={
+          loggedIn ? getAccount().data.accountLevel : "Not logged in"
+        }
       />
 
       <Router>
@@ -68,10 +71,16 @@ function App() {
           <Switch>
             {/* // TODO Create a new custom endpoint path to render a single post
                 // TODO Refer to MERN anime finder for how it ws done */}
-            <Route exact path="/" component={Home} />
+            <Route
+              exact
+              path="/"
+              render={(props) => (
+                <Home {...props} account={loggedIn && getAccount()} />
+              )}
+            />
             {!loggedIn && <Route exact path="/login" component={Login} />}
             {!loggedIn && <Route exact path="/signup" component={SignUp} />}
-            {loggedIn && getAccountLevel() == "Admin" && (
+            {loggedIn && getAccount().data.accountLevel == "Admin" && (
               <Route exact path="/admin-dashboard" component={AdminDashboard} />
             )}
             {/* User can only access About route (page) IF they are logged in */}

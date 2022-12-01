@@ -70,6 +70,7 @@ const typeDefs = gql`
   }
 
   type Query {
+    get_me(_id: ID!): User
     user: User
     users: [User]
     likes: [Likes]

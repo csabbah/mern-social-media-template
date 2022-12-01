@@ -19,9 +19,9 @@ import {
   UPDATE_COMMENT,
   REMOVE_COMMENT,
 } from "../utils/mutations";
-import { GET_LIKES, GET_USER, GET_COMMENTS } from "../utils/queries";
+import { GET_LIKES, GET_ME, GET_COMMENTS } from "../utils/queries";
 
-const Home = () => {
+const Home = ({ account }) => {
   const { loading, data } = useQuery(GET_LIKES);
   const comments = useQuery(GET_COMMENTS);
 
@@ -53,25 +53,10 @@ const Home = () => {
       ? false
       : true;
 
-  const getAccountLevel = () => {
-    return Auth.getProfile().data;
-  };
-
-  const GetAccount = () => {
-    let userData = Auth.getProfile();
-
-    let user = useQuery(GET_USER, {
-      variables: { id: userData.data._id },
-    });
-    return user;
-  };
-
-  if (loggedIn) {
-    getAccountLevel();
-    var user = GetAccount();
-  } else {
-    var user = null;
-  }
+  var userData = useQuery(GET_ME, {
+    variables: account ? { id: account.data._id } : { id: "blank" },
+  });
+  var user = userData.data?.get_me || [];
 
   const [addLike, { likeErr }] = useMutation(ADD_LIKE);
   const [removeLike, { removeLikeErr }] = useMutation(REMOVE_LIKE);
@@ -83,10 +68,10 @@ const Home = () => {
   const handleLike = (currentPostId, remove) => {
     // Before adding a like, check to see if likes exist
     if (!loading) {
-      if (user.data.user.likedArr.length > 0) {
+      if (loggedIn && userData.loading && user.user.likedArr.length > 0) {
         // Then check to see if the specific post is already liked by the user
         if (remove) {
-          user.data.user.likedArr.forEach((like) => {
+          user.user.likedArr.forEach((like) => {
             if (currentPostId == like.postId) {
               return removeCurrentLike(like._id);
             }
@@ -104,11 +89,11 @@ const Home = () => {
   // Check if a user liked a given post, if so, add a specific class which will be check in the above function
   // To determine if a new like should be added or removed
   const returnUserLike = (currentPostId, specificPost) => {
-    if (loggedIn && !user.loading) {
+    if (loggedIn && !userData.loading) {
       return (
         <button
           // Check if the USER liked the post
-          className={`likeBtn ${user.data.user.likedArr
+          className={`likeBtn ${user.likedArr
             .map((like) => {
               if (like.postId == currentPostId) {
                 return `Checked`;
@@ -129,7 +114,6 @@ const Home = () => {
             } else {
               document.querySelector(`.${specificPost}`).innerText = value += 1;
               e.target.className = "likeBtn Checked";
-
               handleLike(currentPostId, false);
             }
           }}
@@ -151,8 +135,8 @@ const Home = () => {
       await addLike({
         variables: {
           postId: postId,
-          conjointId: `${postId}-${getAccountLevel()._id}`,
-          userId: getAccountLevel()._id,
+          conjointId: `${postId}-${account.data._id}`,
+          userId: account.data._id,
         },
       });
     } catch (e) {
@@ -167,7 +151,7 @@ const Home = () => {
       await removeLike({
         variables: {
           likeId: likeId,
-          userId: getAccountLevel()._id,
+          userId: account.data._id,
         },
       });
     } catch (e) {
@@ -201,8 +185,8 @@ const Home = () => {
         variables: {
           postId: postId,
           text: text,
-          userId: getAccountLevel()._id,
-          username: getAccountLevel().username,
+          userId: account.data._id,
+          username: account.data.username,
         },
       });
     } catch (e) {
@@ -227,8 +211,8 @@ const Home = () => {
 
   const returnUserComment = (commentUserId) => {
     let isUsersCommment = false;
-    if (loggedIn && !user.loading) {
-      user.data.user.commentsArr.map((comment) => {
+    if (loggedIn && !userData.loading) {
+      user.commentsArr.map((comment) => {
         if (comment.userId == commentUserId) {
           isUsersCommment = true;
         }
@@ -243,7 +227,7 @@ const Home = () => {
       await removeComment({
         variables: {
           commentId: commentId,
-          userId: getAccountLevel()._id,
+          userId: account.data._id,
         },
       });
     } catch (e) {
@@ -340,14 +324,18 @@ const Home = () => {
             );
           })}
         </div>
-        <form
-          onSubmit={(e) =>
-            addNewComment(`current-geo-post-id`, e.target.text.value, e)
-          }
-        >
-          <input name="text" placeholder="Add new comment"></input>
-          <button>Post</button>
-        </form>
+        {loggedIn ? (
+          <form
+            onSubmit={(e) =>
+              addNewComment(`current-geo-post-id`, e.target.text.value, e)
+            }
+          >
+            <input name="text" placeholder="Add new comment"></input>
+            <button>Post</button>
+          </form>
+        ) : (
+          <p>Login to Comment</p>
+        )}
       </div>
     );
   };
