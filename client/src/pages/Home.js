@@ -16,6 +16,7 @@ import {
   ADD_LIKE,
   REMOVE_LIKE,
   ADD_COMMENT,
+  UPDATE_COMMENT,
   REMOVE_COMMENT,
 } from "../utils/mutations";
 import { GET_LIKES, GET_USER, GET_COMMENTS } from "../utils/queries";
@@ -75,6 +76,7 @@ const Home = () => {
   const [addLike, { likeErr }] = useMutation(ADD_LIKE);
   const [removeLike, { removeLikeErr }] = useMutation(REMOVE_LIKE);
   const [addComment, { commentErr }] = useMutation(ADD_COMMENT);
+  const [updateComment, { updateCommentErr }] = useMutation(UPDATE_COMMENT);
   const [removeComment, { removeCommentErr }] = useMutation(REMOVE_COMMENT);
 
   // The function to handle whether to add a like or to remove a like
@@ -209,6 +211,20 @@ const Home = () => {
     }
   };
 
+  const editCurrentComment = async (commentId, text) => {
+    try {
+      await updateComment({
+        variables: {
+          commentId: commentId,
+          text: text,
+        },
+      });
+    } catch (e) {
+      // Clear state
+      console.log(e);
+    }
+  };
+
   const returnUserComment = (commentUserId) => {
     let isUsersCommment = false;
     if (loggedIn && !user.loading) {
@@ -236,6 +252,8 @@ const Home = () => {
     }
   };
 
+  const [edit, setEdit] = useState([false, 0]);
+
   // Returns the comments a post has
   const returnPostComments = (activePostId) => {
     let commentsArr = [];
@@ -254,17 +272,71 @@ const Home = () => {
           <FaRegComment />
         </div>
         <div className="comment-section">
-          {commentsArr.map((comment) => {
+          {commentsArr.map((comment, i) => {
             return (
-              <p>
-                {comment.username && comment.username} - {comment.text}{" "}
+              <div
+                className={
+                  returnUserComment(comment.userId) ? `users-comment` : ""
+                }
+              >
+                {comment.username && comment.username}
+                <p
+                  className={
+                    returnUserComment(comment.userId)
+                      ? `users-comment-${i}`
+                      : ""
+                  }
+                  style={
+                    returnUserComment(comment.userId)
+                      ? {
+                          backgroundColor: "rgba(0,0,0,0.1)",
+                        }
+                      : {}
+                  }
+                >
+                  {comment.text}
+                </p>
+
                 {/* If it's the users comment, allow them to delete their comments */}
                 {returnUserComment(comment.userId) && (
-                  <button onClick={() => removeCurrentComment(comment._id)}>
-                    Delete
-                  </button>
+                  <>
+                    {edit[0] && edit[1] == i ? (
+                      <>
+                        <form
+                          onSubmit={(e) => {
+                            e.preventDefault();
+                            editCurrentComment(
+                              comment._id,
+                              e.target.text.value
+                            );
+                          }}
+                        >
+                          <input
+                            name="text"
+                            defaultValue={comment.text}
+                          ></input>
+                          <button type="submit">Confirm</button>
+                        </form>
+                      </>
+                    ) : (
+                      <button
+                        onClick={(e) => {
+                          setEdit([true, i]);
+                          document
+                            .querySelector(`.users-comment-${i}`)
+                            .classList.add("hidden");
+                        }}
+                      >
+                        Edit
+                      </button>
+                    )}
+
+                    <button onClick={() => removeCurrentComment(comment._id)}>
+                      X
+                    </button>
+                  </>
                 )}
-              </p>
+              </div>
             );
           })}
         </div>
@@ -309,7 +381,6 @@ const Home = () => {
         returnUserLike={returnUserLike}
         returnPostLikes={returnPostLikes}
         returnPostComments={returnPostComments}
-        addNewComment={addNewComment}
         geo={"test"}
       />
     </div>

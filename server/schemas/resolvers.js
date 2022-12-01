@@ -181,6 +181,14 @@ const resolvers = {
       return comment;
     },
 
+    updateComment: async (parent, { commentId, text }) => {
+      return await Comments.findOneAndUpdate(
+        { _id: commentId },
+        { $set: { text } },
+        { new: true }
+      );
+    },
+
     removeComment: async (parent, { commentId, userId }) => {
       // Delete the comment
       await Comments.findByIdAndDelete(commentId);
@@ -300,14 +308,6 @@ const resolvers = {
       );
       return updatedGeoArr;
     },
-
-    // updateNote: async (parent, { _id, text }) => {
-    //   return await Note.updateOne(
-    //     { _id: _id },
-    //     { $set: { text } },
-    //     { new: true }
-    //   );
-    // },
 
     addUser: async (parent, args) => {
       const user = await User.create(args);

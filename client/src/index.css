@@ -291,6 +291,8 @@ select:-webkit-autofill:focus {
   box-shadow: 0 0 0 5px rgba(0, 0, 0, 0.2);
 }
 
+/* Likes control */
+
 .fillHeart,
 .outlineHeart {
   pointer-events: none;
@@ -302,5 +304,11 @@ select:-webkit-autofill:focus {
 }
 .likeBtn.Checked > .outlineHeart,
 .likeBtn > .fillHeart {
+  display: none;
+}
+
+/* Comment control */
+.hidden {
+  pointer-events: none;
   display: none;
 }

@@ -88,6 +88,15 @@ export const ADD_COMMENT = gql`
   }
 `;
 
+export const UPDATE_COMMENT = gql`
+  mutation updateComment($commentId: String!, $text: String!) {
+    updateComment(commentId: $commentId, text: $text) {
+      _id
+      text
+    }
+  }
+`;
+
 export const REMOVE_COMMENT = gql`
   mutation removeComment($commentId: String!, $userId: String!) {
     removeComment(commentId: $commentId, userId: $userId) {
