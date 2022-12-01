@@ -7,14 +7,22 @@ import GeoWrapper from "../components/GeoWrapper";
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import Auth from "../utils/auth";
 
+import { FaRegComment } from "react-icons/fa";
+
 import { fetchFacts, fetchQuotes, fetchWords } from "../utils/API";
 
 import { useMutation, useQuery } from "@apollo/client";
-import { ADD_LIKE, REMOVE_LIKE } from "../utils/mutations";
-import { GET_LIKES, GET_USER } from "../utils/queries";
+import {
+  ADD_LIKE,
+  REMOVE_LIKE,
+  ADD_COMMENT,
+  REMOVE_COMMENT,
+} from "../utils/mutations";
+import { GET_LIKES, GET_USER, GET_COMMENTS } from "../utils/queries";
 
 const Home = () => {
   const { loading, data } = useQuery(GET_LIKES);
+  const comments = useQuery(GET_COMMENTS);
 
   const [facts, setFacts] = useState([]);
   // * UnHide this when ready to use and upload to DB
@@ -66,6 +74,8 @@ const Home = () => {
 
   const [addLike, { likeErr }] = useMutation(ADD_LIKE);
   const [removeLike, { removeLikeErr }] = useMutation(REMOVE_LIKE);
+  const [addComment, { commentErr }] = useMutation(ADD_COMMENT);
+  const [removeComment, { removeCommentErr }] = useMutation(REMOVE_COMMENT);
 
   // The function to handle whether to add a like or to remove a like
   const handleLike = (currentPostId, remove) => {
@@ -180,6 +190,96 @@ const Home = () => {
     }
   };
 
+  // The function to add a comment to the DB and the users arr
+  const addNewComment = async (postId, text, e) => {
+    e.preventDefault();
+
+    try {
+      await addComment({
+        variables: {
+          postId: postId,
+          text: text,
+          userId: getAccountLevel()._id,
+          username: getAccountLevel().username,
+        },
+      });
+    } catch (e) {
+      // Clear state
+      console.log(e);
+    }
+  };
+
+  const returnUserComment = (commentUserId) => {
+    let isUsersCommment = false;
+    if (loggedIn && !user.loading) {
+      user.data.user.commentsArr.map((comment) => {
+        if (comment.userId == commentUserId) {
+          isUsersCommment = true;
+        }
+      });
+      return isUsersCommment;
+    }
+  };
+
+  // The function to remove a comment from the DB and the users arr
+  const removeCurrentComment = async (commentId) => {
+    try {
+      await removeComment({
+        variables: {
+          commentId: commentId,
+          userId: getAccountLevel()._id,
+        },
+      });
+    } catch (e) {
+      // Clear state
+      console.log(e);
+    }
+  };
+
+  // Returns the comments a post has
+  const returnPostComments = (activePostId) => {
+    let commentsArr = [];
+    if (!comments.loading) {
+      comments.data.comments.map((comment) => {
+        if (comment.postId == activePostId) {
+          commentsArr.push(comment);
+        }
+      });
+    }
+
+    return (
+      <div>
+        <div>
+          {commentsArr.length}
+          <FaRegComment />
+        </div>
+        <div className="comment-section">
+          {commentsArr.map((comment) => {
+            return (
+              <p>
+                {comment.username && comment.username} - {comment.text}{" "}
+                {/* If it's the users comment, allow them to delete their comments */}
+                {returnUserComment(comment.userId) && (
+                  <button onClick={() => removeCurrentComment(comment._id)}>
+                    Delete
+                  </button>
+                )}
+              </p>
+            );
+          })}
+        </div>
+        <form
+          onSubmit={(e) =>
+            addNewComment(`current-geo-post-id`, e.target.text.value, e)
+          }
+        >
+          <input name="text" placeholder="Add new comment"></input>
+          <button>Post</button>
+        </form>
+      </div>
+    );
+  };
+
   return (
     <div>
       Home Page
@@ -203,10 +303,13 @@ const Home = () => {
         facts={facts && facts}
         returnUserLike={returnUserLike}
         returnPostLikes={returnPostLikes}
+        returnPostComments={returnPostComments}
       />
       <GeoWrapper
         returnUserLike={returnUserLike}
         returnPostLikes={returnPostLikes}
+        returnPostComments={returnPostComments}
+        addNewComment={addNewComment}
         geo={"test"}
       />
     </div>

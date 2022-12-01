@@ -10,6 +10,13 @@ export const GET_USER = gql`
         _id
         postId
       }
+      commentsArr {
+        _id
+        username
+        userId
+        postId
+        text
+      }
     }
   }
 `;
@@ -22,6 +29,18 @@ export const GET_LIKES = gql`
       userId {
         _id
       }
+    }
+  }
+`;
+
+export const GET_COMMENTS = gql`
+  {
+    comments {
+      _id
+      text
+      postId
+      userId
+      username
     }
   }
 `;

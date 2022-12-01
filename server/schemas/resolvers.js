@@ -43,6 +43,9 @@ const resolvers = {
     likes: async () => {
       return Likes.find();
     },
+    comments: async () => {
+      return Comments.find();
+    },
     admins: async (parent, args) => {
       return Admin.find();
     },
@@ -166,6 +169,7 @@ const resolvers = {
         text: args.text,
         postId: args.postId,
         userId: args.userId,
+        username: args.username,
       });
 
       await User.findOneAndUpdate(

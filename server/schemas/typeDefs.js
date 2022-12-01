@@ -32,7 +32,8 @@ const typeDefs = gql`
   type Comments {
     _id: ID
     postId: String
-    userId: User
+    userId: String
+    username: String
     text: String
   }
 
@@ -72,6 +73,7 @@ const typeDefs = gql`
     user: User
     users: [User]
     likes: [Likes]
+    comments: [Comments]
     admin(_id: ID!): Admin
     admins: [Admin]
     quotes: [Quotes]
@@ -108,7 +110,12 @@ const typeDefs = gql`
     removeItem(masterId: String!, itemId: String!, arr: String!): Master
     addLike(postId: String!, userId: String!, conjointId: String!): Likes
     removeLike(likeId: String!, userId: String!): Likes
-    addComment(postId: String!, userId: String!, text: String!): Comments
+    addComment(
+      postId: String!
+      userId: String!
+      text: String!
+      username: String!
+    ): Comments
     removeComment(commentId: String!, userId: String!): Comments
   }
 

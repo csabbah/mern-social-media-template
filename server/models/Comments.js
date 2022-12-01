@@ -12,6 +12,9 @@ const commentSchema = new Schema(
     text: {
       type: String,
     },
+    username: {
+      type: String,
+    },
   },
   // set this to use virtual below
   {

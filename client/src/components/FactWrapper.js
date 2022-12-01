@@ -1,7 +1,12 @@
 import React from "react";
 import { FaRegComment } from "react-icons/fa";
 import { AiOutlineSave } from "react-icons/ai";
-const FactWrapper = ({ facts, returnUserLike, returnPostLikes }) => {
+const FactWrapper = ({
+  facts,
+  returnUserLike,
+  returnPostLikes,
+  returnPostComments,
+}) => {
   return (
     <div>
       {facts.length > 1 ? (
