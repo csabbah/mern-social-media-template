@@ -196,11 +196,12 @@ const resolvers = {
     },
 
     updateComment: async (parent, { commentId, text }) => {
-      return await Comments.findOneAndUpdate(
+      const comment = await Comments.findOneAndUpdate(
         { _id: commentId },
         { $set: { text } },
         { new: true }
       );
+      return comment;
     },
 
     removeComment: async (parent, { commentId, userId }) => {

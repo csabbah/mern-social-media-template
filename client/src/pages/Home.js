@@ -235,12 +235,19 @@ const Home = ({ account }) => {
 
   const editCurrentComment = async (commentId, text) => {
     try {
-      await updateComment({
+      let comment = await updateComment({
         variables: {
           commentId: commentId,
           text: text,
         },
       });
+      console.log(commentData, comment.data?.updateComment._id);
+      setCommentData([
+        comment.data?.updateComment,
+        ...commentData.filter(
+          (dbComment) => dbComment._id !== comment.data?.updateComment._id
+        ),
+      ]);
     } catch (e) {
       // Clear state
       console.log(e);
@@ -327,6 +334,10 @@ const Home = ({ account }) => {
                               comment._id,
                               e.target.text.value
                             );
+                            setEdit([false, 0]);
+                            document
+                              .querySelector(`.users-comment-${i}`)
+                              .classList.remove("hidden");
                           }}
                         >
                           <input
