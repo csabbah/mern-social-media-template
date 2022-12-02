@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useDebugValue } from "react";
 
 import VocabWrapper from "../components/VocabWrapper";
 import FactWrapper from "../components/FactWrapper";
@@ -7,7 +7,7 @@ import GeoWrapper from "../components/GeoWrapper";
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import Auth from "../utils/auth";
 
-import { FaRegComment } from "react-icons/fa";
+import { FaChessKing, FaRegComment, FaYoutubeSquare } from "react-icons/fa";
 
 import { fetchFacts, fetchQuotes, fetchWords } from "../utils/API";
 
@@ -22,29 +22,26 @@ import {
 import { GET_LIKES, GET_ME, GET_COMMENTS } from "../utils/queries";
 
 const Home = ({ account }) => {
-  const { loading, data } = useQuery(GET_LIKES);
-  const comments = useQuery(GET_COMMENTS);
-
-  const [facts, setFacts] = useState([]);
   // * UnHide this when ready to use and upload to DB
+  // const [facts, setFacts] = useState("");
   // const [quotes, setQuotes] = useState([]);
   // const [words, setWords] = useState([]);
-
-  const fetchFunc = async (state, func) => {
-    state(await func());
-  };
-
-  useEffect(() => {
-    fetchFunc(setFacts, fetchFacts);
-    // * UnHide this when ready to use and upload to DB
-    // fetchFunc(setQuotes, fetchQuotes);
-    // fetchFunc(setWords, fetchWords);
-  }, []);
 
   // * UnHide this when ready to use and upload to DB
   // if (words.title == "No Definitions Found") {
   //   fetchFunc(setWords, fetchWords);
   // }
+
+  // const fetchFunc = async (state, func) => {
+  //   state(await func());
+  // };
+
+  // useEffect(() => {
+  //   fetchFunc(setFacts, fetchFacts);
+  //   // * UnHide this when ready to use and upload to DB
+  //   // fetchFunc(setQuotes, fetchQuotes);
+  //   // fetchFunc(setWords, fetchWords);
+  // }, []);
 
   let loggedIn =
     localStorage.getItem("id_token") == null
@@ -53,10 +50,24 @@ const Home = ({ account }) => {
       ? false
       : true;
 
-  var userData = useQuery(GET_ME, {
-    variables: account ? { id: account.data._id } : { id: "blank" },
-  });
-  var user = userData.data?.get_me || [];
+  const { loading, data } = useQuery(GET_LIKES);
+
+  const comments = useQuery(GET_COMMENTS);
+
+  const FetchQuery = () => {
+    var userData = useQuery(GET_ME, {
+      variables: account ? { id: account.data._id } : { id: "blank" },
+    });
+    var user = userData.data?.get_me || [];
+    return { userData, user };
+  };
+
+  let { user, userData } = FetchQuery();
+
+  // This is how we update a state object with useQuery data
+  // useEffect(() => {
+  //   setUserStateObject(user);
+  // }, [userData]);
 
   const [addLike, { likeErr }] = useMutation(ADD_LIKE);
   const [removeLike, { removeLikeErr }] = useMutation(REMOVE_LIKE);
@@ -65,16 +76,29 @@ const Home = ({ account }) => {
   const [removeComment, { removeCommentErr }] = useMutation(REMOVE_COMMENT);
 
   // The function to handle whether to add a like or to remove a like
-  const handleLike = (currentPostId, remove) => {
+  const handleLike = async (currentPostId, remove) => {
     // Before adding a like, check to see if likes exist
     if (!userData.loading) {
       // Then check to see if the specific post is already liked by the user
       if (remove) {
-        user.likedArr.forEach((like) => {
-          if (currentPostId == like.postId) {
-            return removeCurrentLike(like._id);
-          }
-        });
+        // If currentLike has likes (that means the user has ACTIVE likes in this session)
+        // Go through these since they are the MOST ACTIVE likes
+        if (currentLikes.length > 0) {
+          return currentLikes.forEach((like) => {
+            if (currentPostId == like.postId) {
+              removeCurrentLike(like._id);
+            }
+          });
+        }
+        // If like exists after refresh, e need to go through this since currentLikes is empty
+        // currentLikes only fills once users start liking posts
+        if (currentLikes.length < 1) {
+          user.likedArr.forEach((like) => {
+            if (currentPostId == like.postId) {
+              removeCurrentLike(like._id);
+            }
+          });
+        }
       } else {
         addNewLike(currentPostId);
       }
@@ -127,31 +151,39 @@ const Home = ({ account }) => {
     }
   };
 
+  const [currentLikes, setCurrentLikes] = useState([]);
   // The function to add a like to the DB and the users arr
   const addNewLike = async (postId) => {
     try {
-      await addLike({
+      const like = await addLike({
         variables: {
           postId: postId,
           conjointId: `${postId}-${account.data._id}`,
           userId: account.data._id,
         },
       });
+      // Manually push newly created like to a state object
+      // This ensures state is FULLY update today
+      // Then in the above function, we check this state object vs. userData since that is one step behind
+      currentLikes.push(like.data?.addLike);
+
+      return like;
     } catch (e) {
       // Clear state
-      console.log(e);
+      // console.log(e);
     }
   };
 
   // The function to remove a like from the DB and the users arr
   const removeCurrentLike = async (likeId) => {
     try {
-      await removeLike({
+      const like = await removeLike({
         variables: {
           likeId: likeId,
           userId: account.data._id,
         },
       });
+      return like;
     } catch (e) {
       // Clear state
       console.log(e);
@@ -236,17 +268,7 @@ const Home = ({ account }) => {
 
   const [edit, setEdit] = useState([false, 0]);
 
-  // Returns the comments a post has
-  const returnPostComments = (activePostId) => {
-    let commentsArr = [];
-    if (!comments.loading) {
-      comments.data.comments.map((comment) => {
-        if (comment.postId == activePostId) {
-          commentsArr.push(comment);
-        }
-      });
-    }
-
+  const generateCommentEl = (commentsArr, activePostId) => {
     return (
       <div>
         <div>
@@ -325,7 +347,7 @@ const Home = ({ account }) => {
         {loggedIn ? (
           <form
             onSubmit={(e) =>
-              addNewComment(`current-geo-post-id`, e.target.text.value, e)
+              addNewComment(activePostId, e.target.text.value, e)
             }
           >
             <input name="text" placeholder="Add new comment"></input>
@@ -338,6 +360,20 @@ const Home = ({ account }) => {
     );
   };
 
+  // Returns the comments a post has
+  const returnPostComments = (activePostId) => {
+    let commentsArr = [];
+    if (!comments.loading) {
+      comments.data.comments.map((comment) => {
+        if (comment.postId == activePostId) {
+          commentsArr.push(comment);
+        }
+      });
+    }
+    return generateCommentEl(commentsArr, activePostId);
+  };
+
+  let facts = { topic: "te", description: "te" };
   return (
     <div>
       Home Page
@@ -357,18 +393,26 @@ const Home = ({ account }) => {
         removeCurrentLike={removeCurrentLike}
         likes={!loading && data.likes}
       /> */}
-      <FactWrapper
-        facts={facts && facts}
-        returnUserLike={returnUserLike}
-        returnPostLikes={returnPostLikes}
-        returnPostComments={returnPostComments}
-      />
-      <GeoWrapper
-        returnUserLike={returnUserLike}
-        returnPostLikes={returnPostLikes}
-        returnPostComments={returnPostComments}
-        geo={"test"}
-      />
+      {facts && (
+        <FactWrapper
+          facts={facts}
+          returnUserLike={returnUserLike}
+          returnPostLikes={returnPostLikes}
+          returnPostComments={returnPostComments}
+        />
+      )}
+      {!loading && !comments.loading && (
+        <GeoWrapper
+          // TODO :
+          // Here's how we can do realtime, we pass in the data directly from use query as a prop to a component
+          // Then we assign the prop 'data' to a useState declaration const [a, setA] = useState(data)
+          data={data}
+          comments={comments.data}
+          returnUserLike={returnUserLike}
+          returnPostLikes={returnPostLikes}
+          returnPostComments={returnPostComments}
+        />
+      )}
     </div>
   );
 };

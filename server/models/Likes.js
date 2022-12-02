@@ -1,5 +1,7 @@
 const { Schema, model } = require("mongoose");
 
+// const uniqueValidator = require("mongoose-unique-validator");
+
 const likedSchema = new Schema(
   {
     conjointId: {
@@ -21,6 +23,8 @@ const likedSchema = new Schema(
     },
   }
 );
+
+// likedSchema.plugin(uniqueValidator);
 
 const Likes = model("Likes", likedSchema);
 

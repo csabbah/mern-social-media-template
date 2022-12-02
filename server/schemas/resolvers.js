@@ -139,14 +139,29 @@ const resolvers = {
 
       return master;
     },
+    removeLike: async (parent, { likeId, userId }) => {
+      // Delete the like
+      const like = await Likes.findByIdAndDelete(likeId);
+
+      // Then remove it from the users array
+      await User.findOneAndUpdate(
+        { _id: userId },
+        {
+          $pull: { likedArr: likeId },
+        },
+        { new: true }
+      ).populate("likedArr");
+
+      return like;
+    },
 
     addLike: async (parent, args) => {
       // Since unique: true doesn't seem to work, we...
       // manually add the function to check if the like exist in the database
-      let conjointId = await Likes.findOne({ conjointId: args.conjointId });
-      if (conjointId) {
-        throw new AuthenticationError("Like exists");
-      }
+      // let likeExists = await Likes.findOne({ conjointId: args.conjointId });
+      // if (likeExists) {
+      //   return "";
+      // }
 
       const like = await Likes.create({
         conjointId: args.conjointId,
@@ -161,22 +176,6 @@ const resolvers = {
       ).populate("likedArr");
 
       return like;
-    },
-
-    removeLike: async (parent, { likeId, userId }) => {
-      // Delete the like
-      await Likes.findByIdAndDelete(likeId);
-
-      // Then remove it from the users array
-      const updateUserArr = await User.findOneAndUpdate(
-        { _id: userId },
-        {
-          $pull: { likedArr: likeId },
-        },
-        { new: true }
-      ).populate("likedArr");
-
-      return { updateUserArr };
     },
 
     addComment: async (parent, args) => {

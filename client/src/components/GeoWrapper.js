@@ -1,12 +1,16 @@
-import React from "react";
-import { FaRegComment } from "react-icons/fa";
+import React, { useState } from "react";
 import { AiOutlineSave } from "react-icons/ai";
 const GeoWrapper = ({
-  geo,
   returnUserLike,
   returnPostLikes,
   returnPostComments,
+  data,
+  comments,
 }) => {
+  const [geoData, setGeoData] = useState(data);
+  const [commentData, setCommentData] = useState(comments);
+  // console.log(commentData);
+
   return (
     <div>
       <div className="geo-wrapper">
@@ -23,7 +27,6 @@ const GeoWrapper = ({
             {returnUserLike(`current-geo-post-id`, "geo-post-0")}
             <AiOutlineSave />
           </div>
-
           {/* //TODO: Add a comment section that has overflow-y scroll */}
           <div>{returnPostComments(`current-geo-post-id`)}</div>
         </div>

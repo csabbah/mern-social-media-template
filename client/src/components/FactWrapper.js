@@ -1,5 +1,4 @@
 import React from "react";
-import { FaRegComment } from "react-icons/fa";
 import { AiOutlineSave } from "react-icons/ai";
 const FactWrapper = ({
   facts,
@@ -9,6 +8,7 @@ const FactWrapper = ({
 }) => {
   return (
     <div>
+      {/* // TODO: Use this for the final one */}
       {facts.length > 1 ? (
         <div className="facts-wrapper">
           {facts.map((fact, i) => {
@@ -23,8 +23,8 @@ const FactWrapper = ({
                   </p>
                   {/* // TODO: Need to update this section - Would need to pass the real post ID*/}
                   {returnUserLike(`current-fact-post-id`, `fact-post-${i}`)}
-                  <FaRegComment />
                   <AiOutlineSave />
+                  <div>{returnPostComments(`current-fact-post-id`)}</div>
                 </div>
               </div>
             );
@@ -33,6 +33,22 @@ const FactWrapper = ({
       ) : (
         <p>Loading...</p>
       )}
+      <div className="facts-wrapper">
+        <div className="facts-card">
+          <p>{facts.topic}</p>
+          <p>{facts.description}</p>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <p className={`fact-post-0`} style={{ margin: "0" }}>
+              {/* // TODO: Need to update this section - Would need to pass the real post ID*/}
+              {returnPostLikes(`current-fact-post-id`)}
+            </p>
+            {/* // TODO: Need to update this section - Would need to pass the real post ID*/}
+            {returnUserLike(`current-fact-post-id`, `fact-post-0`)}
+            <AiOutlineSave />
+            <div>{returnPostComments(`current-fact-post-id`)}</div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
