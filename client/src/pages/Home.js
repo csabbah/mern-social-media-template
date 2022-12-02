@@ -23,6 +23,7 @@ import { GET_LIKES, GET_ME, GET_COMMENTS } from "../utils/queries";
 
 const Home = ({ account }) => {
   const [commentData, setCommentData] = useState([]);
+  const [userState, setUserState] = useState();
 
   // * UnHide this when ready to use and upload to DB
   // const [facts, setFacts] = useState("");
@@ -66,10 +67,9 @@ const Home = ({ account }) => {
 
   let { user, userData } = FetchQuery();
 
-  // This is how we update a state object with useQuery data
-  // useEffect(() => {
-  //   setUserStateObject(user);
-  // }, [userData]);
+  useEffect(() => {
+    setUserState(user);
+  }, [userData]);
 
   const [addLike, { likeErr }] = useMutation(ADD_LIKE);
   const [removeLike, { removeLikeErr }] = useMutation(REMOVE_LIKE);
@@ -223,6 +223,10 @@ const Home = ({ account }) => {
       });
 
       setCommentData([...commentData, comment.data?.addComment]);
+      setUserState({
+        ...userState,
+        commentsArr: [...userState.commentsArr, comment.data?.addComment],
+      });
     } catch (e) {
       // Clear state
       console.log(e);
@@ -246,12 +250,17 @@ const Home = ({ account }) => {
   // The function to remove a comment from the DB and the users arr
   const removeCurrentComment = async (commentId) => {
     try {
-      await removeComment({
+      let comment = await removeComment({
         variables: {
           commentId: commentId,
           userId: account.data._id,
         },
       });
+      setCommentData([
+        ...commentData.filter(
+          (dbComment) => dbComment._id !== comment.data?.removeComment._id
+        ),
+      ]);
     } catch (e) {
       // Clear state
       console.log(e);
@@ -261,11 +270,12 @@ const Home = ({ account }) => {
   const returnUserComment = (commentUserId) => {
     let isUsersCommment = false;
     if (loggedIn && !userData.loading) {
-      user.commentsArr.map((comment) => {
-        if (comment.userId == commentUserId) {
-          isUsersCommment = true;
-        }
-      });
+      userState.commentsArr !== undefined &&
+        userState.commentsArr.map((comment) => {
+          if (comment.userId == commentUserId) {
+            isUsersCommment = true;
+          }
+        });
       return isUsersCommment;
     }
   };

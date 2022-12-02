@@ -205,7 +205,7 @@ const resolvers = {
 
     removeComment: async (parent, { commentId, userId }) => {
       // Delete the comment
-      await Comments.findByIdAndDelete(commentId);
+      const comment = await Comments.findByIdAndDelete(commentId);
 
       // Then remove it from the users array
       const updateUserArr = await User.findOneAndUpdate(
@@ -216,7 +216,7 @@ const resolvers = {
         { new: true }
       ).populate("commentsArr");
 
-      return { updateUserArr };
+      return comment;
     },
 
     addQuote: async (parent, args) => {

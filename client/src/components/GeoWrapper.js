@@ -15,7 +15,6 @@ const GeoWrapper = ({
     setCommentData([...comments]);
   }, [comments]);
 
-  console.log(commentData);
   return (
     <div>
       <div className="geo-wrapper">
