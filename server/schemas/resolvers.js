@@ -192,7 +192,7 @@ const resolvers = {
         { new: true }
       ).populate("commentsArr");
 
-      return comment;
+      return await comment;
     },
 
     updateComment: async (parent, { commentId, text }) => {

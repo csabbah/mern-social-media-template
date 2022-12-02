@@ -22,6 +22,8 @@ import {
 import { GET_LIKES, GET_ME, GET_COMMENTS } from "../utils/queries";
 
 const Home = ({ account }) => {
+  const [commentData, setCommentData] = useState([]);
+
   // * UnHide this when ready to use and upload to DB
   // const [facts, setFacts] = useState("");
   // const [quotes, setQuotes] = useState([]);
@@ -211,7 +213,7 @@ const Home = ({ account }) => {
     e.preventDefault();
 
     try {
-      await addComment({
+      let comment = await addComment({
         variables: {
           postId: postId,
           text: text,
@@ -219,6 +221,8 @@ const Home = ({ account }) => {
           username: account.data.username,
         },
       });
+
+      setCommentData([...commentData, comment.data?.addComment]);
     } catch (e) {
       // Clear state
       console.log(e);
@@ -239,18 +243,6 @@ const Home = ({ account }) => {
     }
   };
 
-  const returnUserComment = (commentUserId) => {
-    let isUsersCommment = false;
-    if (loggedIn && !userData.loading) {
-      user.commentsArr.map((comment) => {
-        if (comment.userId == commentUserId) {
-          isUsersCommment = true;
-        }
-      });
-      return isUsersCommment;
-    }
-  };
-
   // The function to remove a comment from the DB and the users arr
   const removeCurrentComment = async (commentId) => {
     try {
@@ -263,6 +255,18 @@ const Home = ({ account }) => {
     } catch (e) {
       // Clear state
       console.log(e);
+    }
+  };
+
+  const returnUserComment = (commentUserId) => {
+    let isUsersCommment = false;
+    if (loggedIn && !userData.loading) {
+      user.commentsArr.map((comment) => {
+        if (comment.userId == commentUserId) {
+          isUsersCommment = true;
+        }
+      });
+      return isUsersCommment;
     }
   };
 
@@ -320,6 +324,16 @@ const Home = ({ account }) => {
                             defaultValue={comment.text}
                           ></input>
                           <button type="submit">Confirm</button>
+                          <button
+                            onClick={() => {
+                              setEdit([false, 0]);
+                              document
+                                .querySelector(`.users-comment-${i}`)
+                                .classList.remove("hidden");
+                            }}
+                          >
+                            Cancel
+                          </button>
                         </form>
                       </>
                     ) : (
@@ -361,10 +375,11 @@ const Home = ({ account }) => {
   };
 
   // Returns the comments a post has
-  const returnPostComments = (activePostId) => {
+  const returnPostComments = (activePostId, commentState) => {
     let commentsArr = [];
+
     if (!comments.loading) {
-      comments.data.comments.map((comment) => {
+      commentState.map((comment) => {
         if (comment.postId == activePostId) {
           commentsArr.push(comment);
         }
@@ -393,21 +408,23 @@ const Home = ({ account }) => {
         removeCurrentLike={removeCurrentLike}
         likes={!loading && data.likes}
       /> */}
-      {facts && (
+      {/* {facts && (
         <FactWrapper
           facts={facts}
           returnUserLike={returnUserLike}
           returnPostLikes={returnPostLikes}
           returnPostComments={returnPostComments}
         />
-      )}
+      )} */}
       {!loading && !comments.loading && (
         <GeoWrapper
           // TODO :
           // Here's how we can do realtime, we pass in the data directly from use query as a prop to a component
           // Then we assign the prop 'data' to a useState declaration const [a, setA] = useState(data)
           data={data}
-          comments={comments.data}
+          commentData={commentData}
+          setCommentData={setCommentData}
+          comments={comments.data.comments}
           returnUserLike={returnUserLike}
           returnPostLikes={returnPostLikes}
           returnPostComments={returnPostComments}

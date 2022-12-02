@@ -84,6 +84,9 @@ export const ADD_COMMENT = gql`
     ) {
       _id
       postId
+      userId
+      text
+      username
     }
   }
 `;

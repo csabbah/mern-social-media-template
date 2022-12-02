@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { AiOutlineSave } from "react-icons/ai";
 const GeoWrapper = ({
   returnUserLike,
@@ -6,11 +6,16 @@ const GeoWrapper = ({
   returnPostComments,
   data,
   comments,
+  commentData,
+  setCommentData,
 }) => {
   const [geoData, setGeoData] = useState(data);
-  const [commentData, setCommentData] = useState(comments);
-  // console.log(commentData);
 
+  useEffect(() => {
+    setCommentData([...comments]);
+  }, [comments]);
+
+  console.log(commentData);
   return (
     <div>
       <div className="geo-wrapper">
@@ -28,7 +33,7 @@ const GeoWrapper = ({
             <AiOutlineSave />
           </div>
           {/* //TODO: Add a comment section that has overflow-y scroll */}
-          <div>{returnPostComments(`current-geo-post-id`)}</div>
+          <div>{returnPostComments(`current-geo-post-id`, commentData)}</div>
         </div>
       </div>
     </div>
