@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { AiOutlineSave } from "react-icons/ai";
 const GeoWrapper = ({
   returnUserLike,
   returnPostLikes,
@@ -29,7 +28,6 @@ const GeoWrapper = ({
             </p>
             {/* // TODO: Need to update this section - Would need to pass the real post ID*/}
             {returnUserLike(`current-geo-post-id`, "geo-post-0")}
-            <AiOutlineSave />
           </div>
           {/* //TODO: Add a comment section that has overflow-y scroll */}
           <div>{returnPostComments(`current-geo-post-id`, commentData)}</div>

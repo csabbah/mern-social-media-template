@@ -4,6 +4,8 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Login from "./pages/Login";
+import Favourites from "./pages/Favourites";
+
 import SignUp from "./pages/SignUp";
 import AdminDashboard from "./pages/AdminDashboard";
 
@@ -86,6 +88,9 @@ function App() {
             />
             {!loggedIn && <Route exact path="/login" component={Login} />}
             {!loggedIn && <Route exact path="/signup" component={SignUp} />}
+            {loggedIn && (
+              <Route exact path="/favourites" component={Favourites} />
+            )}
             {loggedIn && getAccount().data.accountLevel == "Admin" && (
               <Route exact path="/admin-dashboard" component={AdminDashboard} />
             )}

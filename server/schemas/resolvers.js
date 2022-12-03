@@ -178,6 +178,32 @@ const resolvers = {
       return like;
     },
 
+    removeFavourite: async (parent, { favouriteId, userId }) => {
+      console.log("this worked");
+      // Then remove it from the users array
+      const user = await User.findOneAndUpdate(
+        { _id: userId },
+        {
+          $pull: { favouritedArr: favouriteId },
+        },
+        { new: true }
+      ).populate("favouritedArr");
+
+      return user;
+    },
+
+    addFavourite: async (parent, args) => {
+      console.log("this one worked");
+
+      const user = await User.findOneAndUpdate(
+        { _id: args.userId },
+        { $addToSet: { favouritedArr: args.postId } },
+        { new: true }
+      ).populate("favouritedArr");
+
+      return user;
+    },
+
     addComment: async (parent, args) => {
       const comment = await Comments.create({
         text: args.text,
@@ -313,7 +339,7 @@ const resolvers = {
     },
 
     removeItem: async (parent, args) => {
-      const updatedGeoArr = await Master.findOneAndUpdate(
+      const updateArr = await Master.findOneAndUpdate(
         { _id: args.masterId },
         {
           // Args.arr returns the (array) paramater we are pushing into
@@ -321,7 +347,7 @@ const resolvers = {
         },
         { new: true }
       );
-      return updatedGeoArr;
+      return updateArr;
     },
 
     addUser: async (parent, args) => {

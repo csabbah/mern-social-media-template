@@ -35,9 +35,18 @@ const NavBar = ({ loggedIn, accountLevel }) => {
           </a>
         </>
       )}
-
-      {/* If account is logged in, render the logout button */}
-      {loggedIn && <button onClick={() => Auth.logout()}>Logout</button>}
+      {loggedIn && (
+        <>
+          <a
+            className={`nav ${pathname == "/favourites" && "active"}`}
+            href="/favourites"
+          >
+            Favourites
+          </a>
+          {/* If account is logged in, render the logout button */}
+          <button onClick={() => Auth.logout()}>Logout</button>
+        </>
+      )}
     </nav>
   );
 };

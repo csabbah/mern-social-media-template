@@ -60,6 +60,23 @@ export const ADD_USER = gql`
   }
 `;
 
+export const ADD_FAVOURITE = gql`
+  mutation addFavourite($postId: String!, $userId: String!) {
+    addFavourite(postId: $postId, userId: $userId) {
+      _id
+      favouritedArr
+    }
+  }
+`;
+
+export const REMOVE_FAVOURITE = gql`
+  mutation removeFavourite($favouriteId: String!, $userId: String!) {
+    removeFavourite(favouriteId: $favouriteId, userId: $userId) {
+      _id
+    }
+  }
+`;
+
 export const ADD_LIKE = gql`
   mutation addLike($postId: String!, $userId: String!, $conjointId: String!) {
     addLike(postId: $postId, userId: $userId, conjointId: $conjointId) {

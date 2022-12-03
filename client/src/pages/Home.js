@@ -5,6 +5,7 @@ import FactWrapper from "../components/FactWrapper";
 import QuotesWrapper from "../components/QuotesWrapper";
 import GeoWrapper from "../components/GeoWrapper";
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
+import { RiSaveLine, RiSaveFill } from "react-icons/ri";
 import Auth from "../utils/auth";
 
 import { format_date } from "../utils/helpers";
@@ -20,6 +21,8 @@ import {
   ADD_COMMENT,
   UPDATE_COMMENT,
   REMOVE_COMMENT,
+  ADD_FAVOURITE,
+  REMOVE_FAVOURITE,
 } from "../utils/mutations";
 import { GET_LIKES, GET_ME, GET_COMMENTS, GET_ADMIN } from "../utils/queries";
 
@@ -76,11 +79,11 @@ const Home = ({ account, accountLevel }) => {
     setUserState(user);
   }, [userData]);
 
-  console.log(user);
-
   const [addLike, { likeErr }] = useMutation(ADD_LIKE);
   const [removeLike, { removeLikeErr }] = useMutation(REMOVE_LIKE);
   const [addComment, { commentErr }] = useMutation(ADD_COMMENT);
+  const [removeFavourite, { removeFavErr }] = useMutation(REMOVE_FAVOURITE);
+  const [addFavourite, { addFavErr }] = useMutation(ADD_FAVOURITE);
   const [updateComment, { updateCommentErr }] = useMutation(UPDATE_COMMENT);
   const [removeComment, { removeCommentErr }] = useMutation(REMOVE_COMMENT);
 
@@ -122,38 +125,50 @@ const Home = ({ account, accountLevel }) => {
   const returnUserLike = (currentPostId, specificPost) => {
     if (loggedIn && !userData.loading) {
       return (
-        <button
-          // Check if the USER liked the post
-          className={`likeBtn ${user.likedArr
-            .map((like) => {
-              if (like.postId == currentPostId) {
-                return `Checked`;
+        <>
+          <button
+            // Check if the USER liked the post
+            className={`likeBtn ${user.likedArr
+              .map((like) => {
+                if (like.postId == currentPostId) {
+                  return `Checked`;
+                }
+              })
+              // .join removes the comma that is added after/before 'Checked'
+              .join("")}`}
+            onClick={(e) => {
+              let value = parseInt(
+                document.querySelector(`.${specificPost}`).innerText
+              );
+              // Stop any other event above the button from triggering
+              e.stopPropagation();
+              if (e.target.className.includes("Checked")) {
+                document.querySelector(`.${specificPost}`).innerText =
+                  value -= 1;
+                e.target.className = `likeBtn`;
+                handleLike(currentPostId, true);
+              } else {
+                document.querySelector(`.${specificPost}`).innerText =
+                  value += 1;
+                e.target.className = "likeBtn Checked";
+                handleLike(currentPostId, false);
               }
-            })
-            // .join removes the comma that is added after/before 'Checked'
-            .join("")}`}
-          onClick={(e) => {
-            let value = parseInt(
-              document.querySelector(`.${specificPost}`).innerText
-            );
-            // Stop any other event above the button from triggering
-            e.stopPropagation();
-            if (e.target.className.includes("Checked")) {
-              document.querySelector(`.${specificPost}`).innerText = value -= 1;
-              e.target.className = `likeBtn`;
-              handleLike(currentPostId, true);
-            } else {
-              document.querySelector(`.${specificPost}`).innerText = value += 1;
-              e.target.className = "likeBtn Checked";
-              handleLike(currentPostId, false);
-            }
-          }}
-        >
-          {/* CSS will determine which icon below will appear
+            }}
+          >
+            {/* CSS will determine which icon below will appear
           If button is checked, Fill heart will display, else, Outline will display */}
-          <AiFillHeart className="fillHeart" />
-          <AiOutlineHeart className="outlineHeart" />
-        </button>
+            <AiFillHeart className="fillHeart" />
+            <AiOutlineHeart className="outlineHeart" />
+          </button>
+          <RiSaveLine
+            style={{ fontSize: "25px" }}
+            onClick={() => addNewFavourite(currentPostId)}
+          />
+          <RiSaveFill
+            style={{ fontSize: "25px" }}
+            onClick={() => removeFavouritePost(currentPostId)}
+          />
+        </>
       );
     } else {
       return <p>Login to like</p>;
@@ -412,6 +427,42 @@ const Home = ({ account, accountLevel }) => {
       });
     }
     return generateCommentEl(commentsArr, activePostId);
+  };
+
+  const addNewFavourite = async (postId) => {
+    try {
+      const user = await addFavourite({
+        variables: {
+          postId: postId,
+          userId: account.data._id,
+        },
+      });
+
+      // TODO:: To return current favourites, just use the postId paramater that was passed here and
+      // Add it to the user stateObject (update likedArr)
+      return user;
+    } catch (e) {
+      // Clear state
+      console.log(e);
+    }
+  };
+
+  const removeFavouritePost = async (favouriteId) => {
+    console.log(favouriteId, account.data._id);
+    try {
+      const user = await removeFavourite({
+        variables: {
+          favouriteId: favouriteId,
+          userId: account.data._id,
+        },
+      });
+      // TODO:: To return current favourites, just use the postId paramater that was passed here and
+      // Add it to the user stateObject (update likedArr)
+      return user;
+    } catch (e) {
+      // Clear state
+      console.log(e);
+    }
   };
 
   let facts = { topic: "te", description: "te" };

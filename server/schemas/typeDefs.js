@@ -6,6 +6,7 @@ const typeDefs = gql`
     username: String
     email: String
     likedArr: [Likes]
+    favouritedArr: [String]
     commentsArr: [Comments]
     createdAt: String
     updatedAt: String
@@ -26,6 +27,7 @@ const typeDefs = gql`
     username: String
     email: String
     likedArr: [Likes]
+    favouritedArr: [String]
     commentsArr: [Comments]
     createdAt: String
     updatedAt: String
@@ -129,6 +131,8 @@ const typeDefs = gql`
       masterId: String!
     ): Geography
     removeItem(masterId: String!, itemId: String!, arr: String!): Master
+    removeFavourite(favouriteId: String!, userId: String!): User
+    addFavourite(postId: String!, userId: String!): User
     addLike(postId: String!, userId: String!, conjointId: String!): Likes
     removeLike(likeId: String!, userId: String!): Likes
     addComment(
