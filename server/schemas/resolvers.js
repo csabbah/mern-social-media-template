@@ -179,7 +179,6 @@ const resolvers = {
     },
 
     removeFavourite: async (parent, { favouriteId, userId }) => {
-      console.log("this worked");
       // Then remove it from the users array
       const user = await User.findOneAndUpdate(
         { _id: userId },
@@ -193,8 +192,6 @@ const resolvers = {
     },
 
     addFavourite: async (parent, args) => {
-      console.log("this one worked");
-
       const user = await User.findOneAndUpdate(
         { _id: args.userId },
         { $addToSet: { favouritedArr: args.postId } },

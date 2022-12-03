@@ -160,14 +160,41 @@ const Home = ({ account, accountLevel }) => {
             <AiFillHeart className="fillHeart" />
             <AiOutlineHeart className="outlineHeart" />
           </button>
-          <RiSaveLine
-            style={{ fontSize: "25px" }}
-            onClick={() => addNewFavourite(currentPostId)}
-          />
-          <RiSaveFill
-            style={{ fontSize: "25px" }}
-            onClick={() => removeFavouritePost(currentPostId)}
-          />
+
+          {loggedIn &&
+          !userData.loading &&
+          useState != undefined &&
+          userState &&
+          userState.favouritedArr != undefined ? (
+            <>
+              <button
+                className={`favBtn ${userState.favouritedArr
+                  .map((item) => {
+                    if (item == currentPostId) {
+                      return "Filled";
+                    }
+                  })
+                  .join("")}`}
+                onClick={(e) => {
+                  if (e.target.className.includes("Filled")) {
+                    e.target.className = `favBtn`;
+                    removeFavouritePost(currentPostId);
+                  } else {
+                    e.target.className = "favBtn Filled";
+                    addNewFavourite(currentPostId);
+                  }
+                }}
+              >
+                <RiSaveLine
+                  className="outlineSave"
+                  style={{ fontSize: "25px" }}
+                />
+                <RiSaveFill className="fillSave" style={{ fontSize: "25px" }} />
+              </button>
+            </>
+          ) : (
+            <p>Login to save post</p>
+          )}
         </>
       );
     } else {

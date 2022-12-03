@@ -291,19 +291,24 @@ select:-webkit-autofill:focus {
   box-shadow: 0 0 0 5px rgba(0, 0, 0, 0.2);
 }
 
-/* Likes control */
-
+/* Likes and Save control */
 .fillHeart,
-.outlineHeart {
+.outlineHeart,
+.outlineSave,
+.fillSave {
   pointer-events: none;
 }
 /* If button is checked, display one SVG over the other*/
 .likeBtn.Checked > .fillHeart,
-.likeBtn > .outlineHeart {
+.likeBtn > .outlineHeart,
+.favBtn.Filled > .fillSave,
+.favBtn > .outlineSave {
   display: unset;
 }
 .likeBtn.Checked > .outlineHeart,
-.likeBtn > .fillHeart {
+.likeBtn > .fillHeart,
+.favBtn.Filled > .outlineSave,
+.favBtn > .fillSave {
   display: none;
 }
 
