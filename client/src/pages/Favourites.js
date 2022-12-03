@@ -38,8 +38,11 @@ const Favourites = ({ account, accountLevel }) => {
           userId: account.data._id,
         },
       });
-      // TODO:: To return current favourites, just use the postId paramater that was passed here and
-      // Add it to the user stateObject (update likedArr)
+      setUserState([
+        ...userState.favouritedArr.filter(
+          (dbPost) => dbPost._id !== user.data?.removeFavourite
+        ),
+      ]);
       return user;
     } catch (e) {
       // Clear state
@@ -49,8 +52,7 @@ const Favourites = ({ account, accountLevel }) => {
 
   return (
     <div>
-      {!userData.loading &&
-        user &&
+      {!userData.loading && user ? (
         user.favouritedArr.map((postId) => {
           return (
             <div style={{ display: "flex" }}>
@@ -58,7 +60,10 @@ const Favourites = ({ account, accountLevel }) => {
               <button onClick={() => removeFavouritePost(postId)}>X</button>
             </div>
           );
-        })}
+        })
+      ) : (
+        <p>Loading posts...</p>
+      )}
     </div>
   );
 };

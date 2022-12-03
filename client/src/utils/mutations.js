@@ -73,6 +73,7 @@ export const REMOVE_FAVOURITE = gql`
   mutation removeFavourite($favouriteId: String!, $userId: String!) {
     removeFavourite(favouriteId: $favouriteId, userId: $userId) {
       _id
+      favouritedArr
     }
   }
 `;

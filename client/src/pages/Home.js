@@ -464,9 +464,6 @@ const Home = ({ account, accountLevel }) => {
           userId: account.data._id,
         },
       });
-
-      // TODO:: To return current favourites, just use the postId paramater that was passed here and
-      // Add it to the user stateObject (update likedArr)
       return user;
     } catch (e) {
       // Clear state
@@ -474,6 +471,8 @@ const Home = ({ account, accountLevel }) => {
     }
   };
 
+  // TODO :: Make this one function
+  // This is to be used in the home page (Separate from the favourites component)
   const removeFavouritePost = async (favouriteId) => {
     try {
       const user = await removeFavourite({
@@ -482,8 +481,6 @@ const Home = ({ account, accountLevel }) => {
           userId: account.data._id,
         },
       });
-      // TODO:: To return current favourites, just use the postId paramater that was passed here and
-      // Add it to the user stateObject (update likedArr)
       return user;
     } catch (e) {
       // Clear state
