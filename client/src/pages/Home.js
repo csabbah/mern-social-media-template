@@ -172,9 +172,6 @@ const Home = ({ account, accountLevel }) => {
         },
       });
 
-      let newDate = format_date(like.data?.addLike);
-      console.log(like.data?.addLike);
-      // console.log(format_date());
       // Manually push newly created like to a state object
       // This ensures state is FULLY update today
       // Then in the above function, we check this state object vs. userData since that is one step behind
@@ -232,7 +229,6 @@ const Home = ({ account, accountLevel }) => {
           username: account.data.username,
         },
       });
-
       setCommentData([...commentData, comment.data?.addComment]);
       setUserState({
         ...userState,
@@ -286,13 +282,12 @@ const Home = ({ account, accountLevel }) => {
 
   const returnUserComment = (commentUserId) => {
     let isUsersCommment = false;
-    if (loggedIn && !userData.loading) {
-      userState !== undefined &&
-        userState.commentsArr.map((comment) => {
-          if (comment.userId == commentUserId) {
-            isUsersCommment = true;
-          }
-        });
+    if (loggedIn && !userData.loading && userState.length != 0) {
+      userState.commentsArr.map((comment) => {
+        if (comment.userId == commentUserId) {
+          isUsersCommment = true;
+        }
+      });
       return isUsersCommment;
     }
   };
@@ -329,7 +324,7 @@ const Home = ({ account, accountLevel }) => {
                       : {}
                   }
                 >
-                  {comment.text}
+                  {comment.text} {format_date(comment.createdAt)}
                 </p>
 
                 {/* If it's the users comment, allow them to delete their comments */}
