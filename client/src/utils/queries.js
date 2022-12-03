@@ -86,7 +86,26 @@ export const GET_COMMENTS = gql`
 export const GET_ADMIN = gql`
   query admin($id: ID!) {
     admin(_id: $id) {
+      _id
+      username
       email
+      likedArr {
+        _id
+        postId
+        createdAt
+        updatedAt
+      }
+      commentsArr {
+        _id
+        username
+        userId
+        postId
+        text
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
     }
   }
 `;

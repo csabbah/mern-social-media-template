@@ -42,8 +42,6 @@ export const REMOVE_ADMIN = gql`
   mutation removeAdmin($id: String!) {
     removeAdmin(id: $id) {
       token
-      createdAt
-      updatedAt
     }
   }
 `;

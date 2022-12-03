@@ -5,6 +5,8 @@ const typeDefs = gql`
     _id: ID
     username: String
     email: String
+    likedArr: [Likes]
+    commentsArr: [Comments]
     createdAt: String
     updatedAt: String
   }

@@ -26,7 +26,6 @@ const likedSchema = new Schema(
   // set this to use virtual below
   {
     timestamps: true,
-    timestamps: true,
     toJSON: {
       virtuals: true,
     },

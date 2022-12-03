@@ -21,9 +21,9 @@ import {
   UPDATE_COMMENT,
   REMOVE_COMMENT,
 } from "../utils/mutations";
-import { GET_LIKES, GET_ME, GET_COMMENTS } from "../utils/queries";
+import { GET_LIKES, GET_ME, GET_COMMENTS, GET_ADMIN } from "../utils/queries";
 
-const Home = ({ account }) => {
+const Home = ({ account, accountLevel }) => {
   const [commentData, setCommentData] = useState([]);
   const [userState, setUserState] = useState();
 
@@ -60,10 +60,13 @@ const Home = ({ account }) => {
   const comments = useQuery(GET_COMMENTS);
 
   const FetchQuery = () => {
-    var userData = useQuery(GET_ME, {
+    var userData = useQuery(accountLevel == "Admin" ? GET_ADMIN : GET_ME, {
       variables: account ? { id: account.data._id } : { id: "blank" },
     });
-    var user = userData.data?.get_me || [];
+    var user =
+      accountLevel == "Admin"
+        ? userData.data?.admin
+        : userData.data?.get_me || [];
     return { userData, user };
   };
 
@@ -72,6 +75,8 @@ const Home = ({ account }) => {
   useEffect(() => {
     setUserState(user);
   }, [userData]);
+
+  console.log(user);
 
   const [addLike, { likeErr }] = useMutation(ADD_LIKE);
   const [removeLike, { removeLikeErr }] = useMutation(REMOVE_LIKE);
@@ -247,7 +252,6 @@ const Home = ({ account }) => {
           text: text,
         },
       });
-      console.log(commentData, comment.data?.updateComment._id);
       setCommentData([
         comment.data?.updateComment,
         ...commentData.filter(
@@ -283,7 +287,7 @@ const Home = ({ account }) => {
   const returnUserComment = (commentUserId) => {
     let isUsersCommment = false;
     if (loggedIn && !userData.loading) {
-      userState.commentsArr !== undefined &&
+      userState !== undefined &&
         userState.commentsArr.map((comment) => {
           if (comment.userId == commentUserId) {
             isUsersCommment = true;

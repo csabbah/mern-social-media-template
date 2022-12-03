@@ -22,6 +22,26 @@ const adminSchema = new Schema(
       type: String,
       default: "Admin",
     },
+    favouritedArr: [
+      {
+        type: String,
+        default: [],
+      },
+    ],
+    likedArr: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Likes",
+        default: [],
+      },
+    ],
+    commentsArr: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Comments",
+        default: [],
+      },
+    ],
     createdAt: {
       type: String,
     },

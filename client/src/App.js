@@ -75,7 +75,13 @@ function App() {
               exact
               path="/"
               render={(props) => (
-                <Home {...props} account={loggedIn && getAccount()} />
+                <Home
+                  {...props}
+                  accountLevel={
+                    loggedIn ? getAccount().data.accountLevel : "Not logged in"
+                  }
+                  account={loggedIn && getAccount()}
+                />
               )}
             />
             {!loggedIn && <Route exact path="/login" component={Login} />}
