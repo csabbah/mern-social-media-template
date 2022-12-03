@@ -448,7 +448,6 @@ const Home = ({ account, accountLevel }) => {
   };
 
   const removeFavouritePost = async (favouriteId) => {
-    console.log(favouriteId, account.data._id);
     try {
       const user = await removeFavourite({
         variables: {

@@ -86,11 +86,25 @@ function App() {
                 />
               )}
             />
+            {loggedIn && (
+              <Route
+                exact
+                path="/favourites"
+                render={(props) => (
+                  <Favourites
+                    {...props}
+                    accountLevel={
+                      loggedIn
+                        ? getAccount().data.accountLevel
+                        : "Not logged in"
+                    }
+                    account={loggedIn && getAccount()}
+                  />
+                )}
+              />
+            )}
             {!loggedIn && <Route exact path="/login" component={Login} />}
             {!loggedIn && <Route exact path="/signup" component={SignUp} />}
-            {loggedIn && (
-              <Route exact path="/favourites" component={Favourites} />
-            )}
             {loggedIn && getAccount().data.accountLevel == "Admin" && (
               <Route exact path="/admin-dashboard" component={AdminDashboard} />
             )}
