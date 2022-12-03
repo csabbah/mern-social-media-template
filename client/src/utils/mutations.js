@@ -7,6 +7,8 @@ export const LOGIN_USER = gql`
       user {
         _id
         username
+        createdAt
+        updatedAt
       }
     }
   }
@@ -19,6 +21,8 @@ export const LOGIN_ADMIN = gql`
       user {
         _id
         username
+        createdAt
+        updatedAt
       }
     }
   }
@@ -28,6 +32,8 @@ export const ADD_ADMIN = gql`
   mutation addAdmin($username: String!, $email: String!, $password: String!) {
     addAdmin(username: $username, email: $email, password: $password) {
       token
+      createdAt
+      updatedAt
     }
   }
 `;
@@ -36,6 +42,8 @@ export const REMOVE_ADMIN = gql`
   mutation removeAdmin($id: String!) {
     removeAdmin(id: $id) {
       token
+      createdAt
+      updatedAt
     }
   }
 `;
@@ -47,6 +55,8 @@ export const ADD_USER = gql`
       user {
         _id
         username
+        createdAt
+        updatedAt
       }
     }
   }
@@ -57,6 +67,8 @@ export const ADD_LIKE = gql`
     addLike(postId: $postId, userId: $userId, conjointId: $conjointId) {
       _id
       postId
+      createdAt
+      updatedAt
     }
   }
 `;
@@ -65,6 +77,8 @@ export const REMOVE_LIKE = gql`
   mutation removeLike($likeId: String!, $userId: String!) {
     removeLike(likeId: $likeId, userId: $userId) {
       _id
+      createdAt
+      updatedAt
     }
   }
 `;
@@ -87,6 +101,8 @@ export const ADD_COMMENT = gql`
       userId
       text
       username
+      createdAt
+      updatedAt
     }
   }
 `;
@@ -96,6 +112,8 @@ export const UPDATE_COMMENT = gql`
     updateComment(commentId: $commentId, text: $text) {
       _id
       text
+      createdAt
+      updatedAt
     }
   }
 `;
@@ -104,6 +122,8 @@ export const REMOVE_COMMENT = gql`
   mutation removeComment($commentId: String!, $userId: String!) {
     removeComment(commentId: $commentId, userId: $userId) {
       _id
+      createdAt
+      updatedAt
     }
   }
 `;
@@ -120,6 +140,8 @@ export const ADD_MASTER = gql`
   mutation addMaster {
     addMaster {
       _id
+      createdAt
+      updatedAt
     }
   }
 `;
@@ -128,6 +150,8 @@ export const ADD_QUOTE = gql`
   mutation addQuote($text: String!, $author: String!, $masterId: String!) {
     addQuote(text: $text, author: $author, masterId: $masterId) {
       _id
+      createdAt
+      updatedAt
     }
   }
 `;
@@ -136,6 +160,8 @@ export const ADD_FACT = gql`
   mutation addFact($text: String!, $genre: String!, $masterId: String!) {
     addFact(text: $text, genre: $genre, masterId: $masterId) {
       _id
+      createdAt
+      updatedAt
     }
   }
 `;
@@ -154,6 +180,8 @@ export const ADD_VOCAB = gql`
       masterId: $masterId
     ) {
       _id
+      createdAt
+      updatedAt
     }
   }
 `;
@@ -176,6 +204,8 @@ export const ADD_GEO = gql`
       flag: $flag
     ) {
       _id
+      createdAt
+      updatedAt
     }
   }
 `;
@@ -184,6 +214,8 @@ export const REMOVE_GEO = gql`
   mutation removeItem($masterId: String!, $itemId: String!, $arr: String!) {
     removeItem(masterId: $masterId, itemId: $itemId, arr: $arr) {
       _id
+      createdAt
+      updatedAt
     }
   }
 `;

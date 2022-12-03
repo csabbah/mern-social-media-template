@@ -5,6 +5,8 @@ const typeDefs = gql`
     _id: ID
     username: String
     email: String
+    createdAt: String
+    updatedAt: String
   }
 
   type Master {
@@ -13,6 +15,8 @@ const typeDefs = gql`
     geoArr: [Geography]
     vocabArr: [Vocab]
     factsArr: [Facts]
+    createdAt: String
+    updatedAt: String
   }
 
   type User {
@@ -21,12 +25,16 @@ const typeDefs = gql`
     email: String
     likedArr: [Likes]
     commentsArr: [Comments]
+    createdAt: String
+    updatedAt: String
   }
 
   type Likes {
     _id: ID
     conjointId: String
     postId: String
+    createdAt: String
+    updatedAt: String
     userId: User
   }
   type Comments {
@@ -34,6 +42,8 @@ const typeDefs = gql`
     postId: String
     userId: String
     username: String
+    createdAt: String
+    updatedAt: String
     text: String
   }
 
@@ -43,6 +53,8 @@ const typeDefs = gql`
     typeOfSpeech: String
     definition: String
     masterId: String
+    createdAt: String
+    updatedAt: String
   }
 
   type Geography {
@@ -53,6 +65,8 @@ const typeDefs = gql`
     continent: String
     phoneCode: String
     masterId: String
+    createdAt: String
+    updatedAt: String
   }
 
   type Quotes {
@@ -60,6 +74,8 @@ const typeDefs = gql`
     text: String
     author: String
     masterId: String
+    createdAt: String
+    updatedAt: String
   }
 
   type Facts {
@@ -67,6 +83,8 @@ const typeDefs = gql`
     text: String
     genre: String
     masterId: String
+    createdAt: String
+    updatedAt: String
   }
 
   type Query {

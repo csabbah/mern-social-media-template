@@ -11,9 +11,16 @@ const factSchema = new Schema(
     masterId: {
       type: String,
     },
+    createdAt: {
+      type: String,
+    },
+    updatedAt: {
+      type: String,
+    },
   },
   // set this to use virtual below
   {
+    timestamps: true,
     toJSON: {
       virtuals: true,
     },

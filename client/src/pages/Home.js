@@ -7,6 +7,8 @@ import GeoWrapper from "../components/GeoWrapper";
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import Auth from "../utils/auth";
 
+import { format_date } from "../utils/helpers";
+
 import { FaChessKing, FaRegComment, FaYoutubeSquare } from "react-icons/fa";
 
 import { fetchFacts, fetchQuotes, fetchWords } from "../utils/API";
@@ -164,6 +166,10 @@ const Home = ({ account }) => {
           userId: account.data._id,
         },
       });
+
+      let newDate = format_date(like.data?.addLike);
+      console.log(like.data?.addLike);
+      // console.log(format_date());
       // Manually push newly created like to a state object
       // This ensures state is FULLY update today
       // Then in the above function, we check this state object vs. userData since that is one step behind

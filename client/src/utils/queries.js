@@ -9,6 +9,8 @@ export const GET_ME = gql`
       likedArr {
         _id
         postId
+        createdAt
+        updatedAt
       }
       commentsArr {
         _id
@@ -16,7 +18,11 @@ export const GET_ME = gql`
         userId
         postId
         text
+        createdAt
+        updatedAt
       }
+      createdAt
+      updatedAt
     }
   }
 `;
@@ -30,6 +36,8 @@ export const GET_USER = gql`
       likedArr {
         _id
         postId
+        createdAt
+        updatedAt
       }
       commentsArr {
         _id
@@ -37,7 +45,11 @@ export const GET_USER = gql`
         userId
         postId
         text
+        createdAt
+        updatedAt
       }
+      createdAt
+      updatedAt
     }
   }
 `;
@@ -48,6 +60,8 @@ export const GET_LIKES = gql`
       _id
       conjointId
       postId
+      createdAt
+      updatedAt
       userId {
         _id
       }
@@ -63,6 +77,8 @@ export const GET_COMMENTS = gql`
       postId
       userId
       username
+      createdAt
+      updatedAt
     }
   }
 `;

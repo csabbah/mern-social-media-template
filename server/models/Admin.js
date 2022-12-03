@@ -22,9 +22,16 @@ const adminSchema = new Schema(
       type: String,
       default: "Admin",
     },
+    createdAt: {
+      type: String,
+    },
+    updatedAt: {
+      type: String,
+    },
   },
   // set this to use virtual below
   {
+    timestamps: true,
     toJSON: {
       virtuals: true,
     },
