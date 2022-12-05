@@ -23,6 +23,8 @@ import {
   REMOVE_COMMENT,
   ADD_FAVOURITE,
   REMOVE_FAVOURITE,
+  ADD_REPLY,
+  ADD_COMMENT_LIKE,
 } from "../utils/mutations";
 import { GET_LIKES, GET_ME, GET_COMMENTS, GET_ADMIN } from "../utils/queries";
 
@@ -92,6 +94,8 @@ const Home = ({ account, accountLevel }) => {
   const [addFavourite, { addFavErr }] = useMutation(ADD_FAVOURITE);
   const [updateComment, { updateCommentErr }] = useMutation(UPDATE_COMMENT);
   const [removeComment, { removeCommentErr }] = useMutation(REMOVE_COMMENT);
+  const [addReply, { addReplyErr }] = useMutation(ADD_REPLY);
+  const [addCommentLike, { addCommentLikeErr }] = useMutation(ADD_COMMENT_LIKE);
 
   // The function to handle whether to add a like or to remove a like
   const handleLike = async (currentPostId, remove) => {
@@ -287,6 +291,25 @@ const Home = ({ account, accountLevel }) => {
       console.log(e);
     }
   };
+  const addLikeToComment = async (commentId) => {
+    try {
+      let comment = await addCommentLike({
+        variables: {
+          commentId: commentId,
+          userId: account.data._id,
+        },
+      });
+      setCommentData([
+        ...commentData.filter((dbComment) => dbComment._id !== commentId),
+        comment.data?.addCommentLike,
+      ]);
+      // TODO: After you update the user model to contain all likes to comments
+      // TODO: Need to add the state update here
+    } catch (e) {
+      // Clear state
+      console.log(e);
+    }
+  };
 
   const editCurrentComment = async (commentId, text) => {
     try {
@@ -389,6 +412,10 @@ const Home = ({ account, accountLevel }) => {
                   {comment.text}
                 </p>
                 <p>{format_date(comment.createdAt)}</p>
+                <p>Liked {comment.liked.length} times</p>
+                <button onClick={() => addLikeToComment(comment._id)}>
+                  <AiOutlineHeart />
+                </button>
                 {comment.updated && (
                   <p>Updated - {format_date(comment.updatedAt)}</p>
                 )}

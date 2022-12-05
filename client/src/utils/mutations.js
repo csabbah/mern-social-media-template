@@ -117,6 +117,8 @@ export const ADD_COMMENT = gql`
       postId
       userId
       text
+      liked
+      replies
       username
       createdAt
       updatedAt
@@ -133,6 +135,8 @@ export const UPDATE_COMMENT = gql`
       postId
       userId
       text
+      liked
+      replies
       username
       createdAt
       updatedAt
@@ -150,6 +154,8 @@ export const REMOVE_COMMENT = gql`
       userId
       text
       username
+      liked
+      replies
       createdAt
       updatedAt
       updated
@@ -157,6 +163,41 @@ export const REMOVE_COMMENT = gql`
   }
 `;
 
+export const ADD_COMMENT_LIKE = gql`
+  mutation addCommentLike($commentId: String!, $userId: String!) {
+    addCommentLike(commentId: $commentId, userId: $userId) {
+      __typename
+      _id
+      postId
+      userId
+      text
+      username
+      liked
+      replies
+      createdAt
+      updatedAt
+      updated
+    }
+  }
+`;
+
+export const ADD_REPLY = gql`
+  mutation addReply($commentId: String!, $text: String!) {
+    addReply(commentId: $commentId, text: $text) {
+      __typename
+      _id
+      postId
+      userId
+      text
+      username
+      liked
+      replies
+      createdAt
+      updatedAt
+      updated
+    }
+  }
+`;
 // export const ADD_MASTER = gql`
 //   mutation addMaster($company: String!) {
 //     addMaster(company: $company) {
