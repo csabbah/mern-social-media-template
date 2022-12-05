@@ -221,7 +221,7 @@ const resolvers = {
     updateComment: async (parent, { commentId, text }) => {
       const comment = await Comments.findOneAndUpdate(
         { _id: commentId },
-        { $set: { text } },
+        { $set: { text, updated: true } },
         { new: true }
       );
 

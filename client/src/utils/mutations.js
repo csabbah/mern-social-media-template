@@ -120,6 +120,7 @@ export const ADD_COMMENT = gql`
       username
       createdAt
       updatedAt
+      updated
     }
   }
 `;
@@ -135,6 +136,7 @@ export const UPDATE_COMMENT = gql`
       username
       createdAt
       updatedAt
+      updated
     }
   }
 `;
@@ -150,6 +152,7 @@ export const REMOVE_COMMENT = gql`
       username
       createdAt
       updatedAt
+      updated
     }
   }
 `;

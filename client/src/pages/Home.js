@@ -301,6 +301,7 @@ const Home = ({ account, accountLevel }) => {
         ...commentData.filter((dbComment) => dbComment._id !== commentId),
         comment.data?.updateComment,
       ]);
+
       setUserState({
         ...userState,
         commentsArr: [
@@ -388,6 +389,9 @@ const Home = ({ account, accountLevel }) => {
                   {comment.text}
                 </p>
                 <p>{format_date(comment.createdAt)}</p>
+                {comment.updated && (
+                  <p>Updated - {format_date(comment.updatedAt)}</p>
+                )}
                 {/* If it's the users comment, allow them to delete their comments */}
                 {returnUserComment(comment.userId) && (
                   <>
@@ -476,7 +480,7 @@ const Home = ({ account, accountLevel }) => {
     });
 
     commentsArr.sort(function (a, b) {
-      return new Date(b.updatedAt) - new Date(a.updatedAt);
+      return new Date(b.createdAt) - new Date(a.createdAt);
     });
     return generateCommentEl(commentsArr, activePostId);
   };

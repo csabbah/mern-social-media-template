@@ -49,6 +49,7 @@ const typeDefs = gql`
     createdAt: String
     updatedAt: String
     text: String
+    updated: Boolean
   }
 
   type Vocab {

@@ -21,6 +21,10 @@ const commentSchema = new Schema(
     updatedAt: {
       type: String,
     },
+    updated: {
+      type: Boolean,
+      default: false,
+    },
   },
   // set this to use virtual below
   {

@@ -80,6 +80,7 @@ export const GET_COMMENTS = gql`
       username
       createdAt
       updatedAt
+      updated
     }
   }
 `;
