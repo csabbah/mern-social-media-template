@@ -311,6 +311,26 @@ const Home = ({ account, accountLevel }) => {
     }
   };
 
+  const addReplyToComment = async (commentId, text) => {
+    try {
+      let comment = await addReply({
+        variables: {
+          commentId: commentId,
+          text: text,
+        },
+      });
+      setCommentData([
+        ...commentData.filter((dbComment) => dbComment._id !== commentId),
+        comment.data?.addReply,
+      ]);
+      // TODO: After you update the user model to contain all comments to comments
+      // TODO: Need to add the state update here
+    } catch (e) {
+      // Clear state
+      console.log(e);
+    }
+  };
+
   const editCurrentComment = async (commentId, text) => {
     try {
       let comment = await updateComment({
@@ -411,14 +431,39 @@ const Home = ({ account, accountLevel }) => {
                 >
                   {comment.text}
                 </p>
-                <p>{format_date(comment.createdAt)}</p>
+                <p>
+                  {format_date(comment.createdAt)}{" "}
+                  {comment.updated && (
+                    <p>Updated {format_date(comment.updatedAt)}</p>
+                  )}
+                </p>
+
                 <p>Liked {comment.liked.length} times</p>
+                <p>
+                  Replies:
+                  {comment.replies.map((reply) => {
+                    return (
+                      <p>
+                        {reply}
+                        <button>Edit</button>
+                        <button>X</button>
+                      </p>
+                    );
+                  })}
+                </p>
                 <button onClick={() => addLikeToComment(comment._id)}>
                   <AiOutlineHeart />
                 </button>
-                {comment.updated && (
-                  <p>Updated - {format_date(comment.updatedAt)}</p>
-                )}
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    addReplyToComment(comment._id, e.target.text.value);
+                  }}
+                >
+                  <input name="text" placeholder="Add Reply"></input>
+                  <button type="submit">Reply</button>
+                </form>
+
                 {/* If it's the users comment, allow them to delete their comments */}
                 {returnUserComment(comment.userId) && (
                   <>
