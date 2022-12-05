@@ -181,6 +181,24 @@ export const ADD_COMMENT_LIKE = gql`
   }
 `;
 
+export const REMOVE_COMMENT_LIKE = gql`
+  mutation removeCommentLike($userId: String!, $commentId: String!) {
+    removeCommentLike(userId: $userId, commentId: $commentId) {
+      __typename
+      _id
+      postId
+      userId
+      text
+      username
+      liked
+      replies
+      createdAt
+      updatedAt
+      updated
+    }
+  }
+`;
+
 export const ADD_REPLY = gql`
   mutation addReply($commentId: String!, $text: String!) {
     addReply(commentId: $commentId, text: $text) {

@@ -148,6 +148,7 @@ const typeDefs = gql`
     updateComment(commentId: String!, text: String!): Comments
     addReply(commentId: String!, text: String!): Comments
     addCommentLike(commentId: String!, userId: String!): Comments
+    removeCommentLike(commentId: String!, userId: String!): Comments
     removeComment(commentId: String!, userId: String!): Comments
   }
 

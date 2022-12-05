@@ -25,12 +25,15 @@ import {
   REMOVE_FAVOURITE,
   ADD_REPLY,
   ADD_COMMENT_LIKE,
+  REMOVE_COMMENT_LIKE,
 } from "../utils/mutations";
 import { GET_LIKES, GET_ME, GET_COMMENTS, GET_ADMIN } from "../utils/queries";
 
 const Home = ({ account, accountLevel }) => {
   const [commentData, setCommentData] = useState([]);
   const [userState, setUserState] = useState();
+
+  const [currentCommentLikes, setCurrentCommentLikes] = useState([]);
 
   // * UnHide this when ready to use and upload to DB
   // const [facts, setFacts] = useState("");
@@ -96,6 +99,8 @@ const Home = ({ account, accountLevel }) => {
   const [removeComment, { removeCommentErr }] = useMutation(REMOVE_COMMENT);
   const [addReply, { addReplyErr }] = useMutation(ADD_REPLY);
   const [addCommentLike, { addCommentLikeErr }] = useMutation(ADD_COMMENT_LIKE);
+  const [removeCommentLike, { removeCommentLikeErr }] =
+    useMutation(REMOVE_COMMENT_LIKE);
 
   // The function to handle whether to add a like or to remove a like
   const handleLike = async (currentPostId, remove) => {
@@ -291,18 +296,34 @@ const Home = ({ account, accountLevel }) => {
       console.log(e);
     }
   };
+
   const addLikeToComment = async (commentId) => {
     try {
-      let comment = await addCommentLike({
+      await addCommentLike({
         variables: {
           commentId: commentId,
           userId: account.data._id,
         },
       });
-      setCommentData([
-        ...commentData.filter((dbComment) => dbComment._id !== commentId),
-        comment.data?.addCommentLike,
-      ]);
+      currentCommentLikes.push(account.data._id);
+
+      // TODO: After you update the user model to contain all likes to comments
+      // TODO: Need to add the state update here
+    } catch (e) {
+      // Clear state
+      console.log(e);
+    }
+  };
+
+  const removeLikeFromComment = async (commentId) => {
+    try {
+      await removeCommentLike({
+        variables: {
+          commentId: commentId,
+          userId: account.data._id,
+        },
+      });
+
       // TODO: After you update the user model to contain all likes to comments
       // TODO: Need to add the state update here
     } catch (e) {
@@ -410,6 +431,7 @@ const Home = ({ account, accountLevel }) => {
           {commentsArr.map((comment, i) => {
             return (
               <div
+                style={{ marginBottom: "20px" }}
                 className={
                   returnUserComment(comment.userId) ? `users-comment` : ""
                 }
@@ -433,12 +455,19 @@ const Home = ({ account, accountLevel }) => {
                 </p>
                 <p>
                   {format_date(comment.createdAt)}{" "}
-                  {comment.updated && (
-                    <p>Updated {format_date(comment.updatedAt)}</p>
-                  )}
+                  {comment.updated && <>{format_date(comment.updatedAt)}</>}
                 </p>
 
-                <p>Liked {comment.liked.length} times</p>
+                <p>
+                  Comment Liked{" "}
+                  <span className={`comment-likes-${i}`}>
+                    {comment.liked.length}
+                  </span>{" "}
+                  time
+                  {comment.liked.length > 1 ? "s" : ""} -{" "}
+                  {comment.replies.length} Repl
+                  {comment.replies.length > 1 ? "ies" : "y"}
+                </p>
                 <p>
                   Replies:
                   {comment.replies.map((reply) => {
@@ -451,8 +480,45 @@ const Home = ({ account, accountLevel }) => {
                     );
                   })}
                 </p>
-                <button onClick={() => addLikeToComment(comment._id)}>
-                  <AiOutlineHeart />
+                <button
+                  className={`commentLikeBtn ${comment.liked
+                    .map((like) => {
+                      if (like == account.data._id) {
+                        return `commentLikeChecked`;
+                      }
+                    })
+                    // .join removes the comma that is added after/before 'Checked'
+                    .join("")}`}
+                  onClick={(e) => {
+                    let value = parseInt(
+                      document.querySelector(`.comment-likes-${i}`).innerText
+                    );
+                    if (e.target.className.includes("commentLikeChecked")) {
+                      e.target.className = `commentLikeBtn`;
+                      document.querySelector(`.comment-likes-${i}`).innerText =
+                        value -= 1;
+
+                      console.log(
+                        document.querySelector(`.comment-likes-${i}`).innerText
+                      );
+                      removeLikeFromComment(comment._id);
+                    } else {
+                      document.querySelector(`.comment-likes-${i}`).innerText =
+                        value += 1;
+
+                      e.target.className = "commentLikeBtn commentLikeChecked";
+                      addLikeToComment(comment._id);
+                    }
+                  }}
+                >
+                  <AiFillHeart
+                    style={{ pointerEvents: "none" }}
+                    className="fillHeart"
+                  />
+                  <AiOutlineHeart
+                    style={{ pointerEvents: "none" }}
+                    className="outlineHeart"
+                  />
                 </button>
                 <form
                   onSubmit={(e) => {

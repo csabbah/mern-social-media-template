@@ -302,13 +302,17 @@ select:-webkit-autofill:focus {
 .likeBtn.Checked > .fillHeart,
 .likeBtn > .outlineHeart,
 .favBtn.Filled > .fillSave,
-.favBtn > .outlineSave {
+.favBtn > .outlineSave,
+.commentLikeBtn.commentLikeChecked > .fillHeart,
+.commentLikeBtn > .outlineHeart {
   display: unset;
 }
 .likeBtn.Checked > .outlineHeart,
 .likeBtn > .fillHeart,
 .favBtn.Filled > .outlineSave,
-.favBtn > .fillSave {
+.favBtn > .fillSave,
+.commentLikeBtn.commentLikeChecked > .outlineHeart,
+.commentLikeBtn > .fillHeart {
   display: none;
 }
 

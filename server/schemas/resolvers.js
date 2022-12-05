@@ -238,6 +238,16 @@ const resolvers = {
       return comment;
     },
 
+    removeCommentLike: async (parent, { userId, commentId }) => {
+      const comment = await Comments.findOneAndUpdate(
+        { _id: commentId },
+        { $pull: { liked: userId } },
+        { new: true }
+      );
+
+      return comment;
+    },
+
     updateComment: async (parent, { commentId, text }) => {
       const comment = await Comments.findOneAndUpdate(
         { _id: commentId },
