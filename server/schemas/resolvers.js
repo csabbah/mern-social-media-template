@@ -224,6 +224,7 @@ const resolvers = {
         { $set: { text } },
         { new: true }
       );
+
       return comment;
     },
 

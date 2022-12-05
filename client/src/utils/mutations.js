@@ -112,6 +112,7 @@ export const ADD_COMMENT = gql`
       text: $text
       username: $username
     ) {
+      __typename
       _id
       postId
       userId
@@ -126,8 +127,12 @@ export const ADD_COMMENT = gql`
 export const UPDATE_COMMENT = gql`
   mutation updateComment($commentId: String!, $text: String!) {
     updateComment(commentId: $commentId, text: $text) {
+      __typename
       _id
+      postId
+      userId
       text
+      username
       createdAt
       updatedAt
     }
@@ -137,7 +142,12 @@ export const UPDATE_COMMENT = gql`
 export const REMOVE_COMMENT = gql`
   mutation removeComment($commentId: String!, $userId: String!) {
     removeComment(commentId: $commentId, userId: $userId) {
+      __typename
       _id
+      postId
+      userId
+      text
+      username
       createdAt
       updatedAt
     }

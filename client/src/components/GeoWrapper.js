@@ -4,15 +4,9 @@ const GeoWrapper = ({
   returnPostLikes,
   returnPostComments,
   data,
-  comments,
   commentData,
-  setCommentData,
 }) => {
   const [geoData, setGeoData] = useState(data);
-
-  useEffect(() => {
-    setCommentData([...comments]);
-  }, [comments]);
 
   return (
     <div>

@@ -5,12 +5,12 @@ import FactWrapper from "../components/FactWrapper";
 import QuotesWrapper from "../components/QuotesWrapper";
 import GeoWrapper from "../components/GeoWrapper";
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
-import { RiSaveLine, RiSaveFill } from "react-icons/ri";
+import { RiSaveLine, RiSaveFill, RiCollageFill } from "react-icons/ri";
 import Auth from "../utils/auth";
 
 import { format_date } from "../utils/helpers";
 
-import { FaChessKing, FaRegComment, FaYoutubeSquare } from "react-icons/fa";
+import { FaRegComment } from "react-icons/fa";
 
 import { fetchFacts, fetchQuotes, fetchWords } from "../utils/API";
 
@@ -58,11 +58,11 @@ const Home = ({ account, accountLevel }) => {
       ? false
       : true;
 
-  const { loading, data } = useQuery(GET_LIKES);
-
-  const comments = useQuery(GET_COMMENTS);
-
   const FetchQuery = () => {
+    const { loading, data } = useQuery(GET_LIKES);
+
+    const comments = useQuery(GET_COMMENTS);
+
     var userData = useQuery(accountLevel == "Admin" ? GET_ADMIN : GET_ME, {
       variables: account ? { id: account.data._id } : { id: "blank" },
     });
@@ -70,14 +70,20 @@ const Home = ({ account, accountLevel }) => {
       accountLevel == "Admin"
         ? userData.data?.admin
         : userData.data?.get_me || [];
-    return { userData, user };
+
+    var commentsState = comments.data?.comments || [];
+
+    return { userData, user, comments, commentsState, data, loading };
   };
 
-  let { user, userData } = FetchQuery();
+  let { user, userData, comments, commentsState, data, loading } = FetchQuery();
 
   useEffect(() => {
     setUserState(user);
-  }, [userData]);
+    setCommentData(commentsState);
+    // It's important we add the loading dependency as once it returns false, the useEffect will
+    // Not run again, it will only run once AFTER all data has been sent to the useState variables
+  }, [userData.loading, comments.loading]);
 
   const [addLike, { likeErr }] = useMutation(ADD_LIKE);
   const [removeLike, { removeLikeErr }] = useMutation(REMOVE_LIKE);
@@ -290,12 +296,20 @@ const Home = ({ account, accountLevel }) => {
           text: text,
         },
       });
+
       setCommentData([
+        ...commentData.filter((dbComment) => dbComment._id !== commentId),
         comment.data?.updateComment,
-        ...commentData.filter(
-          (dbComment) => dbComment._id !== comment.data?.updateComment._id
-        ),
       ]);
+      setUserState({
+        ...userState,
+        commentsArr: [
+          comment.data?.updateComment,
+          ...userState.commentsArr.filter(
+            (dbComment) => dbComment._id !== commentId
+          ),
+        ],
+      });
     } catch (e) {
       // Clear state
       console.log(e);
@@ -311,11 +325,16 @@ const Home = ({ account, accountLevel }) => {
           userId: account.data._id,
         },
       });
-      setCommentData([
-        ...commentData.filter(
-          (dbComment) => dbComment._id !== comment.data?.removeComment._id
+
+      setCommentData(
+        commentData.filter((dbComment) => dbComment._id !== commentId)
+      );
+      setUserState({
+        ...userState,
+        commentsArr: userState.commentsArr.filter(
+          (dbComment) => dbComment._id !== commentId
         ),
-      ]);
+      });
     } catch (e) {
       // Clear state
       console.log(e);
@@ -366,9 +385,9 @@ const Home = ({ account, accountLevel }) => {
                       : {}
                   }
                 >
-                  {comment.text} {format_date(comment.createdAt)}
+                  {comment.text}
                 </p>
-
+                <p>{format_date(comment.createdAt)}</p>
                 {/* If it's the users comment, allow them to delete their comments */}
                 {returnUserComment(comment.userId) && (
                   <>
@@ -391,7 +410,9 @@ const Home = ({ account, accountLevel }) => {
                             name="text"
                             defaultValue={comment.text}
                           ></input>
-                          <button type="submit">Confirm</button>
+                          <button name="confirmEdit" type="submit">
+                            Confirm
+                          </button>
                           <button
                             onClick={() => {
                               setEdit([false, 0]);
@@ -433,7 +454,9 @@ const Home = ({ account, accountLevel }) => {
             }
           >
             <input name="text" placeholder="Add new comment"></input>
-            <button>Post</button>
+            <button name="uploadPost" type="Submit">
+              Post
+            </button>
           </form>
         ) : (
           <p>Login to Comment</p>
@@ -446,13 +469,15 @@ const Home = ({ account, accountLevel }) => {
   const returnPostComments = (activePostId, commentState) => {
     let commentsArr = [];
 
-    if (!comments.loading) {
-      commentState.map((comment) => {
-        if (comment.postId == activePostId) {
-          commentsArr.push(comment);
-        }
-      });
-    }
+    commentState.map((comment) => {
+      if (comment.postId == activePostId) {
+        commentsArr.push(comment);
+      }
+    });
+
+    commentsArr.sort(function (a, b) {
+      return new Date(b.updatedAt) - new Date(a.updatedAt);
+    });
     return generateCommentEl(commentsArr, activePostId);
   };
 
@@ -524,7 +549,6 @@ const Home = ({ account, accountLevel }) => {
           data={data}
           commentData={commentData}
           setCommentData={setCommentData}
-          comments={comments.data.comments}
           returnUserLike={returnUserLike}
           returnPostLikes={returnPostLikes}
           returnPostComments={returnPostComments}
