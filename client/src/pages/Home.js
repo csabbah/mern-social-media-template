@@ -177,43 +177,50 @@ const Home = ({ account, accountLevel }) => {
           </button>
 
           {loggedIn &&
-          !userData.loading &&
-          useState != undefined &&
-          userState &&
-          userState.favouritedArr != undefined ? (
-            <>
-              <button
-                className={`favBtn ${userState.favouritedArr
-                  .map((item) => {
-                    if (item == currentPostId) {
-                      return "Filled";
+            !userData.loading &&
+            useState != undefined &&
+            userState &&
+            userState.favouritedArr != undefined && (
+              <>
+                <button
+                  className={`favBtn ${userState.favouritedArr
+                    .map((item) => {
+                      if (item == currentPostId) {
+                        return "Filled";
+                      }
+                    })
+                    .join("")}`}
+                  onClick={(e) => {
+                    if (e.target.className.includes("Filled")) {
+                      e.target.className = `favBtn`;
+                      removeFavouritePost(currentPostId);
+                    } else {
+                      e.target.className = "favBtn Filled";
+                      addNewFavourite(currentPostId);
                     }
-                  })
-                  .join("")}`}
-                onClick={(e) => {
-                  if (e.target.className.includes("Filled")) {
-                    e.target.className = `favBtn`;
-                    removeFavouritePost(currentPostId);
-                  } else {
-                    e.target.className = "favBtn Filled";
-                    addNewFavourite(currentPostId);
-                  }
-                }}
-              >
-                <RiSaveLine
-                  className="outlineSave"
-                  style={{ fontSize: "25px" }}
-                />
-                <RiSaveFill className="fillSave" style={{ fontSize: "25px" }} />
-              </button>
-            </>
-          ) : (
-            <p>Login to save post</p>
-          )}
+                  }}
+                >
+                  <RiSaveLine
+                    className="outlineSave"
+                    style={{ fontSize: "25px" }}
+                  />
+                  <RiSaveFill
+                    className="fillSave"
+                    style={{ fontSize: "25px" }}
+                  />
+                </button>
+              </>
+            )}
         </>
       );
     } else {
-      return <p>Login to like</p>;
+      return (
+        <p style={{ margin: "0" }}>
+          {" "}
+          <AiOutlineHeart />
+          Login to like and or save post
+        </p>
+      );
     }
   };
 
@@ -423,114 +430,48 @@ const Home = ({ account, accountLevel }) => {
   const generateCommentEl = (commentsArr, activePostId) => {
     return (
       <div>
-        <div>
-          {commentsArr.length}
-          <FaRegComment />
-        </div>
         <div className="comment-section">
           {commentsArr.map((comment, i) => {
             return (
               <div
-                style={{ marginBottom: "20px" }}
                 className={
                   returnUserComment(comment.userId) ? `users-comment` : ""
                 }
               >
-                {comment.username && comment.username}
-                <p
-                  className={
-                    returnUserComment(comment.userId)
-                      ? `users-comment-${i}`
-                      : ""
-                  }
-                  style={
-                    returnUserComment(comment.userId)
-                      ? {
-                          backgroundColor: "rgba(0,0,0,0.1)",
-                        }
-                      : {}
-                  }
+                <div
+                  style={{ border: "1px solid black" }}
+                  className="single-comment"
                 >
-                  {comment.text}
-                </p>
+                  {comment.username && comment.username}
+                  <p
+                    className={
+                      returnUserComment(comment.userId)
+                        ? `users-comment-${i}`
+                        : ""
+                    }
+                    style={
+                      returnUserComment(comment.userId)
+                        ? {
+                            backgroundColor: "rgba(0,0,0,0.1)",
+                          }
+                        : {}
+                    }
+                  >
+                    {comment.text}
+                  </p>
+                </div>
+                <div>
+                  {commentsArr.length}
+                  <FaRegComment />
+                </div>
                 <p>
-                  {format_date(comment.createdAt)}{" "}
-                  {comment.updated && <>{format_date(comment.updatedAt)}</>}
-                </p>
-
-                <p>
-                  Comment Liked{" "}
+                  Comment Liked:{" "}
                   <span className={`comment-likes-${i}`}>
                     {comment.liked.length}
                   </span>{" "}
                   time
-                  {comment.liked.length > 1 ? "s" : ""} -{" "}
-                  {comment.replies.length} Repl
-                  {comment.replies.length > 1 ? "ies" : "y"}
+                  {comment.liked.length > 1 ? "s" : ""}
                 </p>
-                <p>
-                  Replies:
-                  {comment.replies.map((reply) => {
-                    return (
-                      <p>
-                        {reply}
-                        <button>Edit</button>
-                        <button>X</button>
-                      </p>
-                    );
-                  })}
-                </p>
-                <button
-                  className={`commentLikeBtn ${comment.liked
-                    .map((like) => {
-                      if (like == account.data._id) {
-                        return `commentLikeChecked`;
-                      }
-                    })
-                    // .join removes the comma that is added after/before 'Checked'
-                    .join("")}`}
-                  onClick={(e) => {
-                    let value = parseInt(
-                      document.querySelector(`.comment-likes-${i}`).innerText
-                    );
-                    if (e.target.className.includes("commentLikeChecked")) {
-                      e.target.className = `commentLikeBtn`;
-                      document.querySelector(`.comment-likes-${i}`).innerText =
-                        value -= 1;
-
-                      console.log(
-                        document.querySelector(`.comment-likes-${i}`).innerText
-                      );
-                      removeLikeFromComment(comment._id);
-                    } else {
-                      document.querySelector(`.comment-likes-${i}`).innerText =
-                        value += 1;
-
-                      e.target.className = "commentLikeBtn commentLikeChecked";
-                      addLikeToComment(comment._id);
-                    }
-                  }}
-                >
-                  <AiFillHeart
-                    style={{ pointerEvents: "none" }}
-                    className="fillHeart"
-                  />
-                  <AiOutlineHeart
-                    style={{ pointerEvents: "none" }}
-                    className="outlineHeart"
-                  />
-                </button>
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    addReplyToComment(comment._id, e.target.text.value);
-                  }}
-                >
-                  <input name="text" placeholder="Add Reply"></input>
-                  <button type="submit">Reply</button>
-                </form>
-
-                {/* If it's the users comment, allow them to delete their comments */}
                 {returnUserComment(comment.userId) && (
                   <>
                     {edit[0] && edit[1] == i ? (
@@ -576,15 +517,100 @@ const Home = ({ account, accountLevel }) => {
                             .classList.add("hidden");
                         }}
                       >
-                        Edit
+                        Edit your comment
                       </button>
                     )}
-
                     <button onClick={() => removeCurrentComment(comment._id)}>
-                      X
+                      Delete your comment
                     </button>
                   </>
                 )}
+                <p>
+                  Posted {format_date(comment.createdAt)} ago - Updated{" "}
+                  {comment.updated && <>{format_date(comment.updatedAt)} ago</>}
+                </p>
+                {loggedIn && (
+                  <>
+                    <button
+                      className={`commentLikeBtn ${comment.liked
+                        .map((like) => {
+                          if (like == account.data._id) {
+                            return `commentLikeChecked`;
+                          }
+                        })
+                        // .join removes the comma that is added after/before 'Checked'
+                        .join("")}`}
+                      onClick={(e) => {
+                        let value = parseInt(
+                          document.querySelector(`.comment-likes-${i}`)
+                            .innerText
+                        );
+                        if (e.target.className.includes("commentLikeChecked")) {
+                          e.target.className = `commentLikeBtn`;
+                          document.querySelector(
+                            `.comment-likes-${i}`
+                          ).innerText = value -= 1;
+
+                          removeLikeFromComment(comment._id);
+                        } else {
+                          document.querySelector(
+                            `.comment-likes-${i}`
+                          ).innerText = value += 1;
+
+                          e.target.className =
+                            "commentLikeBtn commentLikeChecked";
+                          addLikeToComment(comment._id);
+                        }
+                      }}
+                    >
+                      Like comment
+                      <AiFillHeart
+                        style={{ pointerEvents: "none" }}
+                        className="fillHeart"
+                      />
+                      <AiOutlineHeart
+                        style={{ pointerEvents: "none" }}
+                        className="outlineHeart"
+                      />
+                    </button>
+
+                    <form
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        addReplyToComment(comment._id, e.target.text.value);
+                      }}
+                    >
+                      <input name="text" placeholder="Add Reply"></input>
+                      <button type="submit">Reply</button>
+                    </form>
+                  </>
+                )}
+
+                <p>
+                  {comment.replies.length} Repl
+                  {comment.replies.length > 1 ? "ies" : "y"} to above comment:
+                  <div
+                    style={{ border: "1px solid black" }}
+                    className="reply-section"
+                  >
+                    {comment.replies.map((reply) => {
+                      return (
+                        <p>
+                          {reply}
+                          {loggedIn && (
+                            <>
+                              <button>Reply</button>
+                              <button>Like</button>
+                              {/* // TODO: Only show Edit and X if the loggedIn user == the replies.userId */}
+                              <button>Edit</button>
+                              <button>X</button>
+                            </>
+                          )}
+                        </p>
+                      );
+                    })}
+                  </div>
+                </p>
               </div>
             );
           })}
@@ -601,7 +627,7 @@ const Home = ({ account, accountLevel }) => {
             </button>
           </form>
         ) : (
-          <p>Login to Comment</p>
+          <p>Login to Post and Reply to comments</p>
         )}
       </div>
     );

@@ -39,6 +39,6 @@ module.exports = {
       intervalType += "s";
     }
 
-    return `Posted ${interval} ${intervalType} ago`;
+    return `${interval} ${intervalType}`;
   },
 };
