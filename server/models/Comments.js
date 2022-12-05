@@ -15,6 +15,8 @@ const commentSchema = new Schema(
     username: {
       type: String,
     },
+    liked: [String],
+    replies: [String],
     createdAt: {
       type: String,
     },

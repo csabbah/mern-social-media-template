@@ -218,6 +218,26 @@ const resolvers = {
       return await comment;
     },
 
+    addReply: async (parent, { commentId, text }) => {
+      const comment = await Comments.findOneAndUpdate(
+        { _id: commentId },
+        { $push: { replies: text } },
+        { new: true }
+      );
+
+      return comment;
+    },
+
+    addCommentLike: async (parent, { commentId, userId }) => {
+      const comment = await Comments.findOneAndUpdate(
+        { _id: commentId },
+        { $push: { liked: userId } },
+        { new: true }
+      );
+
+      return comment;
+    },
+
     updateComment: async (parent, { commentId, text }) => {
       const comment = await Comments.findOneAndUpdate(
         { _id: commentId },

@@ -41,6 +41,7 @@ const typeDefs = gql`
     updatedAt: String
     userId: User
   }
+
   type Comments {
     _id: ID
     postId: String
@@ -50,6 +51,8 @@ const typeDefs = gql`
     updatedAt: String
     text: String
     updated: Boolean
+    liked: [String]
+    replies: [String]
   }
 
   type Vocab {
@@ -143,6 +146,8 @@ const typeDefs = gql`
       username: String!
     ): Comments
     updateComment(commentId: String!, text: String!): Comments
+    addReply(commentId: String!, text: String!): Comments
+    addCommentLike(commentId: String!, userId: String!): Comments
     removeComment(commentId: String!, userId: String!): Comments
   }
 
