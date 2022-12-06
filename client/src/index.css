@@ -269,7 +269,7 @@ select:-webkit-autofill:focus {
   display: flex;
   gap: 25px;
   width: 500px;
-  max-height: 500px;
+  max-height: 1500px;
   min-height: 200px;
   padding: 10px;
   overflow-x: scroll;
@@ -320,4 +320,41 @@ select:-webkit-autofill:focus {
 .hidden {
   pointer-events: none;
   display: none;
+}
+
+.comment-section {
+  padding: 10px;
+  overflow-y: scroll;
+}
+
+.comment-wrapper {
+  padding: 10px;
+  border-radius: 10px;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.single-comment {
+  padding: 10px;
+  border-radius: 10px;
+  background-color: rgba(0, 0, 0, 0.15);
+}
+
+/* Logged in users comment */
+.usersComment {
+  background-color: lightblue;
+}
+
+.reply-section {
+  height: 100%;
+  min-height: 150px;
+  max-height: 250px;
+  overflow-y: scroll;
+  border-radius: 10px;
+  border: 1px solid black;
+  padding: 10px;
+  margin-top: 15px;
+}
+
+.reply-form {
+  margin-top: 10px;
 }

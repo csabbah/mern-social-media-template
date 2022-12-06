@@ -172,6 +172,7 @@ const Home = ({ account, accountLevel }) => {
           >
             {/* CSS will determine which icon below will appear
           If button is checked, Fill heart will display, else, Outline will display */}
+
             <AiFillHeart className="fillHeart" />
             <AiOutlineHeart className="outlineHeart" />
           </button>
@@ -430,193 +431,9 @@ const Home = ({ account, accountLevel }) => {
   const generateCommentEl = (commentsArr, activePostId) => {
     return (
       <div>
-        <div className="comment-section">
-          {commentsArr.map((comment, i) => {
-            return (
-              <div
-                className={
-                  returnUserComment(comment.userId) ? `users-comment` : ""
-                }
-              >
-                <div
-                  style={{ border: "1px solid black" }}
-                  className="single-comment"
-                >
-                  {comment.username && comment.username}
-                  <p
-                    className={
-                      returnUserComment(comment.userId)
-                        ? `users-comment-${i}`
-                        : ""
-                    }
-                    style={
-                      returnUserComment(comment.userId)
-                        ? {
-                            backgroundColor: "rgba(0,0,0,0.1)",
-                          }
-                        : {}
-                    }
-                  >
-                    {comment.text}
-                  </p>
-                </div>
-                <div>
-                  {commentsArr.length}
-                  <FaRegComment />
-                </div>
-                <p>
-                  Comment Liked:{" "}
-                  <span className={`comment-likes-${i}`}>
-                    {comment.liked.length}
-                  </span>{" "}
-                  time
-                  {comment.liked.length > 1 ? "s" : ""}
-                </p>
-                {returnUserComment(comment.userId) && (
-                  <>
-                    {edit[0] && edit[1] == i ? (
-                      <>
-                        <form
-                          onSubmit={(e) => {
-                            e.preventDefault();
-                            editCurrentComment(
-                              comment._id,
-                              e.target.text.value
-                            );
-                            setEdit([false, 0]);
-                            document
-                              .querySelector(`.users-comment-${i}`)
-                              .classList.remove("hidden");
-                          }}
-                        >
-                          <input
-                            name="text"
-                            defaultValue={comment.text}
-                          ></input>
-                          <button name="confirmEdit" type="submit">
-                            Confirm
-                          </button>
-                          <button
-                            onClick={() => {
-                              setEdit([false, 0]);
-                              document
-                                .querySelector(`.users-comment-${i}`)
-                                .classList.remove("hidden");
-                            }}
-                          >
-                            Cancel
-                          </button>
-                        </form>
-                      </>
-                    ) : (
-                      <button
-                        onClick={(e) => {
-                          setEdit([true, i]);
-                          document
-                            .querySelector(`.users-comment-${i}`)
-                            .classList.add("hidden");
-                        }}
-                      >
-                        Edit your comment
-                      </button>
-                    )}
-                    <button onClick={() => removeCurrentComment(comment._id)}>
-                      Delete your comment
-                    </button>
-                  </>
-                )}
-                <p>
-                  Posted {format_date(comment.createdAt)} ago - Updated{" "}
-                  {comment.updated && <>{format_date(comment.updatedAt)} ago</>}
-                </p>
-                {loggedIn && (
-                  <>
-                    <button
-                      className={`commentLikeBtn ${comment.liked
-                        .map((like) => {
-                          if (like == account.data._id) {
-                            return `commentLikeChecked`;
-                          }
-                        })
-                        // .join removes the comma that is added after/before 'Checked'
-                        .join("")}`}
-                      onClick={(e) => {
-                        let value = parseInt(
-                          document.querySelector(`.comment-likes-${i}`)
-                            .innerText
-                        );
-                        if (e.target.className.includes("commentLikeChecked")) {
-                          e.target.className = `commentLikeBtn`;
-                          document.querySelector(
-                            `.comment-likes-${i}`
-                          ).innerText = value -= 1;
-
-                          removeLikeFromComment(comment._id);
-                        } else {
-                          document.querySelector(
-                            `.comment-likes-${i}`
-                          ).innerText = value += 1;
-
-                          e.target.className =
-                            "commentLikeBtn commentLikeChecked";
-                          addLikeToComment(comment._id);
-                        }
-                      }}
-                    >
-                      Like comment
-                      <AiFillHeart
-                        style={{ pointerEvents: "none" }}
-                        className="fillHeart"
-                      />
-                      <AiOutlineHeart
-                        style={{ pointerEvents: "none" }}
-                        className="outlineHeart"
-                      />
-                    </button>
-
-                    <form
-                      onSubmit={(e) => {
-                        e.preventDefault();
-                        addReplyToComment(comment._id, e.target.text.value);
-                      }}
-                    >
-                      <input name="text" placeholder="Add Reply"></input>
-                      <button type="submit">Reply</button>
-                    </form>
-                  </>
-                )}
-
-                <p>
-                  {comment.replies.length} Repl
-                  {comment.replies.length > 1 ? "ies" : "y"} to above comment:
-                  <div
-                    style={{ border: "1px solid black" }}
-                    className="reply-section"
-                  >
-                    {comment.replies.map((reply) => {
-                      return (
-                        <p>
-                          {reply}
-                          {loggedIn && (
-                            <>
-                              <button>Reply</button>
-                              <button>Like</button>
-                              {/* // TODO: Only show Edit and X if the loggedIn user == the replies.userId */}
-                              <button>Edit</button>
-                              <button>X</button>
-                            </>
-                          )}
-                        </p>
-                      );
-                    })}
-                  </div>
-                </p>
-              </div>
-            );
-          })}
-        </div>
         {loggedIn ? (
           <form
+            style={{ marginBottom: "20px", marginTop: "20px" }}
             onSubmit={(e) =>
               addNewComment(activePostId, e.target.text.value, e)
             }
@@ -629,6 +446,173 @@ const Home = ({ account, accountLevel }) => {
         ) : (
           <p>Login to Post and Reply to comments</p>
         )}
+        <div className="comment-section">
+          {commentsArr.map((comment, i) => {
+            return (
+              <div
+                className={
+                  returnUserComment(comment.userId) ? `users-comment` : ""
+                }
+              >
+                <div className="comment-wrapper">
+                  {comment.username}
+                  <p
+                    className={`single-comment ${
+                      returnUserComment(comment.userId) ? `usersComment` : ""
+                    }
+                      ${
+                        returnUserComment(comment.userId)
+                          ? `users-comment-${i}`
+                          : ""
+                      }`}
+                  >
+                    {comment.text}{" "}
+                    <>
+                      <br></br>Posted {format_date(comment.createdAt)} ago -
+                      Updated{" "}
+                      {comment.updated && (
+                        <>{format_date(comment.updatedAt)} ago</>
+                      )}
+                    </>
+                  </p>
+                  {returnUserComment(comment.userId) && (
+                    <>
+                      {edit[0] && edit[1] == i ? (
+                        <>
+                          <form
+                            onSubmit={(e) => {
+                              e.preventDefault();
+                              editCurrentComment(
+                                comment._id,
+                                e.target.text.value
+                              );
+                              setEdit([false, 0]);
+                              document
+                                .querySelector(`.users-comment-${i}`)
+                                .classList.remove("hidden");
+                            }}
+                          >
+                            <input
+                              name="text"
+                              defaultValue={comment.text}
+                            ></input>
+                            <button name="confirmEdit" type="submit">
+                              Confirm
+                            </button>
+                            <button
+                              onClick={() => {
+                                setEdit([false, 0]);
+                                document
+                                  .querySelector(`.users-comment-${i}`)
+                                  .classList.remove("hidden");
+                              }}
+                            >
+                              Cancel
+                            </button>
+                          </form>
+                        </>
+                      ) : (
+                        <button
+                          onClick={(e) => {
+                            setEdit([true, i]);
+                            document
+                              .querySelector(`.users-comment-${i}`)
+                              .classList.add("hidden");
+                          }}
+                        >
+                          Edit
+                        </button>
+                      )}
+                      <button onClick={() => removeCurrentComment(comment._id)}>
+                        Delete
+                      </button>
+                    </>
+                  )}
+                  <button
+                    className={`commentLikeBtn ${comment.liked
+                      .map((like) => {
+                        if (like == account.data._id) {
+                          return `commentLikeChecked`;
+                        }
+                      })
+                      // .join removes the comma that is added after/before 'Checked'
+                      .join("")}`}
+                    onClick={(e) => {
+                      let value = parseInt(
+                        document.querySelector(`.comment-likes-${i}`).innerText
+                      );
+                      if (e.target.className.includes("commentLikeChecked")) {
+                        e.target.className = `commentLikeBtn`;
+                        document.querySelector(
+                          `.comment-likes-${i}`
+                        ).innerText = value -= 1;
+
+                        removeLikeFromComment(comment._id);
+                      } else {
+                        document.querySelector(
+                          `.comment-likes-${i}`
+                        ).innerText = value += 1;
+
+                        e.target.className =
+                          "commentLikeBtn commentLikeChecked";
+                        addLikeToComment(comment._id);
+                      }
+                    }}
+                  >
+                    <span className={`comment-likes-${i}`}>
+                      {comment.liked.length}
+                    </span>
+                    <AiFillHeart
+                      style={{ pointerEvents: "none" }}
+                      className="fillHeart"
+                    />
+                    <AiOutlineHeart
+                      style={{ pointerEvents: "none" }}
+                      className="outlineHeart"
+                    />
+                  </button>
+                  <button>
+                    <span>{comment.replies.length}</span>
+                    <FaRegComment />
+                  </button>
+                </div>
+                <div className="reply-section">
+                  {comment.replies.map((reply) => {
+                    return (
+                      <p>
+                        {reply}
+                        {loggedIn && (
+                          <>
+                            <button>Reply</button>
+                            <button>
+                              <AiOutlineHeart />
+                            </button>
+                            {/* // TODO: Only show Edit and X if the loggedIn user == the replies.userId */}
+                            <button>Edit</button>
+                            <button>X</button>
+                          </>
+                        )}
+                      </p>
+                    );
+                  })}
+                </div>
+                {loggedIn && (
+                  <form
+                    className="reply-form"
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      addReplyToComment(comment._id, e.target.text.value);
+                    }}
+                  >
+                    <input name="text" placeholder="Add Reply"></input>
+                    <button type="submit">Reply</button>
+                  </form>
+                )}
+                <hr style={{ margin: "35px" }}></hr>
+              </div>
+            );
+          })}
+        </div>
       </div>
     );
   };
