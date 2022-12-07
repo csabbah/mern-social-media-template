@@ -218,6 +218,32 @@ const resolvers = {
       return await comment;
     },
 
+    updateComment: async (parent, { commentId, text }) => {
+      const comment = await Comments.findOneAndUpdate(
+        { _id: commentId },
+        { $set: { text, updated: true } },
+        { new: true }
+      );
+
+      return comment;
+    },
+
+    removeComment: async (parent, { commentId, userId }) => {
+      // Delete the comment
+      const comment = await Comments.findByIdAndDelete(commentId);
+
+      // Then remove it from the users array
+      const updateUserArr = await User.findOneAndUpdate(
+        { _id: userId },
+        {
+          $pull: { commentsArr: commentId },
+        },
+        { new: true }
+      ).populate("commentsArr");
+
+      return comment;
+    },
+
     addReply: async (parent, { commentId, text }) => {
       const comment = await Comments.findOneAndUpdate(
         { _id: commentId },
@@ -244,32 +270,6 @@ const resolvers = {
         { $pull: { liked: userId } },
         { new: true }
       );
-
-      return comment;
-    },
-
-    updateComment: async (parent, { commentId, text }) => {
-      const comment = await Comments.findOneAndUpdate(
-        { _id: commentId },
-        { $set: { text, updated: true } },
-        { new: true }
-      );
-
-      return comment;
-    },
-
-    removeComment: async (parent, { commentId, userId }) => {
-      // Delete the comment
-      const comment = await Comments.findByIdAndDelete(commentId);
-
-      // Then remove it from the users array
-      const updateUserArr = await User.findOneAndUpdate(
-        { _id: userId },
-        {
-          $pull: { commentsArr: commentId },
-        },
-        { new: true }
-      ).populate("commentsArr");
 
       return comment;
     },

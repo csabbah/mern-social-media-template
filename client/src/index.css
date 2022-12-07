@@ -59,11 +59,10 @@ textarea::placeholder {
 
 input,
 textarea {
-  margin: auto;
   height: 38px;
   font-size: 18px;
   resize: none;
-  width: 350px;
+  width: 100%;
   padding-left: 10px;
   border: none;
   border-radius: 8px;
@@ -345,9 +344,9 @@ select:-webkit-autofill:focus {
 }
 
 .comment-outer-wrapper {
+  width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
 }
 .comment-section {
   width: 100%;
