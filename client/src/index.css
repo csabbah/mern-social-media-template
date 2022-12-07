@@ -57,7 +57,8 @@ textarea::placeholder {
   color: #272522;
 }
 
-input {
+input,
+textarea {
   margin: auto;
   height: 38px;
   font-size: 18px;
@@ -68,6 +69,10 @@ input {
   border-radius: 8px;
   color: #272522;
   background-color: rgb(235, 235, 235);
+}
+textarea {
+  height: 100px;
+  padding-top: 8px;
 }
 
 button {
@@ -263,12 +268,12 @@ select:-webkit-autofill:focus {
   box-shadow: 0 0 0 5px rgba(0, 0, 0, 0.2);
 }
 
-/* ----------------------- Quote Section */
+/* ----------------------- Geography Section */
 
 .geo-wrapper {
   display: flex;
   gap: 25px;
-  width: 500px;
+  width: 400px;
   max-height: 1500px;
   min-height: 200px;
   padding: 10px;
@@ -278,17 +283,34 @@ select:-webkit-autofill:focus {
 }
 
 .geo-card {
-  min-width: 480px;
+  height: fit-content;
+  min-width: 380px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   scroll-snap-align: center;
   cursor: pointer;
-  padding: 5px;
+  padding: 10px;
   border-radius: 20px;
   background-color: rgb(203, 104, 203);
   box-shadow: 0 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+/* ----------------- Content section */
+.content-section {
+  background-color: grey;
+  height: 150px;
+  padding: 10px;
+  border-radius: 20px;
+  width: 100%;
+}
+
+/* ----------------- Likes and Save button */
+.post-likes-wrapper {
+  margin-top: 10px;
+  display: flex;
+  gap: 5px;
 }
 
 /* Likes and Save control */
@@ -322,8 +344,13 @@ select:-webkit-autofill:focus {
   display: none;
 }
 
+.comment-outer-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 .comment-section {
-  padding: 10px;
+  width: 100%;
   overflow-y: scroll;
 }
 
@@ -337,6 +364,24 @@ select:-webkit-autofill:focus {
   padding: 10px;
   border-radius: 10px;
   background-color: rgba(0, 0, 0, 0.15);
+}
+
+.new-comment-form,
+.reply-form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.new-comment-form {
+  margin: 15px 0;
+}
+
+.new-comment-form button,
+.reply-form button {
+  margin-top: 5px;
+  width: 100px;
+  height: 45px;
 }
 
 /* Logged in users comment */
@@ -357,4 +402,8 @@ select:-webkit-autofill:focus {
 
 .reply-form {
   margin-top: 10px;
+}
+
+.reply-section-wrapper.hidden {
+  display: none;
 }
