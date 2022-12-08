@@ -118,7 +118,17 @@ export const ADD_COMMENT = gql`
       userId
       text
       liked
-      replies
+      replies {
+        updatedAt
+        createdAt
+        text
+        username
+        replyId
+        userId
+        commentId
+        replyToReply
+        replyLikes
+      }
       username
       createdAt
       updatedAt
@@ -136,7 +146,17 @@ export const UPDATE_COMMENT = gql`
       userId
       text
       liked
-      replies
+      replies {
+        updatedAt
+        createdAt
+        text
+        username
+        replyId
+        userId
+        commentId
+        replyToReply
+        replyLikes
+      }
       username
       createdAt
       updatedAt
@@ -155,7 +175,17 @@ export const REMOVE_COMMENT = gql`
       text
       username
       liked
-      replies
+      replies {
+        updatedAt
+        createdAt
+        text
+        username
+        replyId
+        userId
+        commentId
+        replyToReply
+        replyLikes
+      }
       createdAt
       updatedAt
       updated
@@ -173,7 +203,17 @@ export const ADD_COMMENT_LIKE = gql`
       text
       username
       liked
-      replies
+      replies {
+        updatedAt
+        createdAt
+        text
+        username
+        replyId
+        userId
+        commentId
+        replyToReply
+        replyLikes
+      }
       createdAt
       updatedAt
       updated
@@ -191,7 +231,17 @@ export const REMOVE_COMMENT_LIKE = gql`
       text
       username
       liked
-      replies
+      replies {
+        updatedAt
+        createdAt
+        text
+        username
+        replyId
+        userId
+        commentId
+        replyToReply
+        replyLikes
+      }
       createdAt
       updatedAt
       updated
@@ -200,8 +250,8 @@ export const REMOVE_COMMENT_LIKE = gql`
 `;
 
 export const ADD_REPLY = gql`
-  mutation addReply($commentId: String!, $text: String!) {
-    addReply(commentId: $commentId, text: $text) {
+  mutation addReply($replyToSave: repliesInput) {
+    addReply(replyToSave: $replyToSave) {
       __typename
       _id
       postId
@@ -209,7 +259,17 @@ export const ADD_REPLY = gql`
       text
       username
       liked
-      replies
+      replies {
+        updatedAt
+        createdAt
+        text
+        username
+        replyId
+        userId
+        commentId
+        replyToReply
+        replyLikes
+      }
       createdAt
       updatedAt
       updated

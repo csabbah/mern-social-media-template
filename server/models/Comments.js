@@ -15,8 +15,24 @@ const commentSchema = new Schema(
     username: {
       type: String,
     },
+
     liked: [String],
-    replies: [String],
+    replies: [
+      {
+        updateAt: { type: Date, default: Date.now },
+        createdAt: { type: Date, default: Date.now },
+        replyId: {
+          type: String,
+          default: () => Math.random().toString(36).substring(2, 15),
+        },
+        commentId: { type: String },
+        userId: { type: String },
+        username: { type: String },
+        text: { type: String },
+        replyToReply: [{ type: String, default: [] }],
+        replyLikes: [{ type: String, default: [] }],
+      },
+    ],
     createdAt: {
       type: String,
     },

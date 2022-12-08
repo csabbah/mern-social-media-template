@@ -233,7 +233,7 @@ const resolvers = {
       const comment = await Comments.findByIdAndDelete(commentId);
 
       // Then remove it from the users array
-      const updateUserArr = await User.findOneAndUpdate(
+      await User.findOneAndUpdate(
         { _id: userId },
         {
           $pull: { commentsArr: commentId },
@@ -244,10 +244,10 @@ const resolvers = {
       return comment;
     },
 
-    addReply: async (parent, { commentId, text }) => {
+    addReply: async (parent, { replyToSave }) => {
       const comment = await Comments.findOneAndUpdate(
-        { _id: commentId },
-        { $push: { replies: text } },
+        { _id: replyToSave.commentId },
+        { $push: { replies: replyToSave } },
         { new: true }
       );
 

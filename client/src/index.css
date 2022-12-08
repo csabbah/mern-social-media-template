@@ -337,12 +337,20 @@ select:-webkit-autofill:focus {
   display: none;
 }
 
+.commentLikeBtn {
+  display: flex;
+  align-items: center;
+}
+
 /* Comment control */
 .hidden {
   pointer-events: none;
   display: none;
 }
 
+.comment-controls-wrapper {
+  display: flex;
+}
 .comment-outer-wrapper {
   width: 100%;
   display: flex;

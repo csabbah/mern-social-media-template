@@ -42,6 +42,29 @@ const typeDefs = gql`
     userId: User
   }
 
+  input repliesInput {
+    replyId: String
+    commentId: String
+    userId: String
+    text: String
+    username: String
+    replyToReply: [String]
+    replyLikes: [String]
+    createdAt: String
+    updatedAt: String
+  }
+  type replies {
+    replyId: String
+    commentId: String
+    userId: String
+    text: String
+    username: String
+    replyToReply: [String]
+    replyLikes: [String]
+    createdAt: String
+    updatedAt: String
+  }
+
   type Comments {
     _id: ID
     postId: String
@@ -52,7 +75,7 @@ const typeDefs = gql`
     text: String
     updated: Boolean
     liked: [String]
-    replies: [String]
+    replies: [replies]
   }
 
   type Vocab {
@@ -146,7 +169,7 @@ const typeDefs = gql`
       username: String!
     ): Comments
     updateComment(commentId: String!, text: String!): Comments
-    addReply(commentId: String!, text: String!): Comments
+    addReply(replyToSave: repliesInput): Comments
     addCommentLike(commentId: String!, userId: String!): Comments
     removeCommentLike(commentId: String!, userId: String!): Comments
     removeComment(commentId: String!, userId: String!): Comments

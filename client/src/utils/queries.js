@@ -79,7 +79,17 @@ export const GET_COMMENTS = gql`
       userId
       username
       liked
-      replies
+      replies {
+        updatedAt
+        createdAt
+        text
+        username
+        replyId
+        userId
+        commentId
+        replyToReply
+        replyLikes
+      }
       createdAt
       updatedAt
       updated
