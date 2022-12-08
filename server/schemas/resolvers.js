@@ -256,19 +256,16 @@ const resolvers = {
       return comment;
     },
 
-    addReplyToReply: async (
-      parent,
-      { replyText, replyId, commentId, username }
-    ) => {
-      const comment = await Comments.findOneAndUpdate({ _id: commentId });
-
-      let replyToReplyId = Math.random().toString(36).substring(2, 15);
+    addReplyToReply: async (parent, { replyToReplySave }) => {
+      const comment = await Comments.findOneAndUpdate({
+        _id: replyToReplySave.commentId,
+      });
 
       // Go through the replies array using regular JS expression
       comment.replies.forEach((reply) => {
-        if (reply._id == replyId) {
+        if (reply._id == replyToReplySave.replyId) {
           // Update model from JS side
-          reply.replyToReply.push(`${replyText}/${username}/${replyToReplyId}`);
+          reply.replyToReply.push(replyToReplySave);
           // Then save the data to the model
           comment.save(reply);
         }
@@ -283,6 +280,13 @@ const resolvers = {
         { $pull: { replies: { _id: replyId } } },
         { new: true }
       );
+
+      // comment.replies.forEach((reply, index) => {
+      //   if (reply._id == replyId) {
+      //     comment.replies.splice(index, 1)
+      //     comment.save(reply);
+      //   }
+      // })
 
       return comment;
     },

@@ -42,13 +42,35 @@ const typeDefs = gql`
     userId: User
   }
 
+  input replyToReplyInput {
+    _id: ID
+    commentId: String!
+    replyId: String!
+    replyText: String!
+    userId: String!
+    username: String!
+    createdAt: String
+    updatedAt: String
+  }
+
+  type replyToReply {
+    _id: ID
+    commentId: String!
+    replyId: String!
+    replyText: String!
+    userId: String!
+    username: String!
+    createdAt: String
+    updatedAt: String
+  }
+
   input repliesInput {
     _id: ID
     commentId: String
     userId: String
     text: String
     username: String
-    replyToReply: [String]
+    replyToReply: [replyToReplyInput]
     replyLikes: [String]
     createdAt: String
     updatedAt: String
@@ -60,7 +82,7 @@ const typeDefs = gql`
     userId: String
     text: String
     username: String
-    replyToReply: [String]
+    replyToReply: [replyToReply]
     replyLikes: [String]
     createdAt: String
     updatedAt: String
@@ -172,14 +194,7 @@ const typeDefs = gql`
     updateComment(commentId: String!, text: String!): Comments
     addReply(replyToSave: repliesInput): Comments
     removeReply(replyId: String!, commentId: String!): Comments
-    addReplyToReply(
-      replyId: String!
-      commentId: String!
-      replyText: String!
-      userId: String!
-      username: String!
-      replyToReplyId: String
-    ): Comments
+    addReplyToReply(replyToReplySave: replyToReplyInput): Comments
 
     addCommentLike(commentId: String!, userId: String!): Comments
     removeCommentLike(commentId: String!, userId: String!): Comments

@@ -25,7 +25,17 @@ const commentSchema = new Schema(
         userId: { type: String },
         username: { type: String },
         text: { type: String },
-        replyToReply: [{ type: String, default: [] }],
+        replyToReply: [
+          {
+            commentId: { type: String },
+            replyId: { type: String },
+            replyText: { type: String },
+            userId: { type: String },
+            username: { type: String },
+            updateAt: { type: Date, default: Date.now },
+            createdAt: { type: Date, default: Date.now },
+          },
+        ],
         replyLikes: [{ type: String, default: [] }],
       },
     ],

@@ -412,9 +412,7 @@ select:-webkit-autofill:focus {
 }
 
 .replies-to-reply-section {
-  margin-left: 10px;
-  text-indent: 5px;
-  background-color: rgba(0, 0, 0, 0.2);
+  margin-left: 15px;
 }
 .reply-form {
   margin-top: 10px;

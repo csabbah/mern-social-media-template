@@ -126,7 +126,16 @@ export const ADD_COMMENT = gql`
         username
         userId
         commentId
-        replyToReply
+        replyToReply {
+          replyText
+          commentId
+          userId
+          username
+          _id
+          createdAt
+          updatedAt
+          replyId
+        }
         replyLikes
       }
       username
@@ -154,7 +163,16 @@ export const UPDATE_COMMENT = gql`
         username
         userId
         commentId
-        replyToReply
+        replyToReply {
+          replyText
+          commentId
+          userId
+          username
+          _id
+          createdAt
+          updatedAt
+          replyId
+        }
         replyLikes
       }
       username
@@ -183,7 +201,16 @@ export const REMOVE_COMMENT = gql`
         username
         userId
         commentId
-        replyToReply
+        replyToReply {
+          replyText
+          commentId
+          userId
+          username
+          _id
+          createdAt
+          updatedAt
+          replyId
+        }
         replyLikes
       }
       createdAt
@@ -211,7 +238,16 @@ export const ADD_COMMENT_LIKE = gql`
         username
         userId
         commentId
-        replyToReply
+        replyToReply {
+          replyText
+          commentId
+          userId
+          username
+          _id
+          createdAt
+          updatedAt
+          replyId
+        }
         replyLikes
       }
       createdAt
@@ -239,7 +275,16 @@ export const REMOVE_COMMENT_LIKE = gql`
         username
         userId
         commentId
-        replyToReply
+        replyToReply {
+          replyText
+          commentId
+          userId
+          username
+          _id
+          createdAt
+          updatedAt
+          replyId
+        }
         replyLikes
       }
       createdAt
@@ -267,7 +312,16 @@ export const ADD_REPLY = gql`
         username
         userId
         commentId
-        replyToReply
+        replyToReply {
+          replyText
+          commentId
+          userId
+          username
+          _id
+          createdAt
+          updatedAt
+          replyId
+        }
         replyLikes
       }
       createdAt
@@ -295,7 +349,16 @@ export const REMOVE_REPLY = gql`
         username
         userId
         commentId
-        replyToReply
+        replyToReply {
+          replyText
+          commentId
+          userId
+          username
+          _id
+          createdAt
+          updatedAt
+          replyId
+        }
         replyLikes
       }
       createdAt
@@ -306,20 +369,8 @@ export const REMOVE_REPLY = gql`
 `;
 
 export const ADD_REPLY_TO_REPLY = gql`
-  mutation addReplyToReply(
-    $commentId: String!
-    $replyId: String!
-    $replyText: String!
-    $userId: String!
-    $username: String!
-  ) {
-    addReplyToReply(
-      commentId: $commentId
-      replyId: $replyId
-      replyText: $replyText
-      userId: $userId
-      username: $username
-    ) {
+  mutation addReplyToReply($replyToReplySave: replyToReplyInput) {
+    addReplyToReply(replyToReplySave: $replyToReplySave) {
       __typename
       _id
       postId
@@ -335,7 +386,16 @@ export const ADD_REPLY_TO_REPLY = gql`
         username
         userId
         commentId
-        replyToReply
+        replyToReply {
+          replyText
+          commentId
+          userId
+          username
+          _id
+          createdAt
+          updatedAt
+          replyId
+        }
         replyLikes
       }
       createdAt

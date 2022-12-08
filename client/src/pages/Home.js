@@ -370,7 +370,6 @@ const Home = ({ account, accountLevel }) => {
   };
 
   const removeReplyFromComment = async (replyId, commentId) => {
-    console.log(replyId, commentId);
     try {
       let comment = await removeReply({
         variables: {
@@ -390,26 +389,17 @@ const Home = ({ account, accountLevel }) => {
     }
   };
 
-  const addReplyToExistingReply = async (
-    commentId,
-    replyText,
-    userId,
-    replyId,
-    username
-  ) => {
+  const addReplyToExistingReply = async ({ replyToReplySave }) => {
     try {
       let comment = await addReplyToReply({
         variables: {
-          replyText: replyText,
-          commentId: commentId,
-          replyId: replyId,
-          userId: userId,
-          username: username,
+          replyToReplySave: replyToReplySave,
         },
       });
-      console.log(comment);
       setCommentData([
-        ...commentData.filter((dbComment) => dbComment._id !== commentId),
+        ...commentData.filter(
+          (dbComment) => dbComment._id !== replyToReplySave.commentId
+        ),
         comment.data?.addReplyToReply,
       ]);
       // TODO: After you update the user model to contain all comments
@@ -487,18 +477,6 @@ const Home = ({ account, accountLevel }) => {
   };
 
   const [edit, setEdit] = useState([false, 0]);
-
-  const extractRepliesData = (reply) => {
-    let replyArr = [];
-
-    reply.replyToReply.forEach((item) => {
-      var text = item.split("/")[0];
-      var username = item.split("/")[1];
-      replyArr.push(`${text} - ${username} `);
-    });
-
-    return replyArr;
-  };
 
   const generateCommentEl = (commentsArr, activePostId) => {
     return (
@@ -689,8 +667,12 @@ const Home = ({ account, accountLevel }) => {
                           <div>
                             {reply.username} - {reply.text}
                             <p className="replies-to-reply-section">
-                              {extractRepliesData(reply).map((item) => {
-                                return <p>{item}</p>;
+                              {reply.replyToReply.map((reply) => {
+                                return (
+                                  <p>
+                                    {reply.replyText} - {reply.username}
+                                  </p>
+                                );
                               })}
                             </p>
                             <div>
@@ -708,13 +690,15 @@ const Home = ({ account, accountLevel }) => {
                                   <form
                                     onSubmit={(e) => {
                                       e.preventDefault();
-                                      addReplyToExistingReply(
-                                        reply.commentId,
-                                        e.target.replyText.value,
-                                        account.data._id,
-                                        reply._id,
-                                        account.data.username
-                                      );
+                                      addReplyToExistingReply({
+                                        replyToReplySave: {
+                                          commentId: reply.commentId,
+                                          replyText: e.target.replyText.value,
+                                          userId: account.data._id,
+                                          replyId: reply._id,
+                                          username: account.data.username,
+                                        },
+                                      });
                                     }}
                                     className={`reply-to-reply-input hidden reply-to-reply-${i}`}
                                   >
