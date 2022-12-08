@@ -305,6 +305,45 @@ export const REMOVE_REPLY = gql`
   }
 `;
 
+export const ADD_REPLY_TO_REPLY = gql`
+  mutation addReplyToReply(
+    $commentId: String!
+    $replyId: String!
+    $replyText: String!
+    $userId: String!
+    $username: String!
+  ) {
+    addReplyToReply(
+      commentId: $commentId
+      replyId: $replyId
+      replyText: $replyText
+      userId: $userId
+      username: $username
+    ) {
+      __typename
+      _id
+      postId
+      userId
+      text
+      username
+      liked
+      replies {
+        _id
+        updatedAt
+        createdAt
+        text
+        username
+        userId
+        commentId
+        replyToReply
+        replyLikes
+      }
+      createdAt
+      updatedAt
+      updated
+    }
+  }
+`;
 // export const ADD_MASTER = gql`
 //   mutation addMaster($company: String!) {
 //     addMaster(company: $company) {

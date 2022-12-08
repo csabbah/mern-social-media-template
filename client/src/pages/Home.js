@@ -24,6 +24,7 @@ import {
   ADD_FAVOURITE,
   REMOVE_FAVOURITE,
   ADD_REPLY,
+  ADD_REPLY_TO_REPLY,
   REMOVE_REPLY,
   ADD_COMMENT_LIKE,
   REMOVE_COMMENT_LIKE,
@@ -99,6 +100,8 @@ const Home = ({ account, accountLevel }) => {
   const [updateComment, { updateCommentErr }] = useMutation(UPDATE_COMMENT);
   const [removeComment, { removeCommentErr }] = useMutation(REMOVE_COMMENT);
   const [addReply, { addReplyErr }] = useMutation(ADD_REPLY);
+  const [addReplyToReply, { addReplyToReplyErr }] =
+    useMutation(ADD_REPLY_TO_REPLY);
   const [removeReply, { removeReplyErr }] = useMutation(REMOVE_REPLY);
   const [addCommentLike, { addCommentLikeErr }] = useMutation(ADD_COMMENT_LIKE);
   const [removeCommentLike, { removeCommentLikeErr }] =
@@ -365,6 +368,7 @@ const Home = ({ account, accountLevel }) => {
       console.log(e);
     }
   };
+
   const removeReplyFromComment = async (replyId, commentId) => {
     console.log(replyId, commentId);
     try {
@@ -379,6 +383,36 @@ const Home = ({ account, accountLevel }) => {
         comment.data?.removeReply,
       ]);
       // TODO: After you update the user model to contain all their comments
+      // TODO: Need to add the user state update here
+    } catch (e) {
+      // Clear state
+      console.log(e);
+    }
+  };
+
+  const addReplyToExistingReply = async (
+    commentId,
+    replyText,
+    userId,
+    replyId,
+    username
+  ) => {
+    try {
+      let comment = await addReplyToReply({
+        variables: {
+          replyText: replyText,
+          commentId: commentId,
+          replyId: replyId,
+          userId: userId,
+          username: username,
+        },
+      });
+      console.log(comment);
+      setCommentData([
+        ...commentData.filter((dbComment) => dbComment._id !== commentId),
+        comment.data?.addReplyToReply,
+      ]);
+      // TODO: After you update the user model to contain all comments
       // TODO: Need to add the user state update here
     } catch (e) {
       // Clear state
@@ -453,6 +487,18 @@ const Home = ({ account, accountLevel }) => {
   };
 
   const [edit, setEdit] = useState([false, 0]);
+
+  const extractRepliesData = (reply) => {
+    let replyArr = [];
+
+    reply.replyToReply.forEach((item) => {
+      var text = item.split("/")[0];
+      var username = item.split("/")[1];
+      replyArr.push(`${text} - ${username} `);
+    });
+
+    return replyArr;
+  };
 
   const generateCommentEl = (commentsArr, activePostId) => {
     return (
@@ -638,32 +684,69 @@ const Home = ({ account, accountLevel }) => {
                 >
                   <div className={`reply-section`}>
                     {comment.replies.length > 0 &&
-                      comment.replies.map((reply) => {
+                      comment.replies.map((reply, i) => {
                         return (
-                          <p>
-                            {reply.text}
-                            {loggedIn && reply.userId == account.data._id && (
-                              <>
-                                <button>Reply</button>
-                                <button>
-                                  <AiOutlineHeart />
-                                </button>
-                                {/* // TODO: Only show Edit and X if the loggedIn user == the replies.userId */}
-                                <button>Edit</button>
-                                <button
-                                  onClick={() =>
-                                    removeReplyFromComment(
-                                      reply._id,
-                                      reply.commentId
-                                    )
-                                  }
-                                >
-                                  X
-                                </button>
-                              </>
-                            )}
+                          <div>
+                            {reply.username} - {reply.text}
+                            <p className="replies-to-reply-section">
+                              {extractRepliesData(reply).map((item) => {
+                                return <p>{item}</p>;
+                              })}
+                            </p>
+                            <div>
+                              {loggedIn && (
+                                <>
+                                  <button
+                                    onClick={() =>
+                                      document
+                                        .querySelector(`.reply-to-reply-${i}`)
+                                        .classList.toggle("hidden")
+                                    }
+                                  >
+                                    Reply
+                                  </button>
+                                  <form
+                                    onSubmit={(e) => {
+                                      e.preventDefault();
+                                      addReplyToExistingReply(
+                                        reply.commentId,
+                                        e.target.replyText.value,
+                                        account.data._id,
+                                        reply._id,
+                                        account.data.username
+                                      );
+                                    }}
+                                    className={`reply-to-reply-input hidden reply-to-reply-${i}`}
+                                  >
+                                    <input
+                                      name="replyText"
+                                      placeholder="Add reply"
+                                    ></input>
+                                    <button>Reply</button>
+                                  </form>
+                                  <button>
+                                    <AiOutlineHeart />
+                                  </button>
+                                </>
+                              )}
+                              {loggedIn && reply.userId == account.data._id && (
+                                <div>
+                                  <button>Edit</button>
+                                  <button
+                                    onClick={() =>
+                                      removeReplyFromComment(
+                                        reply._id,
+                                        reply.commentId
+                                      )
+                                    }
+                                  >
+                                    X
+                                  </button>
+                                </div>
+                              )}
+                            </div>
                             <hr></hr>
-                          </p>
+                          </div>
                         );
                       })}
                   </div>

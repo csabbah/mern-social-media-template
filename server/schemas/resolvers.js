@@ -13,6 +13,7 @@ const {
 const { AuthenticationError } = require("apollo-server-express");
 const { signToken } = require("../utils/auth");
 const { find, findById } = require("../models/User");
+const { default: mongoose } = require("mongoose");
 
 const resolvers = {
   Query: {
@@ -251,6 +252,27 @@ const resolvers = {
         { $push: { replies: replyToSave } },
         { new: true }
       );
+
+      return comment;
+    },
+
+    addReplyToReply: async (
+      parent,
+      { replyText, replyId, commentId, username }
+    ) => {
+      const comment = await Comments.findOneAndUpdate({ _id: commentId });
+
+      let replyToReplyId = Math.random().toString(36).substring(2, 15);
+
+      // Go through the replies array using regular JS expression
+      comment.replies.forEach((reply) => {
+        if (reply._id == replyId) {
+          // Update model from JS side
+          reply.replyToReply.push(`${replyText}/${username}/${replyToReplyId}`);
+          // Then save the data to the model
+          comment.save(reply);
+        }
+      });
 
       return comment;
     },
