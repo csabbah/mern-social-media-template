@@ -24,6 +24,7 @@ import {
   ADD_FAVOURITE,
   REMOVE_FAVOURITE,
   ADD_REPLY,
+  REMOVE_REPLY,
   ADD_COMMENT_LIKE,
   REMOVE_COMMENT_LIKE,
 } from "../utils/mutations";
@@ -98,6 +99,7 @@ const Home = ({ account, accountLevel }) => {
   const [updateComment, { updateCommentErr }] = useMutation(UPDATE_COMMENT);
   const [removeComment, { removeCommentErr }] = useMutation(REMOVE_COMMENT);
   const [addReply, { addReplyErr }] = useMutation(ADD_REPLY);
+  const [removeReply, { removeReplyErr }] = useMutation(REMOVE_REPLY);
   const [addCommentLike, { addCommentLikeErr }] = useMutation(ADD_COMMENT_LIKE);
   const [removeCommentLike, { removeCommentLikeErr }] =
     useMutation(REMOVE_COMMENT_LIKE);
@@ -363,6 +365,26 @@ const Home = ({ account, accountLevel }) => {
       console.log(e);
     }
   };
+  const removeReplyFromComment = async (replyId, commentId) => {
+    console.log(replyId, commentId);
+    try {
+      let comment = await removeReply({
+        variables: {
+          commentId: commentId,
+          replyId: replyId,
+        },
+      });
+      setCommentData([
+        ...commentData.filter((dbComment) => dbComment._id !== commentId),
+        comment.data?.removeReply,
+      ]);
+      // TODO: After you update the user model to contain all their comments
+      // TODO: Need to add the user state update here
+    } catch (e) {
+      // Clear state
+      console.log(e);
+    }
+  };
 
   const editCurrentComment = async (commentId, text) => {
     try {
@@ -620,7 +642,7 @@ const Home = ({ account, accountLevel }) => {
                         return (
                           <p>
                             {reply.text}
-                            {loggedIn && (
+                            {loggedIn && reply.userId == account.data._id && (
                               <>
                                 <button>Reply</button>
                                 <button>
@@ -628,7 +650,16 @@ const Home = ({ account, accountLevel }) => {
                                 </button>
                                 {/* // TODO: Only show Edit and X if the loggedIn user == the replies.userId */}
                                 <button>Edit</button>
-                                <button>X</button>
+                                <button
+                                  onClick={() =>
+                                    removeReplyFromComment(
+                                      reply._id,
+                                      reply.commentId
+                                    )
+                                  }
+                                >
+                                  X
+                                </button>
                               </>
                             )}
                             <hr></hr>

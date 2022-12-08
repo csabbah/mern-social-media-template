@@ -21,10 +21,6 @@ const commentSchema = new Schema(
       {
         updateAt: { type: Date, default: Date.now },
         createdAt: { type: Date, default: Date.now },
-        replyId: {
-          type: String,
-          default: () => Math.random().toString(36).substring(2, 15),
-        },
         commentId: { type: String },
         userId: { type: String },
         username: { type: String },

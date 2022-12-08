@@ -119,11 +119,11 @@ export const ADD_COMMENT = gql`
       text
       liked
       replies {
+        _id
         updatedAt
         createdAt
         text
         username
-        replyId
         userId
         commentId
         replyToReply
@@ -147,11 +147,11 @@ export const UPDATE_COMMENT = gql`
       text
       liked
       replies {
+        _id
         updatedAt
         createdAt
         text
         username
-        replyId
         userId
         commentId
         replyToReply
@@ -176,11 +176,11 @@ export const REMOVE_COMMENT = gql`
       username
       liked
       replies {
+        _id
         updatedAt
         createdAt
         text
         username
-        replyId
         userId
         commentId
         replyToReply
@@ -204,11 +204,11 @@ export const ADD_COMMENT_LIKE = gql`
       username
       liked
       replies {
+        _id
         updatedAt
         createdAt
         text
         username
-        replyId
         userId
         commentId
         replyToReply
@@ -232,11 +232,11 @@ export const REMOVE_COMMENT_LIKE = gql`
       username
       liked
       replies {
+        _id
         updatedAt
         createdAt
         text
         username
-        replyId
         userId
         commentId
         replyToReply
@@ -260,11 +260,11 @@ export const ADD_REPLY = gql`
       username
       liked
       replies {
+        _id
         updatedAt
         createdAt
         text
         username
-        replyId
         userId
         commentId
         replyToReply
@@ -276,6 +276,35 @@ export const ADD_REPLY = gql`
     }
   }
 `;
+
+export const REMOVE_REPLY = gql`
+  mutation removeReply($commentId: String!, $replyId: String!) {
+    removeReply(commentId: $commentId, replyId: $replyId) {
+      __typename
+      _id
+      postId
+      userId
+      text
+      username
+      liked
+      replies {
+        _id
+        updatedAt
+        createdAt
+        text
+        username
+        userId
+        commentId
+        replyToReply
+        replyLikes
+      }
+      createdAt
+      updatedAt
+      updated
+    }
+  }
+`;
+
 // export const ADD_MASTER = gql`
 //   mutation addMaster($company: String!) {
 //     addMaster(company: $company) {

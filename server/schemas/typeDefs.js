@@ -43,7 +43,7 @@ const typeDefs = gql`
   }
 
   input repliesInput {
-    replyId: String
+    _id: ID
     commentId: String
     userId: String
     text: String
@@ -54,7 +54,7 @@ const typeDefs = gql`
     updatedAt: String
   }
   type replies {
-    replyId: String
+    _id: ID
     commentId: String
     userId: String
     text: String
@@ -170,6 +170,7 @@ const typeDefs = gql`
     ): Comments
     updateComment(commentId: String!, text: String!): Comments
     addReply(replyToSave: repliesInput): Comments
+    removeReply(replyId: String!, commentId: String!): Comments
     addCommentLike(commentId: String!, userId: String!): Comments
     removeCommentLike(commentId: String!, userId: String!): Comments
     removeComment(commentId: String!, userId: String!): Comments

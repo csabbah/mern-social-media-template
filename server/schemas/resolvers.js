@@ -12,6 +12,7 @@ const {
 
 const { AuthenticationError } = require("apollo-server-express");
 const { signToken } = require("../utils/auth");
+const { find, findById } = require("../models/User");
 
 const resolvers = {
   Query: {
@@ -248,6 +249,16 @@ const resolvers = {
       const comment = await Comments.findOneAndUpdate(
         { _id: replyToSave.commentId },
         { $push: { replies: replyToSave } },
+        { new: true }
+      );
+
+      return comment;
+    },
+
+    removeReply: async (parent, { commentId, replyId }) => {
+      const comment = await Comments.findOneAndUpdate(
+        { _id: commentId },
+        { $pull: { replies: { _id: replyId } } },
         { new: true }
       );
 
