@@ -142,13 +142,10 @@ const Home = ({ account, accountLevel }) => {
       addNewLike(currentPostId);
     }
   };
-
-  // Check if a user liked a given post, if so, add a specific class which will be check in the above function
-  // To determine if a new like should be added or removed
-  const returnUserLike = (currentPostId, specificPost) => {
+  const returnPostInteractions = (currentPostId, specificPost) => {
     if (loggedIn && !userData.loading && user) {
       return (
-        <div className="post-likes-wrapper">
+        <div className="post-controls">
           <button
             // Check if the USER liked the post
             className={`likeBtn ${user.likedArr
@@ -180,9 +177,27 @@ const Home = ({ account, accountLevel }) => {
           >
             {/* CSS will determine which icon below will appear
           If button is checked, Fill heart will display, else, Outline will display */}
-
-            <AiFillHeart className="fillHeart" />
-            <AiOutlineHeart className="outlineHeart" />
+            <span className={"geo-post-0"} style={{ margin: "0" }}>
+              {returnPostLikes(`current-geo-post-id`)}
+            </span>
+            <AiFillHeart
+              style={{ pointerEvents: "none" }}
+              className="fillHeart"
+            />
+            <AiOutlineHeart
+              style={{ pointerEvents: "none" }}
+              className="outlineHeart"
+            />
+          </button>
+          <button
+            onClick={() =>
+              document
+                .querySelector(".comment-outer-wrapper-0")
+                .classList.toggle("hidden")
+            }
+          >
+            {returnPostCommentsCounter(currentPostId, commentData)}
+            <FaRegComment />
           </button>
 
           {loggedIn &&
@@ -504,7 +519,7 @@ const Home = ({ account, accountLevel }) => {
 
   const generateCommentEl = (commentsArr, activePostId) => {
     return (
-      <div className="comment-outer-wrapper">
+      <div className="comment-outer-wrapper comment-outer-wrapper-0 hidden">
         {loggedIn ? (
           <form
             className="new-comment-form"
@@ -513,9 +528,7 @@ const Home = ({ account, accountLevel }) => {
             }
           >
             <textarea name="text" placeholder="Add new comment"></textarea>
-            <button name="uploadPost" type="Submit">
-              Post
-            </button>
+            <button name="uploadPost">Post</button>
           </form>
         ) : (
           <p>Login to Post and Reply to comments</p>
@@ -571,9 +584,7 @@ const Home = ({ account, accountLevel }) => {
                                 name="text"
                                 defaultValue={comment.text}
                               ></input>
-                              <button name="confirmEdit" type="submit">
-                                Confirm
-                              </button>
+                              <button name="confirmEdit">Confirm</button>
                               <button
                                 onClick={() => {
                                   setEdit([false, 0]);
@@ -593,6 +604,14 @@ const Home = ({ account, accountLevel }) => {
                               document
                                 .querySelector(`.users-comment-${i}`)
                                 .classList.add("hidden");
+
+                              // Remove 'hidden' from all userComments upon clicking edit
+                              // To ensure everything resets
+                              document
+                                .querySelectorAll(".usersComment")
+                                .forEach((comment) => {
+                                  comment.classList.remove("hidden");
+                                });
                             }}
                           >
                             Edit
@@ -785,7 +804,7 @@ const Home = ({ account, accountLevel }) => {
                       }}
                     >
                       <textarea name="text" placeholder="Add Reply"></textarea>
-                      <button type="submit">Reply</button>
+                      <button>Reply</button>
                     </form>
                   )}
                 </div>
@@ -798,6 +817,17 @@ const Home = ({ account, accountLevel }) => {
     );
   };
 
+  const returnPostCommentsCounter = (activePostId, commentState) => {
+    let commentsArr = [];
+
+    commentState.map((comment) => {
+      if (comment.postId == activePostId) {
+        commentsArr.push(comment);
+      }
+    });
+
+    return commentsArr.length;
+  };
   // Returns the comments a post has
   const returnPostComments = (activePostId, commentState) => {
     let commentsArr = [];
@@ -869,7 +899,7 @@ const Home = ({ account, accountLevel }) => {
       {/* {facts && (
         <FactWrapper
           facts={facts}
-          returnUserLike={returnUserLike}
+          returnPostInteractions={returnPostInteractions}
           returnPostLikes={returnPostLikes}
           returnPostComments={returnPostComments}
         />
@@ -882,8 +912,7 @@ const Home = ({ account, accountLevel }) => {
           data={data}
           commentData={commentData}
           setCommentData={setCommentData}
-          returnUserLike={returnUserLike}
-          returnPostLikes={returnPostLikes}
+          returnPostInteractions={returnPostInteractions}
           returnPostComments={returnPostComments}
         />
       )}

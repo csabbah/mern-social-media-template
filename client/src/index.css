@@ -305,8 +305,8 @@ select:-webkit-autofill:focus {
   width: 100%;
 }
 
-/* ----------------- Likes and Save button */
-.post-likes-wrapper {
+/* ----------------- Likes, Comment and Save button */
+.post-controls {
   margin-top: 10px;
   display: flex;
   gap: 5px;
@@ -355,6 +355,9 @@ select:-webkit-autofill:focus {
   width: 100%;
   display: flex;
   flex-direction: column;
+}
+.comment-outer-wrapper.hidden {
+  display: none;
 }
 .comment-section {
   width: 100%;
