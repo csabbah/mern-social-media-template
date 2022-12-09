@@ -408,6 +408,7 @@ const Home = ({ account, accountLevel }) => {
   };
 
   const addLikeToInitReply = async (replyId, commentId) => {
+    console.log(replyId, commentId);
     try {
       let comment = await addLikeToReply({
         variables: {
@@ -722,11 +723,16 @@ const Home = ({ account, accountLevel }) => {
                               {loggedIn && (
                                 <>
                                   <button
-                                    onClick={() =>
+                                    onClick={() => {
                                       document
-                                        .querySelector(`.reply-to-reply-${i}`)
-                                        .classList.toggle("hidden")
-                                    }
+                                        .querySelector(
+                                          `.reply-to-reply-${i}-${reply.commentId.slice(
+                                            0,
+                                            10
+                                          )}`
+                                        )
+                                        .classList.toggle("hidden");
+                                    }}
                                   >
                                     Reply
                                   </button>
@@ -743,7 +749,10 @@ const Home = ({ account, accountLevel }) => {
                                         },
                                       });
                                     }}
-                                    className={`reply-to-reply-input hidden reply-to-reply-${i}`}
+                                    className={`reply-to-reply-input hidden reply-to-reply-${i}-${reply.commentId.slice(
+                                      0,
+                                      10
+                                    )}`}
                                   >
                                     <input
                                       name="replyText"

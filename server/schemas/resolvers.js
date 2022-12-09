@@ -257,7 +257,7 @@ const resolvers = {
     },
 
     addReplyToReply: async (parent, { replyToReplySave }) => {
-      const comment = await Comments.findOneAndUpdate({
+      const comment = await Comments.findById({
         _id: replyToReplySave.commentId,
       });
 
@@ -275,7 +275,7 @@ const resolvers = {
     },
 
     addLikeToReply: async (parent, { userId, commentId, replyId }) => {
-      const comment = await Comments.findOneAndUpdate({
+      const comment = await Comments.findById({
         _id: commentId,
       });
 
@@ -293,7 +293,7 @@ const resolvers = {
     },
 
     removeReply: async (parent, { commentId, replyId }) => {
-      const comment = await Comments.findOneAndUpdate(
+      const comment = await Comments.findById(
         { _id: commentId },
         { $pull: { replies: { _id: replyId } } },
         { new: true }
