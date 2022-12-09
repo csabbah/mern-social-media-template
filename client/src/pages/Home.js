@@ -24,6 +24,7 @@ import {
   ADD_FAVOURITE,
   REMOVE_FAVOURITE,
   ADD_REPLY,
+  ADD_LIKE_TO_REPLY,
   ADD_REPLY_TO_REPLY,
   REMOVE_REPLY,
   ADD_COMMENT_LIKE,
@@ -100,6 +101,8 @@ const Home = ({ account, accountLevel }) => {
   const [updateComment, { updateCommentErr }] = useMutation(UPDATE_COMMENT);
   const [removeComment, { removeCommentErr }] = useMutation(REMOVE_COMMENT);
   const [addReply, { addReplyErr }] = useMutation(ADD_REPLY);
+  const [addLikeToReply, { addLikeToReplyErr }] =
+    useMutation(ADD_LIKE_TO_REPLY);
   const [addReplyToReply, { addReplyToReplyErr }] =
     useMutation(ADD_REPLY_TO_REPLY);
   const [removeReply, { removeReplyErr }] = useMutation(REMOVE_REPLY);
@@ -143,7 +146,7 @@ const Home = ({ account, accountLevel }) => {
   // Check if a user liked a given post, if so, add a specific class which will be check in the above function
   // To determine if a new like should be added or removed
   const returnUserLike = (currentPostId, specificPost) => {
-    if (loggedIn && !userData.loading) {
+    if (loggedIn && !userData.loading && user) {
       return (
         <div className="post-likes-wrapper">
           <button
@@ -380,6 +383,27 @@ const Home = ({ account, accountLevel }) => {
       setCommentData([
         ...commentData.filter((dbComment) => dbComment._id !== commentId),
         comment.data?.removeReply,
+      ]);
+      // TODO: After you update the user model to contain all their comments
+      // TODO: Need to add the user state update here
+    } catch (e) {
+      // Clear state
+      console.log(e);
+    }
+  };
+
+  const addLikeToInitReply = async (replyId, commentId) => {
+    try {
+      let comment = await addLikeToReply({
+        variables: {
+          commentId: commentId,
+          replyId: replyId,
+          userId: account.data._id,
+        },
+      });
+      setCommentData([
+        ...commentData.filter((dbComment) => dbComment._id !== commentId),
+        comment.data?.addLikeToReply,
       ]);
       // TODO: After you update the user model to contain all their comments
       // TODO: Need to add the user state update here
@@ -708,8 +732,21 @@ const Home = ({ account, accountLevel }) => {
                                     ></input>
                                     <button>Reply</button>
                                   </form>
-                                  <button>
-                                    <AiOutlineHeart />
+                                  <button
+                                    onClick={() =>
+                                      addLikeToInitReply(
+                                        reply._id,
+                                        reply.commentId
+                                      )
+                                    }
+                                  >
+                                    {reply.replyLikes &&
+                                    reply.replyLikes.length > 0
+                                      ? reply.replyLikes.length
+                                      : 0}
+                                    <AiOutlineHeart
+                                      style={{ pointerEvents: "none" }}
+                                    />
                                   </button>
                                 </>
                               )}
