@@ -195,7 +195,11 @@ const typeDefs = gql`
     addReply(replyToSave: repliesInput): Comments
     removeReply(replyId: String!, commentId: String!): Comments
     addReplyToReply(replyToReplySave: replyToReplyInput): Comments
-
+    addLikeToReply(
+      userId: String!
+      commentId: String!
+      replyId: String!
+    ): Comments
     addCommentLike(commentId: String!, userId: String!): Comments
     removeCommentLike(commentId: String!, userId: String!): Comments
     removeComment(commentId: String!, userId: String!): Comments
