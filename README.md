@@ -1,4 +1,4 @@
-# mern-book-search - July 12th 2022 - Carlos Sabbah
+# mern-devlp - Dec 2022 - Carlos Sabbah
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -15,7 +15,7 @@
 
 ## Description
 
-This MERN stack application is a multi page book search engine that allows users to search up books, view their detailed information and save them (which they can view in the saved books page). Using Apollo Client, MongoDB and Mongoose, all transactions made are stored accordingly with high level authentication via tokens and JTW-decode to allow for secure access and unique data specific to each users.
+Devlp is....
 
 ## Installation
 
@@ -42,7 +42,7 @@ npm run develop
 
 ## Links
 
-[Link to live application](https://boiling-hamlet-57856.herokuapp.com/)
+[Link to live application](https://www.google.com/)
 
 ## Built With
 
@@ -76,6 +76,4 @@ If you have questions about this application or general inquiry, please reach ou
 ## License
 
 This project is covered under the MIT License.
-
-<img width="1640" alt="Previe" src="https://user-images.githubusercontent.com/91699101/178625203-986006e4-2c55-4518-963d-64d21ca73488.png">
 
