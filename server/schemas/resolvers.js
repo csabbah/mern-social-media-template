@@ -292,6 +292,28 @@ const resolvers = {
       return comment;
     },
 
+    removeLikeFromReply: async (parent, { userId, commentId, replyId }) => {
+      const comment = await Comments.findById({
+        _id: commentId,
+      });
+
+      // Go through the replies array using regular JS expression
+      comment.replies.forEach((reply, i) => {
+        if (reply._id == replyId) {
+          // Update model from JS side
+          reply.replyLikes.forEach((like, index) => {
+            if (like == userId) {
+              reply.replyLikes.splice(index, 1);
+            }
+          });
+          // Then save the data to the model
+          comment.save(reply);
+        }
+      });
+
+      return comment;
+    },
+
     removeReply: async (parent, { commentId, replyId }) => {
       const comment = await Comments.findOneAndUpdate(
         { _id: commentId },

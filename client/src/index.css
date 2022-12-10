@@ -325,7 +325,9 @@ select:-webkit-autofill:focus {
 .favBtn.Filled > .fillSave,
 .favBtn > .outlineSave,
 .commentLikeBtn.commentLikeChecked > .fillHeart,
-.commentLikeBtn > .outlineHeart {
+.commentLikeBtn > .outlineHeart,
+.replyLikeBtn.replyLikeChecked > .fillHeart,
+.replyLikeBtn > .outlineHeart {
   display: unset;
 }
 .likeBtn.Checked > .outlineHeart,
@@ -333,7 +335,9 @@ select:-webkit-autofill:focus {
 .favBtn.Filled > .outlineSave,
 .favBtn > .fillSave,
 .commentLikeBtn.commentLikeChecked > .outlineHeart,
-.commentLikeBtn > .fillHeart {
+.commentLikeBtn > .fillHeart,
+.replyLikeBtn > .fillHeart,
+.replyLikeBtn.replyLikeChecked > .outlineHeart {
   display: none;
 }
 

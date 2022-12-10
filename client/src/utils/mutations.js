@@ -372,6 +372,51 @@ export const ADD_LIKE_TO_REPLY = gql`
   }
 `;
 
+export const REMOVE_LIKE_FROM_REPLY = gql`
+  mutation removeLikeFromReply(
+    $userId: String!
+    $commentId: String!
+    $replyId: String!
+  ) {
+    removeLikeFromReply(
+      userId: $userId
+      commentId: $commentId
+      replyId: $replyId
+    ) {
+      __typename
+      _id
+      postId
+      userId
+      text
+      username
+      liked
+      replies {
+        _id
+        updatedAt
+        createdAt
+        text
+        username
+        userId
+        commentId
+        replyToReply {
+          replyText
+          commentId
+          userId
+          username
+          _id
+          createdAt
+          updatedAt
+          replyId
+        }
+        replyLikes
+      }
+      createdAt
+      updatedAt
+      updated
+    }
+  }
+`;
+
 export const REMOVE_REPLY = gql`
   mutation removeReply($commentId: String!, $replyId: String!) {
     removeReply(commentId: $commentId, replyId: $replyId) {

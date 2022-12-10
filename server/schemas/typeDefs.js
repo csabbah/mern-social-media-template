@@ -200,6 +200,11 @@ const typeDefs = gql`
       commentId: String!
       replyId: String!
     ): Comments
+    removeLikeFromReply(
+      userId: String!
+      commentId: String!
+      replyId: String!
+    ): Comments
     addCommentLike(commentId: String!, userId: String!): Comments
     removeCommentLike(commentId: String!, userId: String!): Comments
     removeComment(commentId: String!, userId: String!): Comments

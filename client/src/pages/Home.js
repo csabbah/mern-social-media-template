@@ -29,6 +29,7 @@ import {
   REMOVE_REPLY,
   ADD_COMMENT_LIKE,
   REMOVE_COMMENT_LIKE,
+  REMOVE_LIKE_FROM_REPLY,
 } from "../utils/mutations";
 import { GET_LIKES, GET_ME, GET_COMMENTS, GET_ADMIN } from "../utils/queries";
 
@@ -103,159 +104,15 @@ const Home = ({ account, accountLevel }) => {
   const [addReply, { addReplyErr }] = useMutation(ADD_REPLY);
   const [addLikeToReply, { addLikeToReplyErr }] =
     useMutation(ADD_LIKE_TO_REPLY);
+  const [removeLikeFromReply, { removeLikeFromReplyErr }] = useMutation(
+    REMOVE_LIKE_FROM_REPLY
+  );
   const [addReplyToReply, { addReplyToReplyErr }] =
     useMutation(ADD_REPLY_TO_REPLY);
   const [removeReply, { removeReplyErr }] = useMutation(REMOVE_REPLY);
   const [addCommentLike, { addCommentLikeErr }] = useMutation(ADD_COMMENT_LIKE);
   const [removeCommentLike, { removeCommentLikeErr }] =
     useMutation(REMOVE_COMMENT_LIKE);
-
-  // The function to handle whether to add a like or to remove a like
-  const handleLike = async (currentPostId, remove) => {
-    // Before adding a like, check to see if likes exist
-    if (!userData.loading) {
-      // Then check to see if the specific post is already liked by the user
-      if (remove) {
-        // If currentLike has likes (that means the user has ACTIVE likes in this session)
-        // Go through these since they are the MOST ACTIVE likes
-        if (currentLikes.length > 0) {
-          return currentLikes.forEach((like) => {
-            if (currentPostId == like.postId) {
-              removeCurrentLike(like._id);
-            }
-          });
-        }
-        // If like exists after refresh, e need to go through this since currentLikes is empty
-        // currentLikes only fills once users start liking posts
-        if (currentLikes.length < 1) {
-          user.likedArr.forEach((like) => {
-            if (currentPostId == like.postId) {
-              removeCurrentLike(like._id);
-            }
-          });
-        }
-      } else {
-        addNewLike(currentPostId);
-      }
-    } else {
-      // If no likes exist at all, then execute function normally
-      addNewLike(currentPostId);
-    }
-  };
-  const returnPostInteractions = (currentPostId, specificPost) => {
-    if (loggedIn && !userData.loading && user) {
-      return (
-        <div className="post-controls">
-          <button
-            // Check if the USER liked the post
-            className={`likeBtn ${user.likedArr
-              .map((like) => {
-                if (like.postId == currentPostId) {
-                  return `Checked`;
-                }
-              })
-              // .join removes the comma that is added after/before 'Checked'
-              .join("")}`}
-            onClick={(e) => {
-              let value = parseInt(
-                document.querySelector(`.${specificPost}`).innerText
-              );
-              // Stop any other event above the button from triggering
-              e.stopPropagation();
-              if (e.target.className.includes("Checked")) {
-                document.querySelector(`.${specificPost}`).innerText =
-                  value -= 1;
-                e.target.className = `likeBtn`;
-                handleLike(currentPostId, true);
-              } else {
-                document.querySelector(`.${specificPost}`).innerText =
-                  value += 1;
-                e.target.className = "likeBtn Checked";
-                handleLike(currentPostId, false);
-              }
-            }}
-          >
-            {/* CSS will determine which icon below will appear
-          If button is checked, Fill heart will display, else, Outline will display */}
-            <span className={"geo-post-0"} style={{ margin: "0" }}>
-              {returnPostLikes(`current-geo-post-id`)}
-            </span>
-            <AiFillHeart
-              style={{ pointerEvents: "none" }}
-              className="fillHeart"
-            />
-            <AiOutlineHeart
-              style={{ pointerEvents: "none" }}
-              className="outlineHeart"
-            />
-          </button>
-          <button
-            onClick={() =>
-              document
-                .querySelector(".comment-outer-wrapper-0")
-                .classList.toggle("hidden")
-            }
-          >
-            {returnPostCommentsCounter(currentPostId, commentData)}
-            <FaRegComment />
-          </button>
-
-          {loggedIn &&
-            !userData.loading &&
-            useState != undefined &&
-            userState &&
-            userState.favouritedArr != undefined && (
-              <>
-                <button
-                  className={`favBtn ${userState.favouritedArr
-                    .map((item) => {
-                      if (item == currentPostId) {
-                        return "Filled";
-                      }
-                    })
-                    .join("")}`}
-                  onClick={(e) => {
-                    if (e.target.className.includes("Filled")) {
-                      e.target.className = `favBtn`;
-                      removeFavouritePost(currentPostId);
-                    } else {
-                      e.target.className = "favBtn Filled";
-                      addNewFavourite(currentPostId);
-                    }
-                  }}
-                >
-                  <RiSaveLine
-                    className="outlineSave"
-                    style={{ fontSize: "25px" }}
-                  />
-                  <RiSaveFill
-                    className="fillSave"
-                    style={{ fontSize: "25px" }}
-                  />
-                </button>
-              </>
-            )}
-        </div>
-      );
-    } else {
-      return (
-        <div style={{ margin: "15px", display: "flex", alignItems: "center" }}>
-          {" "}
-          <button
-            onClick={() =>
-              document
-                .querySelector(".comment-outer-wrapper-0")
-                .classList.toggle("hidden")
-            }
-          >
-            {returnPostCommentsCounter(currentPostId, commentData)}
-            <FaRegComment />
-          </button>
-          <p style={{ margin: "0 10px" }}>Login to interact</p>
-        </div>
-      );
-    }
-  };
 
   const [currentLikes, setCurrentLikes] = useState([]);
   // * ------------------------------------------------------------ ALL RESOLVER FUNCTIONS
@@ -476,6 +333,26 @@ const Home = ({ account, accountLevel }) => {
     }
   };
 
+  const removeLikeFromAReply = async (replyId, commentId) => {
+    try {
+      // TODO: Update resolver side to pass the data to the user model object - userInteraction.replyLikes
+      let comment = await removeLikeFromReply({
+        variables: {
+          commentId: commentId,
+          replyId: replyId,
+          userId: account.data._id,
+        },
+      });
+      setCommentData([
+        ...commentData.filter((dbComment) => dbComment._id !== commentId),
+        comment.data?.removeLikeFromReply,
+      ]);
+    } catch (e) {
+      // Clear state
+      console.log(e);
+    }
+  };
+
   const addReplyToAReply = async ({ replyToReplySave }) => {
     try {
       // TODO: Update resolver side to pass the data to the user model object - userInteraction.replies
@@ -497,6 +374,40 @@ const Home = ({ account, accountLevel }) => {
   };
 
   // * ------------------------------------------------------------ OTHER FUNCTIONS
+
+  // The function to handle whether to add a like or to remove a like
+  const handleLike = async (currentPostId, remove) => {
+    // Before adding a like, check to see if likes exist
+    if (!userData.loading) {
+      // Then check to see if the specific post is already liked by the user
+      if (remove) {
+        // If currentLike has likes (that means the user has ACTIVE likes in this session)
+        // Go through these since they are the MOST ACTIVE likes
+        if (currentLikes.length > 0) {
+          return currentLikes.forEach((like) => {
+            if (currentPostId == like.postId) {
+              removeCurrentLike(like._id);
+            }
+          });
+        }
+        // If like exists after refresh, e need to go through this since currentLikes is empty
+        // currentLikes only fills once users start liking posts
+        if (currentLikes.length < 1) {
+          user.likedArr.forEach((like) => {
+            if (currentPostId == like.postId) {
+              removeCurrentLike(like._id);
+            }
+          });
+        }
+      } else {
+        addNewLike(currentPostId);
+      }
+    } else {
+      // If no likes exist at all, then execute function normally
+      addNewLike(currentPostId);
+    }
+  };
+
   // Returns the amount of likes a post has
   const returnPostLikes = (activePostId) => {
     let counter = [];
@@ -526,6 +437,167 @@ const Home = ({ account, accountLevel }) => {
   };
 
   const [edit, setEdit] = useState([false, 0]);
+
+  const returnPostCommentsCounter = (activePostId, commentState) => {
+    let commentsArr = [];
+
+    commentState.map((comment) => {
+      if (comment.postId == activePostId) {
+        commentsArr.push(comment);
+      }
+    });
+
+    return commentsArr.length;
+  };
+
+  const addNewFavourite = async (postId) => {
+    try {
+      const user = await addFavourite({
+        variables: {
+          postId: postId,
+          userId: account.data._id,
+        },
+      });
+      return user;
+    } catch (e) {
+      // Clear state
+      console.log(e);
+    }
+  };
+
+  // TODO :: Make this one function
+  // This is to be used in the home page (Separate from the favourites component)
+  const removeFavouritePost = async (favouriteId) => {
+    try {
+      const user = await removeFavourite({
+        variables: {
+          favouriteId: favouriteId,
+          userId: account.data._id,
+        },
+      });
+      return user;
+    } catch (e) {
+      // Clear state
+      console.log(e);
+    }
+  };
+
+  // * ------------------------------------------------------------ FUNCTIONS THAT RENDER ELEMENTS
+
+  const returnPostInteractions = (currentPostId, specificPost) => {
+    if (loggedIn && !userData.loading && user) {
+      return (
+        <div className="post-controls">
+          <button
+            // Check if the USER liked the post
+            className={`likeBtn ${user.likedArr
+              .map((like) => {
+                if (like.postId == currentPostId) {
+                  return `Checked`;
+                }
+              })
+              // .join removes the comma that is added after/before 'Checked'
+              .join("")}`}
+            onClick={(e) => {
+              let value = parseInt(
+                document.querySelector(`.${specificPost}`).innerText
+              );
+              // Stop any other event above the button from triggering
+              e.stopPropagation();
+              if (e.target.className.includes("Checked")) {
+                document.querySelector(`.${specificPost}`).innerText =
+                  value -= 1;
+                e.target.className = `likeBtn`;
+                handleLike(currentPostId, true);
+              } else {
+                document.querySelector(`.${specificPost}`).innerText =
+                  value += 1;
+                e.target.className = "likeBtn Checked";
+                handleLike(currentPostId, false);
+              }
+            }}
+          >
+            {/* CSS will determine which icon below will appear
+                If button is checked, Fill heart will display, else, Outline will display */}
+            <span className={"geo-post-0"} style={{ margin: "0" }}>
+              {returnPostLikes(`current-geo-post-id`)}
+            </span>
+            <AiFillHeart
+              style={{ pointerEvents: "none" }}
+              className="fillHeart"
+            />
+            <AiOutlineHeart
+              style={{ pointerEvents: "none" }}
+              className="outlineHeart"
+            />
+          </button>
+          <button
+            onClick={() =>
+              document
+                .querySelector(".comment-outer-wrapper-0")
+                .classList.toggle("hidden")
+            }
+          >
+            {returnPostCommentsCounter(currentPostId, commentData)}
+            <FaRegComment />
+          </button>
+
+          {loggedIn &&
+            !userData.loading &&
+            useState != undefined &&
+            userState &&
+            userState.favouritedArr != undefined && (
+              <>
+                <button
+                  className={`favBtn ${userState.favouritedArr
+                    .map((item) => {
+                      if (item == currentPostId) {
+                        return "Filled";
+                      }
+                    })
+                    .join("")}`}
+                  onClick={(e) => {
+                    if (e.target.className.includes("Filled")) {
+                      e.target.className = `favBtn`;
+                      removeFavouritePost(currentPostId);
+                    } else {
+                      e.target.className = "favBtn Filled";
+                      addNewFavourite(currentPostId);
+                    }
+                  }}
+                >
+                  <RiSaveLine
+                    className="outlineSave"
+                    style={{ fontSize: "25px" }}
+                  />
+                  <RiSaveFill
+                    className="fillSave"
+                    style={{ fontSize: "25px" }}
+                  />
+                </button>
+              </>
+            )}
+        </div>
+      );
+    } else {
+      return (
+        <div style={{ margin: "15px", display: "flex", alignItems: "center" }}>
+          {" "}
+          <button
+            onClick={() =>
+              document
+                .querySelector(".comment-outer-wrapper-0")
+                .classList.toggle("hidden")
+            }
+          >
+            {returnPostCommentsCounter(currentPostId, commentData)}
+            <FaRegComment />
+          </button>
+          <p style={{ margin: "0 10px" }}>Login to interact</p>
+        </div>
+      );
+    }
+  };
 
   const generateCommentEl = (commentsArr, activePostId) => {
     return (
@@ -764,19 +836,62 @@ const Home = ({ account, accountLevel }) => {
                                     <button>Reply</button>
                                   </form>
                                   <button
-                                    onClick={() =>
-                                      addLikeToAReply(
-                                        reply._id,
-                                        reply.commentId
-                                      )
-                                    }
+                                    className={`replyLikeBtn ${reply.replyLikes
+                                      .map((reply) => {
+                                        if (reply == account.data._id) {
+                                          return `replyLikeChecked`;
+                                        }
+                                      })
+                                      // .join removes the comma that is added after/before 'Checked'
+                                      .join("")}`}
+                                    onClick={(e) => {
+                                      let value = parseInt(
+                                        document.querySelector(
+                                          `.reply-likes-${i}`
+                                        ).innerText
+                                      );
+
+                                      if (
+                                        e.target.className.includes(
+                                          "replyLikeChecked"
+                                        )
+                                      ) {
+                                        e.target.className = `replyLikeBtn`;
+                                        document.querySelector(
+                                          `.reply-likes-${i}`
+                                        ).innerText = value -= 1;
+                                        removeLikeFromAReply(
+                                          reply._id,
+                                          reply.commentId
+                                        );
+                                      } else {
+                                        document.querySelector(
+                                          `.reply-likes-${i}`
+                                        ).innerText = value += 1;
+
+                                        e.target.className =
+                                          "replyLikeBtn replyLikeChecked";
+
+                                        addLikeToAReply(
+                                          reply._id,
+                                          reply.commentId
+                                        );
+                                      }
+                                    }}
                                   >
-                                    {reply.replyLikes &&
-                                    reply.replyLikes.length > 0
-                                      ? reply.replyLikes.length
-                                      : 0}
+                                    <span className={`reply-likes-${i}`}>
+                                      {reply.replyLikes &&
+                                      reply.replyLikes.length > 0
+                                        ? reply.replyLikes.length
+                                        : 0}
+                                    </span>
+                                    <AiFillHeart
+                                      style={{ pointerEvents: "none" }}
+                                      className="fillHeart"
+                                    />
                                     <AiOutlineHeart
                                       style={{ pointerEvents: "none" }}
+                                      className="outlineHeart"
                                     />
                                   </button>
                                 </>
@@ -829,17 +944,6 @@ const Home = ({ account, accountLevel }) => {
     );
   };
 
-  const returnPostCommentsCounter = (activePostId, commentState) => {
-    let commentsArr = [];
-
-    commentState.map((comment) => {
-      if (comment.postId == activePostId) {
-        commentsArr.push(comment);
-      }
-    });
-
-    return commentsArr.length;
-  };
   // Returns the comments a post has
   const returnPostComments = (activePostId, commentState) => {
     let commentsArr = [];
@@ -854,38 +958,6 @@ const Home = ({ account, accountLevel }) => {
       return new Date(b.createdAt) - new Date(a.createdAt);
     });
     return generateCommentEl(commentsArr, activePostId);
-  };
-
-  const addNewFavourite = async (postId) => {
-    try {
-      const user = await addFavourite({
-        variables: {
-          postId: postId,
-          userId: account.data._id,
-        },
-      });
-      return user;
-    } catch (e) {
-      // Clear state
-      console.log(e);
-    }
-  };
-
-  // TODO :: Make this one function
-  // This is to be used in the home page (Separate from the favourites component)
-  const removeFavouritePost = async (favouriteId) => {
-    try {
-      const user = await removeFavourite({
-        variables: {
-          favouriteId: favouriteId,
-          userId: account.data._id,
-        },
-      });
-      return user;
-    } catch (e) {
-      // Clear state
-      console.log(e);
-    }
   };
 
   let facts = { topic: "te", description: "te" };
