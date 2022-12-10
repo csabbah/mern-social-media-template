@@ -70,8 +70,13 @@ textarea {
   background-color: rgb(235, 235, 235);
 }
 textarea {
-  height: 100px;
   padding-top: 8px;
+}
+.add-reply-to-comment-input,
+.add-comment-input,
+.add-reply-to-reply-input {
+  height: 45px;
+  transition: 0.3s all ease-in-out;
 }
 
 button {
@@ -352,8 +357,10 @@ select:-webkit-autofill:focus {
   display: none;
 }
 
-.comment-controls-wrapper {
+.comment-controls {
+  margin-top: 10px;
   display: flex;
+  gap: 5px;
 }
 .comment-outer-wrapper {
   width: 100%;
@@ -374,7 +381,7 @@ select:-webkit-autofill:focus {
   background-color: rgba(0, 0, 0, 0.1);
 }
 
-.single-comment {
+.single-comment-content {
   padding: 10px;
   border-radius: 10px;
   background-color: rgba(0, 0, 0, 0.15);
@@ -403,21 +410,46 @@ select:-webkit-autofill:focus {
   background-color: lightblue;
 }
 
+.users-comment-controls {
+  display: flex;
+  gap: 5px;
+}
+.edit-comment-form {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.edit-comment-formBtns {
+  display: flex;
+  gap: 5px;
+}
+
 .reply-section {
   height: 100%;
   min-height: 150px;
   max-height: 250px;
   overflow-y: scroll;
   border-radius: 10px;
-  border: 1px solid black;
+  border: 1px solid rgba(0, 0, 0, 0.2);
   padding: 10px;
   margin-top: 15px;
 }
 
-.reply-to-reply-input.hidden {
+.reply-outer-wrapper {
+  display: flex;
+  gap: 5px;
+}
+
+.reply-to-reply-input.hidden,
+.reply-controls.hidden {
   display: none;
 }
 
+.reply-controls {
+  display: flex;
+  gap: 5px;
+}
 .replies-to-reply-section {
   margin-left: 15px;
 }
