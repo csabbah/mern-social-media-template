@@ -338,7 +338,7 @@ const Home = ({ account, accountLevel }) => {
       });
       currentCommentLikes.push(account.data._id);
 
-      // TODO: After you update the user model to contain all likes to comments
+      // TODO: After you update the user model with a 'likesToCommentsArr'
       // TODO: Need to add the state update here
     } catch (e) {
       // Clear state
@@ -355,7 +355,7 @@ const Home = ({ account, accountLevel }) => {
         },
       });
 
-      // TODO: After you update the user model to contain all likes to comments
+      // TODO: After you update the user model with a 'likesToCommentsArr'
       // TODO: Need to add the state update here
     } catch (e) {
       // Clear state
@@ -379,7 +379,7 @@ const Home = ({ account, accountLevel }) => {
         ...commentData.filter((dbComment) => dbComment._id !== commentId),
         comment.data?.addReply,
       ]);
-      // TODO: After you update the user model to contain all comments
+      // TODO: After you update the user model with a 'replyToCommentsArr'
       // TODO: Need to add the user state update here
     } catch (e) {
       // Clear state
@@ -399,7 +399,7 @@ const Home = ({ account, accountLevel }) => {
         ...commentData.filter((dbComment) => dbComment._id !== commentId),
         comment.data?.removeReply,
       ]);
-      // TODO: After you update the user model to contain all their comments
+      // TODO: After you update the user model with a 'replyToCommentArr'
       // TODO: Need to add the user state update here
     } catch (e) {
       // Clear state
@@ -407,8 +407,7 @@ const Home = ({ account, accountLevel }) => {
     }
   };
 
-  const addLikeToInitReply = async (replyId, commentId) => {
-    console.log(replyId, commentId);
+  const addLikeToAReply = async (replyId, commentId) => {
     try {
       let comment = await addLikeToReply({
         variables: {
@@ -421,7 +420,7 @@ const Home = ({ account, accountLevel }) => {
         ...commentData.filter((dbComment) => dbComment._id !== commentId),
         comment.data?.addLikeToReply,
       ]);
-      // TODO: After you update the user model to contain all their comments
+      // TODO: After you update the user model with a 'likesToRepliesArr'
       // TODO: Need to add the user state update here
     } catch (e) {
       // Clear state
@@ -429,7 +428,7 @@ const Home = ({ account, accountLevel }) => {
     }
   };
 
-  const addReplyToExistingReply = async ({ replyToReplySave }) => {
+  const addReplyToAReply = async ({ replyToReplySave }) => {
     try {
       let comment = await addReplyToReply({
         variables: {
@@ -442,7 +441,7 @@ const Home = ({ account, accountLevel }) => {
         ),
         comment.data?.addReplyToReply,
       ]);
-      // TODO: After you update the user model to contain all comments
+      // TODO: After you update the user model with a 'repliesArr'
       // TODO: Need to add the user state update here
     } catch (e) {
       // Clear state
@@ -739,7 +738,7 @@ const Home = ({ account, accountLevel }) => {
                                   <form
                                     onSubmit={(e) => {
                                       e.preventDefault();
-                                      addReplyToExistingReply({
+                                      addReplyToAReply({
                                         replyToReplySave: {
                                           commentId: reply.commentId,
                                           replyText: e.target.replyText.value,
@@ -762,7 +761,7 @@ const Home = ({ account, accountLevel }) => {
                                   </form>
                                   <button
                                     onClick={() =>
-                                      addLikeToInitReply(
+                                      addLikeToAReply(
                                         reply._id,
                                         reply.commentId
                                       )
