@@ -519,7 +519,10 @@ const Home = ({ account, accountLevel }) => {
           >
             {/* CSS will determine which icon below will appear
                 If button is checked, Fill heart will display, else, Outline will display */}
-            <span className={"geo-post-0"} style={{ margin: "0" }}>
+            <span
+              style={{ pointerEvents: "none", margin: "0" }}
+              className={"geo-post-0"}
+            >
               {returnPostLikes(`current-geo-post-id`)}
             </span>
             <AiFillHeart
@@ -948,7 +951,10 @@ const Home = ({ account, accountLevel }) => {
                                           }
                                         }}
                                       >
-                                        <span className={`reply-likes-${i}`}>
+                                        <span
+                                          style={{ pointerEvents: "none" }}
+                                          className={`reply-likes-${i}`}
+                                        >
                                           {reply.replyLikes &&
                                           reply.replyLikes.length > 0
                                             ? reply.replyLikes.length
