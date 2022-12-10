@@ -42,6 +42,13 @@ const userSchema = new Schema(
         default: [],
       },
     ],
+    userInteractions: {
+      comments: [{ type: String, default: [] }],
+      replies: [{ type: String, default: [] }],
+      postLikes: [{ type: String, default: [] }],
+      replyLikes: [{ type: String, default: [] }],
+      commentLikes: [{ type: String, default: [] }],
+    },
     createdAt: {
       type: String,
     },

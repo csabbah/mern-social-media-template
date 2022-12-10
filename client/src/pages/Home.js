@@ -239,19 +239,31 @@ const Home = ({ account, accountLevel }) => {
       );
     } else {
       return (
-        <p style={{ margin: "0" }}>
+        <div style={{ margin: "15px", display: "flex", alignItems: "center" }}>
           {" "}
-          <AiOutlineHeart />
-          Login to like and or save post
-        </p>
+          <button
+            onClick={() =>
+              document
+                .querySelector(".comment-outer-wrapper-0")
+                .classList.toggle("hidden")
+            }
+          >
+            {returnPostCommentsCounter(currentPostId, commentData)}
+            <FaRegComment />
+          </button>
+          <p style={{ margin: "0 10px" }}>Login to interact</p>
+        </div>
       );
     }
   };
 
   const [currentLikes, setCurrentLikes] = useState([]);
+  // * ------------------------------------------------------------ ALL RESOLVER FUNCTIONS
+
   // The function to add a like to the DB and the users arr
   const addNewLike = async (postId) => {
     try {
+      // TODO: Update resolver side to pass the data to the user model object - userInteraction.postLikes
       const like = await addLike({
         variables: {
           postId: postId,
@@ -275,32 +287,18 @@ const Home = ({ account, accountLevel }) => {
   // The function to remove a like from the DB and the users arr
   const removeCurrentLike = async (likeId) => {
     try {
+      // TODO: Update resolver side to remove the data from the user model object - userInteraction.postLikes
       const like = await removeLike({
         variables: {
           likeId: likeId,
           userId: account.data._id,
         },
       });
+
       return like;
     } catch (e) {
       // Clear state
       console.log(e);
-    }
-  };
-
-  // Returns the amount of likes a post has
-  const returnPostLikes = (activePostId) => {
-    let counter = [];
-    if (!loading && data) {
-      data.likes.map((like) => {
-        // Check if the post has LIKES in general (not just from the logged in user)
-        if (like.postId == activePostId) {
-          // Push the like (which also contains the usersId)
-          counter.push(like);
-        }
-      });
-      // Return the length of the counter which is the likes amount
-      return counter.length;
     }
   };
 
@@ -309,6 +307,7 @@ const Home = ({ account, accountLevel }) => {
     e.preventDefault();
 
     try {
+      // TODO: Update resolver side to pass the data to the user model object - userInteraction.comments
       let comment = await addComment({
         variables: {
           postId: postId,
@@ -328,129 +327,9 @@ const Home = ({ account, accountLevel }) => {
     }
   };
 
-  const addLikeToComment = async (commentId) => {
-    try {
-      await addCommentLike({
-        variables: {
-          commentId: commentId,
-          userId: account.data._id,
-        },
-      });
-      currentCommentLikes.push(account.data._id);
-
-      // TODO: After you update the user model with a 'likesToCommentsArr'
-      // TODO: Need to add the state update here
-    } catch (e) {
-      // Clear state
-      console.log(e);
-    }
-  };
-
-  const removeLikeFromComment = async (commentId) => {
-    try {
-      await removeCommentLike({
-        variables: {
-          commentId: commentId,
-          userId: account.data._id,
-        },
-      });
-
-      // TODO: After you update the user model with a 'likesToCommentsArr'
-      // TODO: Need to add the state update here
-    } catch (e) {
-      // Clear state
-      console.log(e);
-    }
-  };
-
-  const addReplyToComment = async (commentId, text, userId, username) => {
-    try {
-      let comment = await addReply({
-        variables: {
-          replyToSave: {
-            text: text,
-            commentId: commentId,
-            userId: userId,
-            username: username,
-          },
-        },
-      });
-      setCommentData([
-        ...commentData.filter((dbComment) => dbComment._id !== commentId),
-        comment.data?.addReply,
-      ]);
-      // TODO: After you update the user model with a 'replyToCommentsArr'
-      // TODO: Need to add the user state update here
-    } catch (e) {
-      // Clear state
-      console.log(e);
-    }
-  };
-
-  const removeReplyFromComment = async (replyId, commentId) => {
-    try {
-      let comment = await removeReply({
-        variables: {
-          commentId: commentId,
-          replyId: replyId,
-        },
-      });
-      setCommentData([
-        ...commentData.filter((dbComment) => dbComment._id !== commentId),
-        comment.data?.removeReply,
-      ]);
-      // TODO: After you update the user model with a 'replyToCommentArr'
-      // TODO: Need to add the user state update here
-    } catch (e) {
-      // Clear state
-      console.log(e);
-    }
-  };
-
-  const addLikeToAReply = async (replyId, commentId) => {
-    try {
-      let comment = await addLikeToReply({
-        variables: {
-          commentId: commentId,
-          replyId: replyId,
-          userId: account.data._id,
-        },
-      });
-      setCommentData([
-        ...commentData.filter((dbComment) => dbComment._id !== commentId),
-        comment.data?.addLikeToReply,
-      ]);
-      // TODO: After you update the user model with a 'likesToRepliesArr'
-      // TODO: Need to add the user state update here
-    } catch (e) {
-      // Clear state
-      console.log(e);
-    }
-  };
-
-  const addReplyToAReply = async ({ replyToReplySave }) => {
-    try {
-      let comment = await addReplyToReply({
-        variables: {
-          replyToReplySave: replyToReplySave,
-        },
-      });
-      setCommentData([
-        ...commentData.filter(
-          (dbComment) => dbComment._id !== replyToReplySave.commentId
-        ),
-        comment.data?.addReplyToReply,
-      ]);
-      // TODO: After you update the user model with a 'repliesArr'
-      // TODO: Need to add the user state update here
-    } catch (e) {
-      // Clear state
-      console.log(e);
-    }
-  };
-
   const editCurrentComment = async (commentId, text) => {
     try {
+      // TODO: Update resolver side to update the data from the user model object - userInteraction.comments
       let comment = await updateComment({
         variables: {
           commentId: commentId,
@@ -481,6 +360,7 @@ const Home = ({ account, accountLevel }) => {
   // The function to remove a comment from the DB and the users arr
   const removeCurrentComment = async (commentId) => {
     try {
+      // TODO: Update resolver side to remove the data from the user model object - userInteraction.comments
       let comment = await removeComment({
         variables: {
           commentId: commentId,
@@ -503,6 +383,136 @@ const Home = ({ account, accountLevel }) => {
     }
   };
 
+  const addLikeToComment = async (commentId) => {
+    try {
+      // TODO: Update resolver side to pass the data to the user model object - userInteraction.commentLikes
+      await addCommentLike({
+        variables: {
+          commentId: commentId,
+          userId: account.data._id,
+        },
+      });
+      currentCommentLikes.push(account.data._id);
+    } catch (e) {
+      // Clear state
+      console.log(e);
+    }
+  };
+
+  const removeLikeFromComment = async (commentId) => {
+    try {
+      // TODO: Update resolver side to remove the data from the user model object - userInteraction.commentLikes
+      await removeCommentLike({
+        variables: {
+          commentId: commentId,
+          userId: account.data._id,
+        },
+      });
+    } catch (e) {
+      // Clear state
+      console.log(e);
+    }
+  };
+
+  const addReplyToComment = async (commentId, text, userId, username) => {
+    try {
+      // TODO: Update resolver side to pass the data to the user model object - userInteraction.replies
+      let comment = await addReply({
+        variables: {
+          replyToSave: {
+            text: text,
+            commentId: commentId,
+            userId: userId,
+            username: username,
+          },
+        },
+      });
+      setCommentData([
+        ...commentData.filter((dbComment) => dbComment._id !== commentId),
+        comment.data?.addReply,
+      ]);
+    } catch (e) {
+      // Clear state
+      console.log(e);
+    }
+  };
+
+  const removeReplyFromComment = async (replyId, commentId) => {
+    try {
+      // TODO: Update resolver side to remove the data from the user model object - userInteraction.replies
+      let comment = await removeReply({
+        variables: {
+          commentId: commentId,
+          replyId: replyId,
+        },
+      });
+      setCommentData([
+        ...commentData.filter((dbComment) => dbComment._id !== commentId),
+        comment.data?.removeReply,
+      ]);
+    } catch (e) {
+      // Clear state
+      console.log(e);
+    }
+  };
+
+  const addLikeToAReply = async (replyId, commentId) => {
+    try {
+      // TODO: Update resolver side to pass the data to the user model object - userInteraction.replyLikes
+      let comment = await addLikeToReply({
+        variables: {
+          commentId: commentId,
+          replyId: replyId,
+          userId: account.data._id,
+        },
+      });
+      setCommentData([
+        ...commentData.filter((dbComment) => dbComment._id !== commentId),
+        comment.data?.addLikeToReply,
+      ]);
+    } catch (e) {
+      // Clear state
+      console.log(e);
+    }
+  };
+
+  const addReplyToAReply = async ({ replyToReplySave }) => {
+    try {
+      // TODO: Update resolver side to pass the data to the user model object - userInteraction.replies
+      let comment = await addReplyToReply({
+        variables: {
+          replyToReplySave: replyToReplySave,
+        },
+      });
+      setCommentData([
+        ...commentData.filter(
+          (dbComment) => dbComment._id !== replyToReplySave.commentId
+        ),
+        comment.data?.addReplyToReply,
+      ]);
+    } catch (e) {
+      // Clear state
+      console.log(e);
+    }
+  };
+
+  // * ------------------------------------------------------------ OTHER FUNCTIONS
+  // Returns the amount of likes a post has
+  const returnPostLikes = (activePostId) => {
+    let counter = [];
+    if (!loading && data) {
+      data.likes.map((like) => {
+        // Check if the post has LIKES in general (not just from the logged in user)
+        if (like.postId == activePostId) {
+          // Push the like (which also contains the usersId)
+          counter.push(like);
+        }
+      });
+      // Return the length of the counter which is the likes amount
+      return counter.length;
+    }
+  };
+
   const returnUserComment = (commentUserId) => {
     let isUsersCommment = false;
     if (loggedIn && !userData.loading && userState.length != 0) {
@@ -520,7 +530,7 @@ const Home = ({ account, accountLevel }) => {
   const generateCommentEl = (commentsArr, activePostId) => {
     return (
       <div className="comment-outer-wrapper comment-outer-wrapper-0 hidden">
-        {loggedIn ? (
+        {loggedIn && (
           <form
             className="new-comment-form"
             onSubmit={(e) =>
@@ -530,8 +540,6 @@ const Home = ({ account, accountLevel }) => {
             <textarea name="text" placeholder="Add new comment"></textarea>
             <button name="uploadPost">Post</button>
           </form>
-        ) : (
-          <p>Login to Post and Reply to comments</p>
         )}
         <div className="comment-section">
           {commentsArr.map((comment, i) => {
@@ -555,11 +563,8 @@ const Home = ({ account, accountLevel }) => {
                   >
                     {comment.text}{" "}
                     <>
-                      <br></br>Posted {format_date(comment.createdAt)} ago -
-                      Updated{" "}
-                      {comment.updated && (
-                        <>{format_date(comment.updatedAt)} ago</>
-                      )}
+                      <br></br>Posted {format_date(comment.createdAt)} ago
+                      {comment.updated && <> - Updated</>}
                     </>
                   </p>
                   <div className="comment-controls-wrapper">
@@ -683,7 +688,6 @@ const Home = ({ account, accountLevel }) => {
                           style={{ pointerEvents: "none" }}
                           className="outlineHeart"
                         />
-                        <p style={{ margin: "0" }}>Login to like replies</p>
                       </div>
                     )}
                     <button
