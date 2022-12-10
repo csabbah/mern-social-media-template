@@ -293,12 +293,13 @@ const resolvers = {
     },
 
     removeReply: async (parent, { commentId, replyId }) => {
-      const comment = await Comments.findById(
+      const comment = await Comments.findOneAndUpdate(
         { _id: commentId },
         { $pull: { replies: { _id: replyId } } },
         { new: true }
       );
 
+      // If you use below method, change to > Comments.findById
       // comment.replies.forEach((reply, index) => {
       //   if (reply._id == replyId) {
       //     comment.replies.splice(index, 1)
