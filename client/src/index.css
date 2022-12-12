@@ -74,9 +74,10 @@ textarea {
 }
 .add-reply-to-comment-input,
 .add-comment-input,
-.add-reply-to-reply-input {
+.add-reply-to-reply-input,
+.edit-comment-input {
   height: 45px;
-  transition: 0.3s all ease-in-out;
+  transition: 0.2s all ease-in-out;
 }
 
 button {

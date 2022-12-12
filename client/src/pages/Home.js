@@ -602,6 +602,11 @@ const Home = ({ account, accountLevel }) => {
     }
   };
 
+  const closeInput = (e) => {
+    setTimeout(() => {
+      e.target.style.height = "45px";
+    }, 100);
+  };
   const generateCommentEl = (commentsArr, activePostId) => {
     return (
       <div className="comment-outer-wrapper comment-outer-wrapper-0 hidden">
@@ -617,7 +622,7 @@ const Home = ({ account, accountLevel }) => {
                 e.target.style.height = "125px";
               }}
               onBlur={(e) => {
-                e.target.style.height = "45px";
+                closeInput(e);
               }}
               className="add-comment-input"
               name="text"
@@ -667,10 +672,17 @@ const Home = ({ account, accountLevel }) => {
                                 .classList.remove("hidden");
                             }}
                           >
-                            <input
+                            <textarea
+                              onFocus={(e) => {
+                                e.target.style.height = "125px";
+                              }}
+                              onBlur={(e) => {
+                                closeInput(e);
+                              }}
+                              className="edit-comment-input"
                               name="text"
                               defaultValue={comment.text}
-                            ></input>
+                            ></textarea>
                             <div className="edit-comment-formBtns">
                               <button name="confirmEdit">Confirm</button>
                               <button
@@ -842,7 +854,7 @@ const Home = ({ account, accountLevel }) => {
                                           e.target.style.height = "125px";
                                         }}
                                         onBlur={(e) => {
-                                          e.target.style.height = "45px";
+                                          closeInput(e);
                                         }}
                                         style={{ marginBottom: "5px" }}
                                         name="replyText"
@@ -1012,7 +1024,7 @@ const Home = ({ account, accountLevel }) => {
                             e.target.style.height = "125px";
                           }}
                           onBlur={(e) => {
-                            e.target.style.height = "45px";
+                            closeInput(e);
                           }}
                           name="text"
                           placeholder="Add Reply"
