@@ -519,20 +519,11 @@ const Home = ({ account, accountLevel }) => {
           >
             {/* CSS will determine which icon below will appear
                 If button is checked, Fill heart will display, else, Outline will display */}
-            <span
-              style={{ pointerEvents: "none", margin: "0" }}
-              className={"geo-post-0"}
-            >
+            <span className={"geo-post-0 counterEl"}>
               {returnPostLikes(`current-geo-post-id`)}
             </span>
-            <AiFillHeart
-              style={{ pointerEvents: "none" }}
-              className="fillHeart"
-            />
-            <AiOutlineHeart
-              style={{ pointerEvents: "none" }}
-              className="outlineHeart"
-            />
+            <AiFillHeart className="fillHeart" />
+            <AiOutlineHeart className="outlineHeart" />
           </button>
           <button
             onClick={() =>
@@ -770,30 +761,18 @@ const Home = ({ account, accountLevel }) => {
                           }
                         }}
                       >
-                        <div
-                          style={{ pointerEvents: "none" }}
-                          className={`comment-likes-${i}`}
-                        >
+                        <div className={`comment-likes-${i} counterEl`}>
                           {comment.liked.length}
                         </div>
-                        <AiFillHeart
-                          style={{ pointerEvents: "none" }}
-                          className="fillHeart"
-                        />
-                        <AiOutlineHeart
-                          style={{ pointerEvents: "none" }}
-                          className="outlineHeart"
-                        />
+                        <AiFillHeart className="fillHeart" />
+                        <AiOutlineHeart className="outlineHeart" />
                       </button>
                     ) : (
                       <div style={{ display: "flex", alignItems: "center" }}>
-                        <span style={{ pointerEvents: "none" }}>
+                        <span className="counterEl">
                           {comment.liked.length}
                         </span>
-                        <AiOutlineHeart
-                          style={{ pointerEvents: "none" }}
-                          className="outlineHeart"
-                        />
+                        <AiOutlineHeart className="outlineHeart" />
                       </div>
                     )}
                     <button
@@ -803,7 +782,7 @@ const Home = ({ account, accountLevel }) => {
                           .classList.toggle("hidden")
                       }
                     >
-                      <span style={{ pointerEvents: "none" }}>
+                      <span className={"counterEl"}>
                         {comment.replies.length}
                       </span>
                       <FaRegComment />
@@ -964,22 +943,15 @@ const Home = ({ account, accountLevel }) => {
                                         }}
                                       >
                                         <span
-                                          style={{ pointerEvents: "none" }}
-                                          className={`reply-likes-${i}`}
+                                          className={`reply-likes-${i} counterEl`}
                                         >
                                           {reply.replyLikes &&
                                           reply.replyLikes.length > 0
                                             ? reply.replyLikes.length
                                             : 0}
                                         </span>
-                                        <AiFillHeart
-                                          style={{ pointerEvents: "none" }}
-                                          className="fillHeart"
-                                        />
-                                        <AiOutlineHeart
-                                          style={{ pointerEvents: "none" }}
-                                          className="outlineHeart"
-                                        />
+                                        <AiFillHeart className="fillHeart" />
+                                        <AiOutlineHeart className="outlineHeart" />
                                       </button>
                                       {reply.userId == account.data._id && (
                                         <>

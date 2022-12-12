@@ -311,6 +311,12 @@ select:-webkit-autofill:focus {
   width: 100%;
 }
 
+/* ----------------- Counter Elements (Likes & Comments) */
+.counterEl {
+  pointer-events: none;
+  margin: 0;
+}
+
 /* ----------------- Likes, Comment and Save button */
 .post-controls {
   margin-top: 10px;
@@ -334,6 +340,7 @@ select:-webkit-autofill:focus {
 .commentLikeBtn > .outlineHeart,
 .replyLikeBtn.replyLikeChecked > .fillHeart,
 .replyLikeBtn > .outlineHeart {
+  pointer-events: none;
   display: unset;
 }
 .likeBtn.Checked > .outlineHeart,
@@ -344,6 +351,7 @@ select:-webkit-autofill:focus {
 .commentLikeBtn > .fillHeart,
 .replyLikeBtn > .fillHeart,
 .replyLikeBtn.replyLikeChecked > .outlineHeart {
+  pointer-events: none;
   display: none;
 }
 
