@@ -833,7 +833,7 @@ const Home = ({ account, accountLevel }) => {
                             <div>
                               <div
                                 className={`users-reply-text reply-el ${
-                                  reply.userId == account.data._id
+                                  loggedIn && reply.userId == account.data._id
                                     ? `users-reply-${i}`
                                     : ""
                                 }`}
