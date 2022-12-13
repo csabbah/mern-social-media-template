@@ -257,7 +257,7 @@ const resolvers = {
     },
 
     updateReply: async (parent, { replyId, commentId, text }) => {
-      const comment = await Comments.findOneAndUpdate({ _id: commentId });
+      const comment = await Comments.findById({ _id: commentId });
 
       // Go through the replies array using regular JS expression
       comment.replies.forEach((reply) => {

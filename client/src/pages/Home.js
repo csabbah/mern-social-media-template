@@ -297,7 +297,6 @@ const Home = ({ account, accountLevel }) => {
   };
 
   const editCurrentReply = async (commentId, text, replyId) => {
-    console.log(commentId, text, replyId);
     try {
       // TODO: Update resolver side to update the data from the user model object - userInteraction.comments
       let comment = await updateReply({
@@ -455,18 +454,6 @@ const Home = ({ account, accountLevel }) => {
       });
       // Return the length of the counter which is the likes amount
       return counter.length;
-    }
-  };
-
-  const returnUserComment = (commentUserId) => {
-    let isUsersCommment = false;
-    if (loggedIn && !userData.loading && userState.length != 0) {
-      userState.commentsArr.map((comment) => {
-        if (comment.userId == commentUserId) {
-          isUsersCommment = true;
-        }
-      });
-      return isUsersCommment;
     }
   };
 
@@ -662,26 +649,26 @@ const Home = ({ account, accountLevel }) => {
             return (
               <div
                 className={
-                  returnUserComment(comment.userId) ? `users-comment` : ""
+                  comment.userId == account.data._id ? `users-comment` : ""
                 }
               >
                 <div className="comment-wrapper">
                   {comment.username}
                   <div
                     className={`single-comment-content ${
-                      returnUserComment(comment.userId) ? `usersComment` : ""
+                      comment.userId == account.data._id ? `usersComment` : ""
                     }
                       ${
-                        returnUserComment(comment.userId)
+                        comment.userId == account.data._id
                           ? `users-comment-${i}`
                           : ""
                       }`}
                   >
-                    {!returnUserComment(comment.userId) && (
+                    {!comment.userId == account.data._id && (
                       <span>{comment.text}</span>
                     )}
                     {/* If it's logged in users comment, render this block */}
-                    {returnUserComment(comment.userId) && (
+                    {comment.userId == account.data._id && (
                       <>
                         {editComment[0] && editComment[1] == i ? (
                           <form
