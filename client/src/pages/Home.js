@@ -24,6 +24,7 @@ import {
   ADD_FAVOURITE,
   REMOVE_FAVOURITE,
   ADD_REPLY,
+  EDIT_REPLY,
   ADD_LIKE_TO_REPLY,
   ADD_REPLY_TO_REPLY,
   REMOVE_REPLY,
@@ -102,6 +103,7 @@ const Home = ({ account, accountLevel }) => {
   const [updateComment, { updateCommentErr }] = useMutation(UPDATE_COMMENT);
   const [removeComment, { removeCommentErr }] = useMutation(REMOVE_COMMENT);
   const [addReply, { addReplyErr }] = useMutation(ADD_REPLY);
+  const [updateReply, { editReplyErr }] = useMutation(EDIT_REPLY);
   const [addLikeToReply, { addLikeToReplyErr }] =
     useMutation(ADD_LIKE_TO_REPLY);
   const [removeLikeFromReply, { removeLikeFromReplyErr }] = useMutation(
@@ -294,6 +296,38 @@ const Home = ({ account, accountLevel }) => {
     }
   };
 
+  const editCurrentReply = async (commentId, text, replyId) => {
+    console.log(commentId, text, replyId);
+    try {
+      // TODO: Update resolver side to update the data from the user model object - userInteraction.comments
+      let comment = await updateReply({
+        variables: {
+          commentId: commentId,
+          replyId: replyId,
+          text: text,
+        },
+      });
+
+      setCommentData([
+        ...commentData.filter((dbComment) => dbComment._id !== commentId),
+        comment.data?.updateReply,
+      ]);
+
+      setUserState({
+        ...userState,
+        commentsArr: [
+          comment.data?.updateReply,
+          ...userState.commentsArr.filter(
+            (dbComment) => dbComment._id !== commentId
+          ),
+        ],
+      });
+    } catch (e) {
+      // Clear state
+      console.log(e);
+    }
+  };
+
   const removeReplyFromComment = async (replyId, commentId) => {
     try {
       // TODO: Update resolver side to remove the data from the user model object - userInteraction.replies
@@ -436,7 +470,8 @@ const Home = ({ account, accountLevel }) => {
     }
   };
 
-  const [edit, setEdit] = useState([false, 0]);
+  const [editComment, setEditComment] = useState([false, 0]);
+  const [editReply, setEditReply] = useState([false, 0]);
 
   const returnPostCommentsCounter = (activePostId, commentState) => {
     let commentsArr = [];
@@ -648,7 +683,7 @@ const Home = ({ account, accountLevel }) => {
                     {/* If it's logged in users comment, render this block */}
                     {returnUserComment(comment.userId) && (
                       <>
-                        {edit[0] && edit[1] == i ? (
+                        {editComment[0] && editComment[1] == i ? (
                           <form
                             className="edit-comment-form"
                             onSubmit={(e) => {
@@ -657,7 +692,7 @@ const Home = ({ account, accountLevel }) => {
                                 comment._id,
                                 e.target.text.value
                               );
-                              setEdit([false, 0]);
+                              setEditComment([false, 0]);
                               document
                                 .querySelector(`.users-comment-${i}`)
                                 .classList.remove("hidden");
@@ -678,7 +713,7 @@ const Home = ({ account, accountLevel }) => {
                               <button name="confirmEdit">Confirm</button>
                               <button
                                 onClick={() => {
-                                  setEdit([false, 0]);
+                                  setEditComment([false, 0]);
                                   document
                                     .querySelector(`.users-comment-${i}`)
                                     .classList.remove("hidden");
@@ -693,7 +728,7 @@ const Home = ({ account, accountLevel }) => {
                             <span>{comment.text}</span>
                             <button
                               onClick={(e) => {
-                                setEdit([true, i]);
+                                setEditComment([true, i]);
                                 document
                                   .querySelector(`.users-comment-${i}`)
                                   .classList.add("hidden");
@@ -796,8 +831,18 @@ const Home = ({ account, accountLevel }) => {
                         comment.replies.map((reply, i) => {
                           return (
                             <div>
-                              {reply.username} - {reply.text}
-                              <p className="replies-to-reply-section">
+                              <div
+                                className={`users-reply-text reply-el ${
+                                  reply.userId == account.data._id
+                                    ? `users-reply-${i}`
+                                    : ""
+                                }`}
+                              >
+                                {reply.username} - {reply.text}
+                              </div>
+                              <p
+                                className={`replies-to-reply-section reply-el users-reply-${i}`}
+                              >
                                 {reply.replyToReply.map((reply) => {
                                   return (
                                     <p>
@@ -883,6 +928,7 @@ const Home = ({ account, accountLevel }) => {
                                       )}`}
                                     >
                                       <button
+                                        className={`reply-el users-reply-${i}`}
                                         onClick={() => {
                                           document
                                             .querySelectorAll(
@@ -899,7 +945,7 @@ const Home = ({ account, accountLevel }) => {
                                         Reply
                                       </button>
                                       <button
-                                        className={`replyLikeBtn ${reply.replyLikes
+                                        className={`replyLikeBtn reply-el users-reply-${i} ${reply.replyLikes
                                           .map((reply) => {
                                             if (reply == account.data._id) {
                                               return `replyLikeChecked`;
@@ -955,17 +1001,103 @@ const Home = ({ account, accountLevel }) => {
                                       </button>
                                       {reply.userId == account.data._id && (
                                         <>
-                                          <button>Edit</button>
-                                          <button
-                                            onClick={() =>
-                                              removeReplyFromComment(
-                                                reply._id,
-                                                reply.commentId
-                                              )
-                                            }
-                                          >
-                                            X
-                                          </button>
+                                          {editReply[0] && editReply[1] == i ? (
+                                            <form
+                                              className="edit-comment-form"
+                                              onSubmit={(e) => {
+                                                e.preventDefault();
+                                                editCurrentReply(
+                                                  reply.commentId,
+                                                  e.target.text.value,
+                                                  reply._id
+                                                );
+                                                setEditReply([false, 0]);
+                                                document
+                                                  .querySelectorAll(
+                                                    `.users-reply-${i}`
+                                                  )
+                                                  .forEach((el) => {
+                                                    el.classList.remove(
+                                                      "hidden"
+                                                    );
+                                                  });
+                                              }}
+                                            >
+                                              <textarea
+                                                onFocus={(e) => {
+                                                  e.target.style.height =
+                                                    "125px";
+                                                }}
+                                                onBlur={(e) => {
+                                                  closeInput(e);
+                                                }}
+                                                className="edit-comment-input"
+                                                name="text"
+                                                defaultValue={reply.text}
+                                              ></textarea>
+                                              <div className="edit-comment-formBtns">
+                                                <button name="confirmEdit">
+                                                  Confirm
+                                                </button>
+                                                <button
+                                                  onClick={() => {
+                                                    setEditReply([false, 0]);
+                                                    document
+                                                      .querySelectorAll(
+                                                        `.users-reply-${i}`
+                                                      )
+                                                      .forEach((el) => {
+                                                        el.classList.remove(
+                                                          "hidden"
+                                                        );
+                                                      });
+                                                  }}
+                                                >
+                                                  Cancel
+                                                </button>
+                                              </div>
+                                            </form>
+                                          ) : (
+                                            <div className="users-comment-controls">
+                                              <button
+                                                onClick={(e) => {
+                                                  // Remove 'hidden' from all userComments upon clicking edit
+                                                  // To ensure everything resets
+                                                  document
+                                                    .querySelectorAll(
+                                                      ".reply-el"
+                                                    )
+                                                    .forEach((comment) => {
+                                                      comment.classList.remove(
+                                                        "hidden"
+                                                      );
+                                                    });
+                                                  setEditReply([true, i]);
+                                                  document
+                                                    .querySelectorAll(
+                                                      `.users-reply-${i}`
+                                                    )
+                                                    .forEach((el) => {
+                                                      el.classList.add(
+                                                        "hidden"
+                                                      );
+                                                    });
+                                                }}
+                                              >
+                                                Edit
+                                              </button>
+                                              <button
+                                                onClick={() =>
+                                                  removeReplyFromComment(
+                                                    reply._id,
+                                                    reply.commentId
+                                                  )
+                                                }
+                                              >
+                                                X
+                                              </button>
+                                            </div>
+                                          )}
                                         </>
                                       )}
                                     </div>

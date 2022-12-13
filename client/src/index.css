@@ -379,6 +379,7 @@ select:-webkit-autofill:focus {
 .comment-outer-wrapper.hidden {
   display: none;
 }
+
 .comment-section {
   width: 100%;
   overflow-y: scroll;
@@ -424,6 +425,7 @@ select:-webkit-autofill:focus {
   gap: 5px;
 }
 .edit-comment-form {
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 5px;
@@ -445,13 +447,13 @@ select:-webkit-autofill:focus {
   margin-top: 15px;
 }
 
-.reply-outer-wrapper {
-  display: flex;
-  gap: 5px;
-}
-
 .reply-to-reply-input.hidden,
 .reply-controls.hidden {
+  display: none;
+}
+
+.reply-controls.hidden,
+.users-reply.hidden {
   display: none;
 }
 
