@@ -36,11 +36,6 @@ import {
 import { GET_LIKES, GET_ME, GET_COMMENTS, GET_ADMIN } from "../utils/queries";
 
 const Home = ({ account, accountLevel }) => {
-  const [commentData, setCommentData] = useState([]);
-  const [userState, setUserState] = useState();
-
-  const [currentCommentLikes, setCurrentCommentLikes] = useState([]);
-
   // * UnHide this when ready to use and upload to DB
   // const [facts, setFacts] = useState("");
   // const [quotes, setQuotes] = useState([]);
@@ -62,6 +57,7 @@ const Home = ({ account, accountLevel }) => {
   //   // fetchFunc(setWords, fetchWords);
   // }, []);
 
+  // * ------------------------------------------------------------ THIS SECTION RENDERS USERS DATA/COMMENTS AND SETS THE STATE OBJECTS FOR USE
   let loggedIn =
     localStorage.getItem("id_token") == null
       ? false
@@ -89,6 +85,9 @@ const Home = ({ account, accountLevel }) => {
 
   let { user, userData, comments, commentsState, data, loading } = FetchQuery();
 
+  const [commentData, setCommentData] = useState([]);
+  const [userState, setUserState] = useState();
+
   useEffect(() => {
     setUserState(user);
     setCommentData(commentsState);
@@ -96,6 +95,7 @@ const Home = ({ account, accountLevel }) => {
     // Not run again, it will only run once AFTER all data has been sent to the useState variables
   }, [userData.loading, comments.loading]);
 
+  // * ------------------------------------------------------------ MUTATION DECLARATIONS
   const [addLike, { likeErr }] = useMutation(ADD_LIKE);
   const [removeLike, { removeLikeErr }] = useMutation(REMOVE_LIKE);
   const [addComment, { commentErr }] = useMutation(ADD_COMMENT);
@@ -119,9 +119,7 @@ const Home = ({ account, accountLevel }) => {
   const [removeCommentLike, { removeCommentLikeErr }] =
     useMutation(REMOVE_COMMENT_LIKE);
 
-  const [currentLikes, setCurrentLikes] = useState([]);
   // * ------------------------------------------------------------ ALL RESOLVER FUNCTIONS
-
   // The function to add a like to the DB and the users arr
   const addNewLike = async (postId) => {
     try {
@@ -245,6 +243,7 @@ const Home = ({ account, accountLevel }) => {
     }
   };
 
+  const [currentCommentLikes, setCurrentCommentLikes] = useState([]);
   const addLikeToComment = async (commentId) => {
     try {
       // TODO: Update resolver side to pass the data to the user model object - userInteraction.commentLikes
@@ -254,6 +253,7 @@ const Home = ({ account, accountLevel }) => {
           userId: account.data._id,
         },
       });
+      // Push the comment likes into a state object (during session) to ensure that it accurately updates the DB
       currentCommentLikes.push(account.data._id);
     } catch (e) {
       // Clear state
@@ -429,7 +429,48 @@ const Home = ({ account, accountLevel }) => {
     }
   };
 
+  const addNewFavourite = async (postId) => {
+    try {
+      const user = await addFavourite({
+        variables: {
+          postId: postId,
+          userId: account.data._id,
+        },
+      });
+      return user;
+    } catch (e) {
+      // Clear state
+      console.log(e);
+    }
+  };
+
+  // TODO :: Make this one function
+  // This is to be used in the home page (Separate from the favourites component)
+  const removeFavouritePost = async (favouriteId) => {
+    try {
+      const user = await removeFavourite({
+        variables: {
+          favouriteId: favouriteId,
+          userId: account.data._id,
+        },
+      });
+      return user;
+    } catch (e) {
+      // Clear state
+      console.log(e);
+    }
+  };
+
   // * ------------------------------------------------------------ OTHER FUNCTIONS
+  // This reduce height of any input/textarea
+  // It uses setTimeout to ensure that if other elements are clicked, their events are fired off before the input closes
+  const closeInput = (e) => {
+    setTimeout(() => {
+      e.target.style.height = "45px";
+    }, 100);
+  };
+
+  const [currentLikes, setCurrentLikes] = useState([]);
 
   // The function to handle whether to add a like or to remove a like
   const handleLike = async (currentPostId, remove) => {
@@ -480,9 +521,6 @@ const Home = ({ account, accountLevel }) => {
     }
   };
 
-  const [editComment, setEditComment] = useState([false, 0]);
-  const [editReply, setEditReply] = useState([false, 0]);
-
   const returnPostCommentsCounter = (activePostId, commentState) => {
     let commentsArr = [];
 
@@ -494,40 +532,11 @@ const Home = ({ account, accountLevel }) => {
 
     return commentsArr.length;
   };
-
-  const addNewFavourite = async (postId) => {
-    try {
-      const user = await addFavourite({
-        variables: {
-          postId: postId,
-          userId: account.data._id,
-        },
-      });
-      return user;
-    } catch (e) {
-      // Clear state
-      console.log(e);
-    }
-  };
-
-  // TODO :: Make this one function
-  // This is to be used in the home page (Separate from the favourites component)
-  const removeFavouritePost = async (favouriteId) => {
-    try {
-      const user = await removeFavourite({
-        variables: {
-          favouriteId: favouriteId,
-          userId: account.data._id,
-        },
-      });
-      return user;
-    } catch (e) {
-      // Clear state
-      console.log(e);
-    }
-  };
-
   // * ------------------------------------------------------------ FUNCTIONS THAT RENDER ELEMENTS
+
+  const [editComment, setEditComment] = useState([false, 0]);
+  const [editReply, setEditReply] = useState([false, 0]);
+
   const returnPostInteractions = (currentPostId, specificPost) => {
     if (loggedIn && !userData.loading && user) {
       return (
@@ -641,11 +650,6 @@ const Home = ({ account, accountLevel }) => {
     }
   };
 
-  const closeInput = (e) => {
-    setTimeout(() => {
-      e.target.style.height = "45px";
-    }, 100);
-  };
   const generateCommentEl = (commentsArr, activePostId) => {
     return (
       <div className="comment-outer-wrapper comment-outer-wrapper-0 hidden">
@@ -1200,6 +1204,8 @@ const Home = ({ account, accountLevel }) => {
       );
     });
   };
+
+  // * ------------------------------------------------------------ MAIN RENDER BLOCK
 
   let facts = { topic: "te", description: "te" };
   return (
