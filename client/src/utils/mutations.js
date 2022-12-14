@@ -463,6 +463,54 @@ export const REMOVE_INNER_REPLY = gql`
   }
 `;
 
+export const ADD_LIKE_TO_INNER_REPLY = gql`
+  mutation addLikeToInnerReply(
+    $userId: String!
+    $replyId: String!
+    $commentId: String!
+    $innerReplyId: String!
+  ) {
+    addLikeToInnerReply(
+      userId: $userId
+      replyId: $replyId
+      commentId: $commentId
+      innerReplyId: $innerReplyId
+    ) {
+      __typename
+      _id
+      postId
+      userId
+      text
+      username
+      liked
+      replies {
+        _id
+        updatedAt
+        createdAt
+        text
+        username
+        userId
+        commentId
+        replyToReply {
+          replyText
+          replyLikes
+          commentId
+          userId
+          username
+          _id
+          createdAt
+          updatedAt
+          replyId
+        }
+        replyLikes
+      }
+      createdAt
+      updatedAt
+      updated
+    }
+  }
+`;
+
 export const REMOVE_LIKE_FROM_REPLY = gql`
   mutation removeLikeFromReply(
     $userId: String!
@@ -548,8 +596,8 @@ export const REMOVE_REPLY = gql`
 `;
 
 export const ADD_REPLY_TO_REPLY = gql`
-  mutation addReplyToReply($replyToReplySave: replyToReplyInput) {
-    addReplyToReply(replyToReplySave: $replyToReplySave) {
+  mutation addInnerReply($replyToReplySave: replyToReplyInput) {
+    addInnerReply(replyToReplySave: $replyToReplySave) {
       __typename
       _id
       postId

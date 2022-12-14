@@ -328,7 +328,7 @@ const resolvers = {
       return comment;
     },
 
-    addReplyToReply: async (parent, { replyToReplySave }) => {
+    addInnerReply: async (parent, { replyToReplySave }) => {
       const comment = await Comments.findById({
         _id: replyToReplySave.commentId,
       });
@@ -357,6 +357,27 @@ const resolvers = {
           reply.replyToReply.forEach((innerReply, index) => {
             if (innerReply._id == innerReplyId) {
               reply.replyToReply.splice(index, 1);
+            }
+          });
+        }
+        comment.save(reply);
+      });
+
+      return comment;
+    },
+    addLikeToInnerReply: async (
+      parent,
+      { commentId, innerReplyId, replyId, userId }
+    ) => {
+      const comment = await Comments.findById({
+        _id: commentId,
+      });
+
+      comment.replies.forEach((reply) => {
+        if (reply._id == replyId) {
+          reply.replyToReply.forEach((innerReply) => {
+            if (innerReply._id == innerReplyId) {
+              innerReply.replyLikes.push(userId);
             }
           });
           comment.save(reply);

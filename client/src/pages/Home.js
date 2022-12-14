@@ -31,6 +31,7 @@ import {
   ADD_COMMENT_LIKE,
   REMOVE_COMMENT_LIKE,
   REMOVE_INNER_REPLY,
+  ADD_LIKE_TO_INNER_REPLY,
   REMOVE_LIKE_FROM_REPLY,
 } from "../utils/mutations";
 import { GET_LIKES, GET_ME, GET_COMMENTS, GET_ADMIN } from "../utils/queries";
@@ -110,10 +111,12 @@ const Home = ({ account, accountLevel }) => {
   const [removeLikeFromReply, { removeLikeFromReplyErr }] = useMutation(
     REMOVE_LIKE_FROM_REPLY
   );
-  const [addReplyToReply, { addReplyToReplyErr }] =
-    useMutation(ADD_REPLY_TO_REPLY);
+  const [addInnerReply, { addInnerReplyErr }] = useMutation(ADD_REPLY_TO_REPLY);
   const [removeInnerReply, { removeInnerReplyErr }] =
     useMutation(REMOVE_INNER_REPLY);
+  const [addLikeToInnerReply, { addLikeToInnerReplyErr }] = useMutation(
+    ADD_LIKE_TO_INNER_REPLY
+  );
   const [removeReply, { removeReplyErr }] = useMutation(REMOVE_REPLY);
   const [addCommentLike, { addCommentLikeErr }] = useMutation(ADD_COMMENT_LIKE);
   const [removeCommentLike, { removeCommentLikeErr }] =
@@ -389,10 +392,10 @@ const Home = ({ account, accountLevel }) => {
     }
   };
 
-  const addReplyToAReply = async ({ replyToReplySave }) => {
+  const addReplyToInnerReply = async ({ replyToReplySave }) => {
     try {
       // TODO: Update resolver side to pass the data to the user model object - userInteraction.replies
-      let comment = await addReplyToReply({
+      let comment = await addInnerReply({
         variables: {
           replyToReplySave: replyToReplySave,
         },
@@ -401,7 +404,7 @@ const Home = ({ account, accountLevel }) => {
         ...commentData.filter(
           (dbComment) => dbComment._id !== replyToReplySave.commentId
         ),
-        comment.data?.addReplyToReply,
+        comment.data?.addInnerReply,
       ]);
     } catch (e) {
       // Clear state
@@ -422,6 +425,27 @@ const Home = ({ account, accountLevel }) => {
       setCommentData([
         ...commentData.filter((dbComment) => dbComment._id !== commentId),
         comment.data?.removeInnerReply,
+      ]);
+    } catch (e) {
+      // Clear state
+      console.log(e);
+    }
+  };
+
+  const addLikeToAnInnerReply = async (replyId, commentId, innerReplyId) => {
+    try {
+      // TODO: Update resolver side to pass the data to the user model object - userInteraction.replies
+      let comment = await addLikeToInnerReply({
+        variables: {
+          userId: account.data._id,
+          replyId: replyId,
+          innerReplyId: innerReplyId,
+          commentId: commentId,
+        },
+      });
+      setCommentData([
+        ...commentData.filter((dbComment) => dbComment._id !== commentId),
+        comment.data?.addLikeToInnerReply,
       ]);
     } catch (e) {
       // Clear state
@@ -867,7 +891,7 @@ const Home = ({ account, accountLevel }) => {
                                     <form
                                       onSubmit={(e) => {
                                         e.preventDefault();
-                                        addReplyToAReply({
+                                        addReplyToInnerReply({
                                           replyToReplySave: {
                                             commentId: reply.commentId,
                                             replyText: e.target.replyText.value,
@@ -1188,7 +1212,12 @@ const Home = ({ account, accountLevel }) => {
       return (
         <p style={{ margin: "0" }}>
           {reply.replyText} - {reply.username} <button>Edit</button>
-          <button>
+          <button
+            onClick={() => {
+              addLikeToAnInnerReply(reply.replyId, reply.commentId, reply._id);
+            }}
+          >
+            {reply.replyLikes.length > 0 ? reply.replyLikes.length : 0}
             <AiFillHeart className="fillHeart" />
             {/* <AiOutlineHeart className="outlineHeart" /> */}
           </button>
