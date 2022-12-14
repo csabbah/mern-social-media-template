@@ -74,7 +74,7 @@ textarea {
 }
 .add-reply-to-comment-input,
 .add-comment-input,
-.add-reply-to-reply-input,
+.add-innerReply-input,
 .edit-comment-input {
   height: 45px;
   transition: 0.2s all ease-in-out;

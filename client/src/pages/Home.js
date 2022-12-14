@@ -879,11 +879,11 @@ const Home = ({ account, accountLevel }) => {
                                       }}
                                       className={`reply-to-reply-input hidden reply-${i}-${reply.commentId.slice(
                                         0,
-                                        10
+                                        5
                                       )}`}
                                     >
                                       <textarea
-                                        className="add-reply-to-reply-input"
+                                        className={`add-innerReply-input innerReply-input-${reply._id}`}
                                         onFocus={(e) => {
                                           e.target.style.height = "125px";
                                         }}
@@ -900,7 +900,7 @@ const Home = ({ account, accountLevel }) => {
                                             .querySelectorAll(
                                               `.reply-${i}-${reply.commentId.slice(
                                                 0,
-                                                10
+                                                5
                                               )}`
                                             )
                                             .forEach((el) => {
@@ -920,7 +920,7 @@ const Home = ({ account, accountLevel }) => {
                                             .querySelectorAll(
                                               `.reply-${i}-${reply.commentId.slice(
                                                 0,
-                                                10
+                                                5
                                               )}`
                                             )
                                             .forEach((el) => {
@@ -934,17 +934,17 @@ const Home = ({ account, accountLevel }) => {
                                     <div
                                       className={`reply-controls reply-${i}-${reply.commentId.slice(
                                         0,
-                                        10
+                                        5
                                       )}`}
                                     >
                                       <button
-                                        className={`reply-el users-reply-${i}`}
+                                        className={`reply-el reply-btn-${reply._id} users-reply-${i}`}
                                         onClick={() => {
                                           document
                                             .querySelectorAll(
                                               `.reply-${i}-${reply.commentId.slice(
                                                 0,
-                                                10
+                                                5
                                               )}`
                                             )
                                             .forEach((el) => {
@@ -1184,7 +1184,7 @@ const Home = ({ account, accountLevel }) => {
   };
 
   const generateRepliesToReplyEl = (repliesToReplies) => {
-    return repliesToReplies.map((reply) => {
+    return repliesToReplies.map((reply, i) => {
       return (
         <p style={{ margin: "0" }}>
           {reply.replyText} - {reply.username} <button>Edit</button>
@@ -1192,7 +1192,20 @@ const Home = ({ account, accountLevel }) => {
             <AiFillHeart className="fillHeart" />
             {/* <AiOutlineHeart className="outlineHeart" /> */}
           </button>
-          <button>Reply</button>
+          <button
+            onClick={() => {
+              document.querySelector(`.reply-btn-${reply.replyId}`).click();
+              document.querySelector(
+                `.innerReply-input-${reply.replyId}`
+              ).value = `Reply to ${reply.username} `;
+
+              document
+                .querySelector(`.innerReply-input-${reply.replyId}`)
+                .focus();
+            }}
+          >
+            Reply
+          </button>
           <button
             onClick={() =>
               removeAnInnerReply(reply.replyId, reply.commentId, reply._id)
