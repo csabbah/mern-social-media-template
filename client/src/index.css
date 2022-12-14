@@ -339,7 +339,9 @@ select:-webkit-autofill:focus {
 .commentLikeBtn.commentLikeChecked > .fillHeart,
 .commentLikeBtn > .outlineHeart,
 .replyLikeBtn.replyLikeChecked > .fillHeart,
-.replyLikeBtn > .outlineHeart {
+.replyLikeBtn > .outlineHeart,
+.innerReplyLikeBtn.innerReplyBtnLiked > .fillHeart,
+.innerReplyLikeBtn > .outlineHeart {
   pointer-events: none;
   display: unset;
 }
@@ -350,7 +352,9 @@ select:-webkit-autofill:focus {
 .commentLikeBtn.commentLikeChecked > .outlineHeart,
 .commentLikeBtn > .fillHeart,
 .replyLikeBtn > .fillHeart,
-.replyLikeBtn.replyLikeChecked > .outlineHeart {
+.replyLikeBtn.replyLikeChecked > .outlineHeart,
+.innerReplyLikeBtn.innerReplyBtnLiked > .outlineHeart,
+.innerReplyLikeBtn > .fillHeart {
   pointer-events: none;
   display: none;
 }

@@ -32,6 +32,7 @@ import {
   REMOVE_COMMENT_LIKE,
   REMOVE_INNER_REPLY,
   ADD_LIKE_TO_INNER_REPLY,
+  REMOVE_LIKE_FROM_INNER_REPLY,
   REMOVE_LIKE_FROM_REPLY,
 } from "../utils/mutations";
 import { GET_LIKES, GET_ME, GET_COMMENTS, GET_ADMIN } from "../utils/queries";
@@ -117,6 +118,10 @@ const Home = ({ account, accountLevel }) => {
   const [addLikeToInnerReply, { addLikeToInnerReplyErr }] = useMutation(
     ADD_LIKE_TO_INNER_REPLY
   );
+  const [removeLikeToInnerReply, { removeLikeToInnerReplyErr }] = useMutation(
+    REMOVE_LIKE_FROM_INNER_REPLY
+  );
+
   const [removeReply, { removeReplyErr }] = useMutation(REMOVE_REPLY);
   const [addCommentLike, { addCommentLikeErr }] = useMutation(ADD_COMMENT_LIKE);
   const [removeCommentLike, { removeCommentLikeErr }] =
@@ -446,6 +451,31 @@ const Home = ({ account, accountLevel }) => {
       setCommentData([
         ...commentData.filter((dbComment) => dbComment._id !== commentId),
         comment.data?.addLikeToInnerReply,
+      ]);
+    } catch (e) {
+      // Clear state
+      console.log(e);
+    }
+  };
+
+  const removeLikeFromAnInnerREply = async (
+    replyId,
+    commentId,
+    innerReplyId
+  ) => {
+    try {
+      // TODO: Update resolver side to pass the data to the user model object - userInteraction.replyLikes
+      let comment = await removeLikeToInnerReply({
+        variables: {
+          commentId: commentId,
+          replyId: replyId,
+          userId: account.data._id,
+          innerReplyId: innerReplyId,
+        },
+      });
+      setCommentData([
+        ...commentData.filter((dbComment) => dbComment._id !== commentId),
+        comment.data?.removeLikeFromInnerReply,
       ]);
     } catch (e) {
       // Clear state
@@ -1213,13 +1243,39 @@ const Home = ({ account, accountLevel }) => {
         <p style={{ margin: "0" }}>
           {reply.replyText} - {reply.username} <button>Edit</button>
           <button
-            onClick={() => {
-              addLikeToAnInnerReply(reply.replyId, reply.commentId, reply._id);
+            className={`innerReplyLikeBtn ${
+              account &&
+              reply.replyLikes
+                .map((like) => {
+                  if (like == account.data._id) {
+                    return "innerReplyBtnLiked";
+                  } else {
+                    return "";
+                  }
+                })
+                .join(" ")
+            }`}
+            onClick={(e) => {
+              if (e.target.className.includes("innerReplyBtnLiked")) {
+                e.target.className = "innerReplyLikeBtn";
+                removeLikeFromAnInnerREply(
+                  reply.replyId,
+                  reply.commentId,
+                  reply._id
+                );
+              } else {
+                e.target.className = "innerReplyLikeBtn innerReplyBtnLiked";
+                addLikeToAnInnerReply(
+                  reply.replyId,
+                  reply.commentId,
+                  reply._id
+                );
+              }
             }}
           >
             {reply.replyLikes.length > 0 ? reply.replyLikes.length : 0}
             <AiFillHeart className="fillHeart" />
-            {/* <AiOutlineHeart className="outlineHeart" /> */}
+            <AiOutlineHeart className="outlineHeart" />
           </button>
           <button
             onClick={() => {

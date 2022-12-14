@@ -387,6 +387,32 @@ const resolvers = {
       return comment;
     },
 
+    removeLikeFromInnerReply: async (
+      parent,
+      { userId, commentId, replyId, innerReplyId }
+    ) => {
+      const comment = await Comments.findById({
+        _id: commentId,
+      });
+
+      comment.replies.forEach((reply, i) => {
+        if (reply._id == replyId) {
+          reply.replyToReply.forEach((innerReply) => {
+            if (innerReply._id == innerReplyId) {
+              innerReply.replyLikes.forEach((innerReplyUser, index) => {
+                if (innerReplyUser == userId) {
+                  innerReply.replyLikes.splice(index, 1);
+                }
+              });
+            }
+          });
+          comment.save(reply);
+        }
+      });
+
+      return comment;
+    },
+
     addCommentLike: async (parent, { commentId, userId }) => {
       const comment = await Comments.findOneAndUpdate(
         { _id: commentId },

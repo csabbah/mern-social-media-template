@@ -209,6 +209,12 @@ const typeDefs = gql`
       replyId: String!
       innerReplyId: String!
     ): Comments
+    removeLikeFromInnerReply(
+      innerReplyId: String!
+      userId: String!
+      commentId: String!
+      replyId: String!
+    ): Comments
     addLikeToReply(
       userId: String!
       commentId: String!

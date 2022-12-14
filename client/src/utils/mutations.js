@@ -511,6 +511,54 @@ export const ADD_LIKE_TO_INNER_REPLY = gql`
   }
 `;
 
+export const REMOVE_LIKE_FROM_INNER_REPLY = gql`
+  mutation removeLikeFromInnerReply(
+    $userId: String!
+    $commentId: String!
+    $replyId: String!
+    $innerReplyId: String!
+  ) {
+    removeLikeFromInnerReply(
+      userId: $userId
+      commentId: $commentId
+      replyId: $replyId
+      innerReplyId: $innerReplyId
+    ) {
+      __typename
+      _id
+      postId
+      userId
+      text
+      username
+      liked
+      replies {
+        _id
+        updatedAt
+        createdAt
+        text
+        username
+        userId
+        commentId
+        replyToReply {
+          replyText
+          replyLikes
+          commentId
+          userId
+          username
+          _id
+          createdAt
+          updatedAt
+          replyId
+        }
+        replyLikes
+      }
+      createdAt
+      updatedAt
+      updated
+    }
+  }
+`;
+
 export const REMOVE_LIKE_FROM_REPLY = gql`
   mutation removeLikeFromReply(
     $userId: String!
