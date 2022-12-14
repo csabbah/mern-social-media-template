@@ -128,6 +128,7 @@ export const ADD_COMMENT = gql`
         commentId
         replyToReply {
           replyText
+          replyLikes
           commentId
           userId
           username
@@ -165,6 +166,7 @@ export const UPDATE_COMMENT = gql`
         commentId
         replyToReply {
           replyText
+          replyLikes
           commentId
           userId
           username
@@ -203,6 +205,7 @@ export const REMOVE_COMMENT = gql`
         commentId
         replyToReply {
           replyText
+          replyLikes
           commentId
           userId
           username
@@ -240,6 +243,7 @@ export const ADD_COMMENT_LIKE = gql`
         commentId
         replyToReply {
           replyText
+          replyLikes
           commentId
           userId
           username
@@ -277,6 +281,7 @@ export const REMOVE_COMMENT_LIKE = gql`
         commentId
         replyToReply {
           replyText
+          replyLikes
           commentId
           userId
           username
@@ -314,6 +319,7 @@ export const EDIT_REPLY = gql`
         commentId
         replyToReply {
           replyText
+          replyLikes
           commentId
           userId
           username
@@ -351,6 +357,7 @@ export const ADD_REPLY = gql`
         commentId
         replyToReply {
           replyText
+          replyLikes
           commentId
           userId
           username
@@ -392,6 +399,53 @@ export const ADD_LIKE_TO_REPLY = gql`
         commentId
         replyToReply {
           replyText
+          replyLikes
+          commentId
+          userId
+          username
+          _id
+          createdAt
+          updatedAt
+          replyId
+        }
+        replyLikes
+      }
+      createdAt
+      updatedAt
+      updated
+    }
+  }
+`;
+
+export const REMOVE_INNER_REPLY = gql`
+  mutation removeInnerReply(
+    $replyId: String!
+    $commentId: String!
+    $innerReplyId: String!
+  ) {
+    removeInnerReply(
+      replyId: $replyId
+      commentId: $commentId
+      innerReplyId: $innerReplyId
+    ) {
+      __typename
+      _id
+      postId
+      userId
+      text
+      username
+      liked
+      replies {
+        _id
+        updatedAt
+        createdAt
+        text
+        username
+        userId
+        commentId
+        replyToReply {
+          replyText
+          replyLikes
           commentId
           userId
           username
@@ -437,6 +491,7 @@ export const REMOVE_LIKE_FROM_REPLY = gql`
         commentId
         replyToReply {
           replyText
+          replyLikes
           commentId
           userId
           username
@@ -474,6 +529,7 @@ export const REMOVE_REPLY = gql`
         commentId
         replyToReply {
           replyText
+          replyLikes
           commentId
           userId
           username
@@ -511,6 +567,7 @@ export const ADD_REPLY_TO_REPLY = gql`
         commentId
         replyToReply {
           replyText
+          replyLikes
           commentId
           userId
           username

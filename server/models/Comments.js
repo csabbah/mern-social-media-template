@@ -27,6 +27,7 @@ const commentSchema = new Schema(
         text: { type: String },
         replyToReply: [
           {
+            replyLikes: [{ type: String, default: [] }],
             commentId: { type: String },
             replyId: { type: String },
             replyText: { type: String },

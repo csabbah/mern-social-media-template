@@ -12,8 +12,6 @@ const {
 
 const { AuthenticationError } = require("apollo-server-express");
 const { signToken } = require("../utils/auth");
-const { find, findById } = require("../models/User");
-const { default: mongoose } = require("mongoose");
 
 const resolvers = {
   Query: {
@@ -272,24 +270,6 @@ const resolvers = {
       return comment;
     },
 
-    addReplyToReply: async (parent, { replyToReplySave }) => {
-      const comment = await Comments.findById({
-        _id: replyToReplySave.commentId,
-      });
-
-      // Go through the replies array using regular JS expression
-      comment.replies.forEach((reply) => {
-        if (reply._id == replyToReplySave.replyId) {
-          // Update model from JS side
-          reply.replyToReply.push(replyToReplySave);
-          // Then save the data to the model
-          comment.save(reply);
-        }
-      });
-
-      return comment;
-    },
-
     addLikeToReply: async (parent, { userId, commentId, replyId }) => {
       const comment = await Comments.findById({
         _id: commentId,
@@ -344,6 +324,44 @@ const resolvers = {
       //     comment.save(reply);
       //   }
       // })
+
+      return comment;
+    },
+
+    addReplyToReply: async (parent, { replyToReplySave }) => {
+      const comment = await Comments.findById({
+        _id: replyToReplySave.commentId,
+      });
+
+      // Go through the replies array using regular JS expression
+      comment.replies.forEach((reply) => {
+        if (reply._id == replyToReplySave.replyId) {
+          // Update model from JS side
+          reply.replyToReply.push(replyToReplySave);
+
+          // Then save the data to the model
+          comment.save(reply);
+        }
+      });
+
+      return comment;
+    },
+
+    removeInnerReply: async (parent, { commentId, innerReplyId, replyId }) => {
+      const comment = await Comments.findById({
+        _id: commentId,
+      });
+
+      comment.replies.forEach((reply) => {
+        if (reply._id == replyId) {
+          reply.replyToReply.forEach((innerReply, index) => {
+            if (innerReply._id == innerReplyId) {
+              reply.replyToReply.splice(index, 1);
+            }
+          });
+          comment.save(reply);
+        }
+      });
 
       return comment;
     },

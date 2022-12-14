@@ -46,6 +46,7 @@ const typeDefs = gql`
     _id: ID
     commentId: String!
     replyId: String!
+    replyLikes: [String]
     replyText: String!
     userId: String!
     username: String!
@@ -57,6 +58,7 @@ const typeDefs = gql`
     _id: ID
     commentId: String!
     replyId: String!
+    replyLikes: [String]
     replyText: String!
     userId: String!
     username: String!
@@ -196,6 +198,11 @@ const typeDefs = gql`
     updateReply(replyId: String!, commentId: String!, text: String!): Comments
     removeReply(replyId: String!, commentId: String!): Comments
     addReplyToReply(replyToReplySave: replyToReplyInput): Comments
+    removeInnerReply(
+      replyId: String!
+      commentId: String!
+      innerReplyId: String!
+    ): Comments
     addLikeToReply(
       userId: String!
       commentId: String!

@@ -416,7 +416,7 @@ select:-webkit-autofill:focus {
 }
 
 /* Logged in users comment */
-.usersComment {
+.usersComment:nth-child(1) {
   background-color: lightblue;
 }
 

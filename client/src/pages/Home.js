@@ -30,6 +30,7 @@ import {
   REMOVE_REPLY,
   ADD_COMMENT_LIKE,
   REMOVE_COMMENT_LIKE,
+  REMOVE_INNER_REPLY,
   REMOVE_LIKE_FROM_REPLY,
 } from "../utils/mutations";
 import { GET_LIKES, GET_ME, GET_COMMENTS, GET_ADMIN } from "../utils/queries";
@@ -111,6 +112,8 @@ const Home = ({ account, accountLevel }) => {
   );
   const [addReplyToReply, { addReplyToReplyErr }] =
     useMutation(ADD_REPLY_TO_REPLY);
+  const [removeInnerReply, { removeInnerReplyErr }] =
+    useMutation(REMOVE_INNER_REPLY);
   const [removeReply, { removeReplyErr }] = useMutation(REMOVE_REPLY);
   const [addCommentLike, { addCommentLikeErr }] = useMutation(ADD_COMMENT_LIKE);
   const [removeCommentLike, { removeCommentLikeErr }] =
@@ -406,6 +409,26 @@ const Home = ({ account, accountLevel }) => {
     }
   };
 
+  const removeAnInnerReply = async (replyId, commentId, innerReplyId) => {
+    try {
+      // TODO: Update resolver side to pass the data to the user model object - userInteraction.replies
+      let comment = await removeInnerReply({
+        variables: {
+          replyId: replyId,
+          innerReplyId: innerReplyId,
+          commentId: commentId,
+        },
+      });
+      setCommentData([
+        ...commentData.filter((dbComment) => dbComment._id !== commentId),
+        comment.data?.removeInnerReply,
+      ]);
+    } catch (e) {
+      // Clear state
+      console.log(e);
+    }
+  };
+
   // * ------------------------------------------------------------ OTHER FUNCTIONS
 
   // The function to handle whether to add a like or to remove a like
@@ -505,21 +528,24 @@ const Home = ({ account, accountLevel }) => {
   };
 
   // * ------------------------------------------------------------ FUNCTIONS THAT RENDER ELEMENTS
-
   const returnPostInteractions = (currentPostId, specificPost) => {
     if (loggedIn && !userData.loading && user) {
       return (
         <div className="post-controls">
           <button
             // Check if the USER liked the post
-            className={`likeBtn ${user.likedArr
-              .map((like) => {
-                if (like.postId == currentPostId) {
-                  return `Checked`;
-                }
-              })
-              // .join removes the comma that is added after/before 'Checked'
-              .join("")}`}
+            className={`likeBtn ${
+              user &&
+              user.likedArr &&
+              user.likedArr
+                .map((like) => {
+                  if (like.postId == currentPostId) {
+                    return `Checked`;
+                  }
+                })
+                // .join removes the comma that is added after/before 'Checked'
+                .join("")
+            }`}
             onClick={(e) => {
               let value = parseInt(
                 document.querySelector(`.${specificPost}`).innerText
@@ -649,26 +675,30 @@ const Home = ({ account, accountLevel }) => {
             return (
               <div
                 className={
-                  comment.userId == account.data._id ? `users-comment` : ""
+                  account && comment.userId == account.data._id
+                    ? `users-comment`
+                    : ""
                 }
               >
                 <div className="comment-wrapper">
                   {comment.username}
                   <div
                     className={`single-comment-content ${
-                      comment.userId == account.data._id ? `usersComment` : ""
+                      account && comment.userId == account.data._id
+                        ? `usersComment`
+                        : ""
                     }
                       ${
-                        comment.userId == account.data._id
+                        account && comment.userId == account.data._id
                           ? `users-comment-${i}`
                           : ""
                       }`}
                   >
-                    {!comment.userId == account.data._id && (
+                    {account && !comment.userId == account.data._id && (
                       <span>{comment.text}</span>
                     )}
                     {/* If it's logged in users comment, render this block */}
-                    {comment.userId == account.data._id && (
+                    {account && comment.userId == account.data._id && (
                       <>
                         {editComment[0] && editComment[1] == i ? (
                           <form
@@ -827,17 +857,6 @@ const Home = ({ account, accountLevel }) => {
                               >
                                 {reply.username} - {reply.text}
                               </div>
-                              <p
-                                className={`replies-to-reply-section reply-el users-reply-${i}`}
-                              >
-                                {reply.replyToReply.map((reply) => {
-                                  return (
-                                    <p>
-                                      {reply.replyText} - {reply.username}
-                                    </p>
-                                  );
-                                })}
-                              </p>
                               <div className="reply-outer-wrapper">
                                 {loggedIn && (
                                   <div>
@@ -1088,6 +1107,16 @@ const Home = ({ account, accountLevel }) => {
                                         </>
                                       )}
                                     </div>
+                                    {/* // * ------------------------------------------------------------ REPLIES TO A REPLY SECTION */}
+                                    {reply.replyToReply.length > 0 && (
+                                      <div
+                                        className={`replies-to-reply-section reply-el users-reply-${i}`}
+                                      >
+                                        {generateRepliesToReplyEl(
+                                          reply.replyToReply
+                                        )}
+                                      </div>
+                                    )}
                                   </div>
                                 )}
                               </div>
@@ -1148,6 +1177,28 @@ const Home = ({ account, accountLevel }) => {
       return new Date(b.createdAt) - new Date(a.createdAt);
     });
     return generateCommentEl(commentsArr, activePostId);
+  };
+
+  const generateRepliesToReplyEl = (repliesToReplies) => {
+    return repliesToReplies.map((reply) => {
+      return (
+        <p style={{ margin: "0" }}>
+          {reply.replyText} - {reply.username} <button>Edit</button>
+          <button>
+            <AiFillHeart className="fillHeart" />
+            {/* <AiOutlineHeart className="outlineHeart" /> */}
+          </button>
+          <button>Reply</button>
+          <button
+            onClick={() =>
+              removeAnInnerReply(reply.replyId, reply.commentId, reply._id)
+            }
+          >
+            X
+          </button>
+        </p>
+      );
+    });
   };
 
   let facts = { topic: "te", description: "te" };
