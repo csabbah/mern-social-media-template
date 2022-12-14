@@ -1168,7 +1168,7 @@ const Home = ({ account, accountLevel }) => {
                                     {/* // * ------------------------------------------------------------ REPLIES TO A REPLY SECTION */}
                                     {reply.replyToReply.length > 0 && (
                                       <div
-                                        className={`replies-to-reply-section reply-el users-reply-${i}`}
+                                        className={`inner-replies-section reply-el users-reply-${i}`}
                                       >
                                         {generateRepliesToReplyEl(
                                           reply.replyToReply
@@ -1240,8 +1240,20 @@ const Home = ({ account, accountLevel }) => {
   const generateRepliesToReplyEl = (repliesToReplies) => {
     return repliesToReplies.map((reply, i) => {
       return (
-        <p style={{ margin: "0" }}>
-          {reply.replyText} - {reply.username} <button>Edit</button>
+        <div className="inner-reply-wrapper">
+          {reply.replyText} - {reply.username}
+          {reply.userId == account.data._id && (
+            <div className={`inner-reply-controls`}>
+              <button>Edit</button>
+              <button
+                onClick={() =>
+                  removeAnInnerReply(reply.replyId, reply.commentId, reply._id)
+                }
+              >
+                X
+              </button>
+            </div>
+          )}
           <button
             className={`innerReplyLikeBtn ${
               account &&
@@ -1291,14 +1303,7 @@ const Home = ({ account, accountLevel }) => {
           >
             Reply
           </button>
-          <button
-            onClick={() =>
-              removeAnInnerReply(reply.replyId, reply.commentId, reply._id)
-            }
-          >
-            X
-          </button>
-        </p>
+        </div>
       );
     });
   };

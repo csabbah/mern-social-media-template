@@ -420,7 +420,7 @@ select:-webkit-autofill:focus {
 }
 
 /* Logged in users comment */
-.usersComment:nth-child(1) {
+.usersComment {
   background-color: lightblue;
 }
 
@@ -428,6 +428,7 @@ select:-webkit-autofill:focus {
   display: flex;
   gap: 5px;
 }
+
 .edit-comment-form {
   width: 100%;
   display: flex;
@@ -465,7 +466,7 @@ select:-webkit-autofill:focus {
   display: flex;
   gap: 5px;
 }
-.replies-to-reply-section {
+.inner-replies-section {
   margin-left: 15px;
 }
 .reply-form {
