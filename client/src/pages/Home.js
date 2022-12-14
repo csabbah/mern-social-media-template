@@ -916,154 +916,158 @@ const Home = ({ account, accountLevel }) => {
                                 {reply.username} - {reply.text}
                               </div>
                               <div className="reply-outer-wrapper">
-                                {loggedIn && (
-                                  <div>
-                                    <form
-                                      onSubmit={(e) => {
-                                        e.preventDefault();
-                                        addReplyToInnerReply({
-                                          replyToReplySave: {
-                                            commentId: reply.commentId,
-                                            replyText: e.target.replyText.value,
-                                            userId: account.data._id,
-                                            replyId: reply._id,
-                                            username: account.data.username,
-                                          },
-                                        });
+                                <div>
+                                  <form
+                                    onSubmit={(e) => {
+                                      e.preventDefault();
+                                      addReplyToInnerReply({
+                                        replyToReplySave: {
+                                          commentId: reply.commentId,
+                                          replyText: e.target.replyText.value,
+                                          userId: account.data._id,
+                                          replyId: reply._id,
+                                          username: account.data.username,
+                                        },
+                                      });
+                                    }}
+                                    className={`reply-to-reply-input hidden reply-${i}-${reply.commentId.slice(
+                                      0,
+                                      5
+                                    )}`}
+                                  >
+                                    <textarea
+                                      className={`add-innerReply-input innerReply-input-${reply._id}`}
+                                      onFocus={(e) => {
+                                        e.target.style.height = "125px";
                                       }}
-                                      className={`reply-to-reply-input hidden reply-${i}-${reply.commentId.slice(
-                                        0,
-                                        5
-                                      )}`}
+                                      onBlur={(e) => {
+                                        closeInput(e);
+                                      }}
+                                      style={{ marginBottom: "5px" }}
+                                      name="replyText"
+                                      placeholder="Add reply"
+                                    ></textarea>
+                                    <button
+                                      onClick={(e) => {
+                                        document
+                                          .querySelectorAll(
+                                            `.reply-${i}-${reply.commentId.slice(
+                                              0,
+                                              5
+                                            )}`
+                                          )
+                                          .forEach((el) => {
+                                            el.classList.toggle("hidden");
+                                          });
+                                      }}
+                                      type="submit"
                                     >
-                                      <textarea
-                                        className={`add-innerReply-input innerReply-input-${reply._id}`}
-                                        onFocus={(e) => {
-                                          e.target.style.height = "125px";
-                                        }}
-                                        onBlur={(e) => {
-                                          closeInput(e);
-                                        }}
-                                        style={{ marginBottom: "5px" }}
-                                        name="replyText"
-                                        placeholder="Add reply"
-                                      ></textarea>
-                                      <button
-                                        onClick={(e) => {
-                                          document
-                                            .querySelectorAll(
-                                              `.reply-${i}-${reply.commentId.slice(
-                                                0,
-                                                5
-                                              )}`
-                                            )
-                                            .forEach((el) => {
-                                              el.classList.toggle("hidden");
-                                            });
-                                        }}
-                                        type="submit"
-                                      >
-                                        Confirm
-                                      </button>
-                                      <button
-                                        type="button"
-                                        style={{ marginLeft: "5px" }}
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          document
-                                            .querySelectorAll(
-                                              `.reply-${i}-${reply.commentId.slice(
-                                                0,
-                                                5
-                                              )}`
-                                            )
-                                            .forEach((el) => {
-                                              el.classList.toggle("hidden");
-                                            });
-                                        }}
-                                      >
-                                        Cancel
-                                      </button>
-                                    </form>
-                                    <div
-                                      className={`reply-controls reply-${i}-${reply.commentId.slice(
-                                        0,
-                                        5
-                                      )}`}
+                                      Confirm
+                                    </button>
+                                    <button
+                                      type="button"
+                                      style={{ marginLeft: "5px" }}
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        document
+                                          .querySelectorAll(
+                                            `.reply-${i}-${reply.commentId.slice(
+                                              0,
+                                              5
+                                            )}`
+                                          )
+                                          .forEach((el) => {
+                                            el.classList.toggle("hidden");
+                                          });
+                                      }}
                                     >
-                                      <button
-                                        className={`reply-el reply-btn-${reply._id} users-reply-${i}`}
-                                        onClick={() => {
-                                          document
-                                            .querySelectorAll(
-                                              `.reply-${i}-${reply.commentId.slice(
-                                                0,
-                                                5
-                                              )}`
-                                            )
-                                            .forEach((el) => {
-                                              el.classList.toggle("hidden");
-                                            });
-                                        }}
-                                      >
-                                        Reply
-                                      </button>
-                                      <button
-                                        className={`replyLikeBtn reply-el users-reply-${i} ${reply.replyLikes
-                                          .map((reply) => {
-                                            if (reply == account.data._id) {
-                                              return `replyLikeChecked`;
-                                            }
-                                          })
-                                          // .join removes the comma that is added after/before 'Checked'
-                                          .join("")}`}
-                                        onClick={(e) => {
-                                          let value = parseInt(
-                                            document.querySelector(
-                                              `.reply-likes-${i}`
-                                            ).innerText
-                                          );
-
-                                          if (
-                                            e.target.className.includes(
-                                              "replyLikeChecked"
-                                            )
-                                          ) {
-                                            e.target.className = `replyLikeBtn`;
-                                            document.querySelector(
-                                              `.reply-likes-${i}`
-                                            ).innerText = value -= 1;
-                                            removeLikeFromAReply(
-                                              reply._id,
-                                              reply.commentId
-                                            );
-                                          } else {
-                                            document.querySelector(
-                                              `.reply-likes-${i}`
-                                            ).innerText = value += 1;
-
-                                            e.target.className =
-                                              "replyLikeBtn replyLikeChecked";
-
-                                            addLikeToAReply(
-                                              reply._id,
-                                              reply.commentId
-                                            );
-                                          }
-                                        }}
-                                      >
-                                        <span
-                                          className={`reply-likes-${i} counterEl`}
+                                      Cancel
+                                    </button>
+                                  </form>
+                                  <div
+                                    className={`reply-controls reply-${i}-${reply.commentId.slice(
+                                      0,
+                                      5
+                                    )}`}
+                                  >
+                                    {loggedIn && (
+                                      <>
+                                        <button
+                                          className={`reply-el reply-btn-${reply._id} users-reply-${i}`}
+                                          onClick={() => {
+                                            document
+                                              .querySelectorAll(
+                                                `.reply-${i}-${reply.commentId.slice(
+                                                  0,
+                                                  5
+                                                )}`
+                                              )
+                                              .forEach((el) => {
+                                                el.classList.toggle("hidden");
+                                              });
+                                          }}
                                         >
-                                          {reply.replyLikes &&
-                                          reply.replyLikes.length > 0
-                                            ? reply.replyLikes.length
-                                            : 0}
-                                        </span>
-                                        <AiFillHeart className="fillHeart" />
-                                        <AiOutlineHeart className="outlineHeart" />
-                                      </button>
-                                      {reply.userId == account.data._id && (
+                                          Reply
+                                        </button>
+                                        <button
+                                          className={`replyLikeBtn reply-el users-reply-${i} ${reply.replyLikes
+                                            .map((reply) => {
+                                              if (reply == account.data._id) {
+                                                return `replyLikeChecked`;
+                                              }
+                                            })
+                                            // .join removes the comma that is added after/before 'Checked'
+                                            .join("")}`}
+                                          onClick={(e) => {
+                                            let value = parseInt(
+                                              document.querySelector(
+                                                `.reply-likes-${i}`
+                                              ).innerText
+                                            );
+
+                                            if (
+                                              e.target.className.includes(
+                                                "replyLikeChecked"
+                                              )
+                                            ) {
+                                              e.target.className = `replyLikeBtn`;
+                                              document.querySelector(
+                                                `.reply-likes-${i}`
+                                              ).innerText = value -= 1;
+                                              removeLikeFromAReply(
+                                                reply._id,
+                                                reply.commentId
+                                              );
+                                            } else {
+                                              document.querySelector(
+                                                `.reply-likes-${i}`
+                                              ).innerText = value += 1;
+
+                                              e.target.className =
+                                                "replyLikeBtn replyLikeChecked";
+
+                                              addLikeToAReply(
+                                                reply._id,
+                                                reply.commentId
+                                              );
+                                            }
+                                          }}
+                                        >
+                                          <span
+                                            className={`reply-likes-${i} counterEl`}
+                                          >
+                                            {reply.replyLikes &&
+                                            reply.replyLikes.length > 0
+                                              ? reply.replyLikes.length
+                                              : 0}
+                                          </span>
+                                          <AiFillHeart className="fillHeart" />
+                                          <AiOutlineHeart className="outlineHeart" />
+                                        </button>
+                                      </>
+                                    )}
+                                    {loggedIn &&
+                                      reply.userId == account.data._id && (
                                         <>
                                           {editReply[0] && editReply[1] == i ? (
                                             <form
@@ -1164,19 +1168,18 @@ const Home = ({ account, accountLevel }) => {
                                           )}
                                         </>
                                       )}
-                                    </div>
-                                    {/* // * ------------------------------------------------------------ REPLIES TO A REPLY SECTION */}
-                                    {reply.replyToReply.length > 0 && (
-                                      <div
-                                        className={`inner-replies-section reply-el users-reply-${i}`}
-                                      >
-                                        {generateRepliesToReplyEl(
-                                          reply.replyToReply
-                                        )}
-                                      </div>
-                                    )}
                                   </div>
-                                )}
+                                  {/* // * ------------------------------------------------------------ REPLIES TO A REPLY SECTION */}
+                                  {reply.replyToReply.length > 0 && (
+                                    <div
+                                      className={`inner-replies-section reply-el users-reply-${i}`}
+                                    >
+                                      {generateRepliesToReplyEl(
+                                        reply.replyToReply
+                                      )}
+                                    </div>
+                                  )}
+                                </div>
                               </div>
                               <hr></hr>
                             </div>
@@ -1241,68 +1244,83 @@ const Home = ({ account, accountLevel }) => {
     return repliesToReplies.map((reply, i) => {
       return (
         <div className="inner-reply-wrapper">
-          {reply.replyText} - {reply.username}
-          {reply.userId == account.data._id && (
-            <div className={`inner-reply-controls`}>
-              <button>Edit</button>
-              <button
-                onClick={() =>
-                  removeAnInnerReply(reply.replyId, reply.commentId, reply._id)
-                }
-              >
-                X
-              </button>
-            </div>
-          )}
-          <button
-            className={`innerReplyLikeBtn ${
-              account &&
-              reply.replyLikes
-                .map((like) => {
-                  if (like == account.data._id) {
-                    return "innerReplyBtnLiked";
-                  } else {
-                    return "";
+          <p className="inner-reply-text">
+            {reply.replyText} - {reply.username}
+          </p>
+          <div className={`inner-reply-controls`}>
+            {loggedIn && reply.userId == account.data._id && (
+              <>
+                <button>Edit</button>
+                <button
+                  onClick={() =>
+                    removeAnInnerReply(
+                      reply.replyId,
+                      reply.commentId,
+                      reply._id
+                    )
                   }
-                })
-                .join(" ")
-            }`}
-            onClick={(e) => {
-              if (e.target.className.includes("innerReplyBtnLiked")) {
-                e.target.className = "innerReplyLikeBtn";
-                removeLikeFromAnInnerREply(
-                  reply.replyId,
-                  reply.commentId,
-                  reply._id
-                );
-              } else {
-                e.target.className = "innerReplyLikeBtn innerReplyBtnLiked";
-                addLikeToAnInnerReply(
-                  reply.replyId,
-                  reply.commentId,
-                  reply._id
-                );
-              }
-            }}
-          >
-            {reply.replyLikes.length > 0 ? reply.replyLikes.length : 0}
-            <AiFillHeart className="fillHeart" />
-            <AiOutlineHeart className="outlineHeart" />
-          </button>
-          <button
-            onClick={() => {
-              document.querySelector(`.reply-btn-${reply.replyId}`).click();
-              document.querySelector(
-                `.innerReply-input-${reply.replyId}`
-              ).value = `Reply to ${reply.username} `;
+                >
+                  X
+                </button>
+              </>
+            )}
+            {loggedIn && (
+              <>
+                <button
+                  onClick={() => {
+                    document
+                      .querySelector(`.reply-btn-${reply.replyId}`)
+                      .click();
+                    document.querySelector(
+                      `.innerReply-input-${reply.replyId}`
+                    ).value = `Reply to ${reply.username} `;
 
-              document
-                .querySelector(`.innerReply-input-${reply.replyId}`)
-                .focus();
-            }}
-          >
-            Reply
-          </button>
+                    document
+                      .querySelector(`.innerReply-input-${reply.replyId}`)
+                      .focus();
+                  }}
+                >
+                  Reply
+                </button>
+                <button
+                  className={`innerReplyLikeBtn ${
+                    account &&
+                    reply.replyLikes
+                      .map((like) => {
+                        if (like == account.data._id) {
+                          return "innerReplyBtnLiked";
+                        } else {
+                          return "";
+                        }
+                      })
+                      .join(" ")
+                  }`}
+                  onClick={(e) => {
+                    if (e.target.className.includes("innerReplyBtnLiked")) {
+                      e.target.className = "innerReplyLikeBtn";
+                      removeLikeFromAnInnerREply(
+                        reply.replyId,
+                        reply.commentId,
+                        reply._id
+                      );
+                    } else {
+                      e.target.className =
+                        "innerReplyLikeBtn innerReplyBtnLiked";
+                      addLikeToAnInnerReply(
+                        reply.replyId,
+                        reply.commentId,
+                        reply._id
+                      );
+                    }
+                  }}
+                >
+                  {reply.replyLikes.length > 0 ? reply.replyLikes.length : 0}
+                  <AiFillHeart className="fillHeart" />
+                  <AiOutlineHeart className="outlineHeart" />
+                </button>
+              </>
+            )}
+          </div>
         </div>
       );
     });

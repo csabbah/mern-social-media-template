@@ -462,12 +462,18 @@ select:-webkit-autofill:focus {
   display: none;
 }
 
-.reply-controls {
+.reply-controls,
+.inner-reply-controls {
   display: flex;
   gap: 5px;
 }
+
 .inner-replies-section {
   margin-left: 15px;
+}
+
+.inner-reply-text {
+  margin-bottom: 0;
 }
 .reply-form {
   margin-top: 10px;
