@@ -72,10 +72,7 @@ textarea {
 textarea {
   padding-top: 8px;
 }
-.add-reply-to-comment-input,
-.add-comment-input,
-.add-innerReply-input,
-.edit-comment-input {
+.edit-add-content-input {
   height: 45px;
   transition: 0.2s all ease-in-out;
 }
@@ -424,12 +421,14 @@ select:-webkit-autofill:focus {
   background-color: lightblue;
 }
 
-.users-comment-controls {
+.users-comment-controls,
+.inner-reply-controls-wrapper {
   display: flex;
   gap: 5px;
 }
 
-.edit-comment-form {
+.edit-comment-form,
+.inner-reply-edit-form {
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -468,11 +467,17 @@ select:-webkit-autofill:focus {
   gap: 5px;
 }
 
+.inner-reply-controls-other {
+  display: flex;
+  flex-direction: column;
+}
+
 .inner-replies-section {
   margin-left: 15px;
 }
 
 .inner-reply-text {
+  margin-top: 10px;
   margin-bottom: 0;
 }
 .reply-form {

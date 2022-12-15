@@ -357,10 +357,10 @@ const resolvers = {
           reply.replyToReply.forEach((innerReply, index) => {
             if (innerReply._id == innerReplyId) {
               reply.replyToReply.splice(index, 1);
+              comment.save(reply);
             }
           });
         }
-        comment.save(reply);
       });
 
       return comment;
@@ -378,9 +378,9 @@ const resolvers = {
           reply.replyToReply.forEach((innerReply) => {
             if (innerReply._id == innerReplyId) {
               innerReply.replyLikes.push(userId);
+              comment.save(reply);
             }
           });
-          comment.save(reply);
         }
       });
 
