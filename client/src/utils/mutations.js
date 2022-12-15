@@ -463,6 +463,54 @@ export const REMOVE_INNER_REPLY = gql`
   }
 `;
 
+export const UPDATE_INNER_REPLY = gql`
+  mutation updateInnerReply(
+    $text: String!
+    $commentId: String!
+    $replyId: String!
+    $innerReplyId: String!
+  ) {
+    updateInnerReply(
+      text: $text
+      commentId: $commentId
+      replyId: $replyId
+      innerReplyId: $innerReplyId
+    ) {
+      __typename
+      _id
+      postId
+      userId
+      text
+      username
+      liked
+      replies {
+        _id
+        updatedAt
+        createdAt
+        text
+        username
+        userId
+        commentId
+        replyToReply {
+          replyText
+          replyLikes
+          commentId
+          userId
+          username
+          _id
+          createdAt
+          updatedAt
+          replyId
+        }
+        replyLikes
+      }
+      createdAt
+      updatedAt
+      updated
+    }
+  }
+`;
+
 export const ADD_LIKE_TO_INNER_REPLY = gql`
   mutation addLikeToInnerReply(
     $userId: String!

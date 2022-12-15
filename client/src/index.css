@@ -435,6 +435,14 @@ select:-webkit-autofill:focus {
   gap: 5px;
 }
 
+.inner-reply-edit-btns {
+  display: flex;
+  gap: 5px;
+}
+.inner-reply-edit-form .edit-add-content-input {
+  margin-top: 7px;
+}
+
 .edit-comment-formBtns {
   display: flex;
   gap: 5px;

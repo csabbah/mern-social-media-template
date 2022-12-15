@@ -10,7 +10,7 @@ import Auth from "../utils/auth";
 
 import { format_date } from "../utils/helpers";
 
-import { FaRegComment } from "react-icons/fa";
+import { FaChessKing, FaRegComment } from "react-icons/fa";
 
 import { fetchFacts, fetchQuotes, fetchWords } from "../utils/API";
 
@@ -19,21 +19,22 @@ import {
   ADD_LIKE,
   REMOVE_LIKE,
   ADD_COMMENT,
+  ADD_COMMENT_LIKE,
+  REMOVE_COMMENT_LIKE,
   UPDATE_COMMENT,
   REMOVE_COMMENT,
   ADD_FAVOURITE,
   REMOVE_FAVOURITE,
   ADD_REPLY,
+  REMOVE_REPLY,
   EDIT_REPLY,
   ADD_LIKE_TO_REPLY,
+  REMOVE_LIKE_FROM_REPLY,
   ADD_REPLY_TO_REPLY,
-  REMOVE_REPLY,
-  ADD_COMMENT_LIKE,
-  REMOVE_COMMENT_LIKE,
   REMOVE_INNER_REPLY,
+  UPDATE_INNER_REPLY,
   ADD_LIKE_TO_INNER_REPLY,
   REMOVE_LIKE_FROM_INNER_REPLY,
-  REMOVE_LIKE_FROM_REPLY,
 } from "../utils/mutations";
 import { GET_LIKES, GET_ME, GET_COMMENTS, GET_ADMIN } from "../utils/queries";
 
@@ -113,6 +114,9 @@ const Home = ({ account, accountLevel }) => {
     REMOVE_LIKE_FROM_REPLY
   );
   const [addInnerReply, { addInnerReplyErr }] = useMutation(ADD_REPLY_TO_REPLY);
+  const [updateInnerReply, { updateInnerReplyErr }] =
+    useMutation(UPDATE_INNER_REPLY);
+
   const [removeInnerReply, { removeInnerReplyErr }] =
     useMutation(REMOVE_INNER_REPLY);
   const [addLikeToInnerReply, { addLikeToInnerReplyErr }] = useMutation(
@@ -121,7 +125,6 @@ const Home = ({ account, accountLevel }) => {
   const [removeLikeToInnerReply, { removeLikeToInnerReplyErr }] = useMutation(
     REMOVE_LIKE_FROM_INNER_REPLY
   );
-
   const [removeReply, { removeReplyErr }] = useMutation(REMOVE_REPLY);
   const [addCommentLike, { addCommentLikeErr }] = useMutation(ADD_COMMENT_LIKE);
   const [removeCommentLike, { removeCommentLikeErr }] =
@@ -410,6 +413,28 @@ const Home = ({ account, accountLevel }) => {
           (dbComment) => dbComment._id !== replyToReplySave.commentId
         ),
         comment.data?.addInnerReply,
+      ]);
+    } catch (e) {
+      // Clear state
+      console.log(e);
+    }
+  };
+
+  const updateAnInnerReply = async (commentId, replyId, innerReplyId, text) => {
+    console.log(commentId, replyId, innerReplyId, text);
+    try {
+      // TODO: Update resolver side to pass the data to the user model object - userInteraction.replies
+      let comment = await updateInnerReply({
+        variables: {
+          commentId: commentId,
+          replyId: replyId,
+          innerReplyId: innerReplyId,
+          text: text,
+        },
+      });
+      setCommentData([
+        ...commentData.filter((dbComment) => dbComment._id !== commentId),
+        comment.data?.updateInnerReply,
       ]);
     } catch (e) {
       // Clear state
@@ -1266,7 +1291,12 @@ const Home = ({ account, accountLevel }) => {
                   <form
                     onSubmit={(e) => {
                       e.preventDefault();
-                      // editCurrentComment(comment._id, e.target.text.value);
+                      updateAnInnerReply(
+                        innerReply.commentId,
+                        innerReply.replyId,
+                        innerReply._id,
+                        e.target.text.value
+                      );
                       setEditInnerReply([false, 0]);
                     }}
                   >
@@ -1281,7 +1311,7 @@ const Home = ({ account, accountLevel }) => {
                       name="text"
                       defaultValue={innerReply.replyText}
                     ></textarea>
-                    <div>
+                    <div className="inner-reply-edit-btns">
                       <button>Confirm</button>
                       <button
                         onClick={() => {
@@ -1330,38 +1360,33 @@ const Home = ({ account, accountLevel }) => {
                             .join(" ")
                         }`}
                         onClick={(e) => {
-                          let value =
-                            document.querySelector(".innerReplyCounter");
-
                           if (
                             e.target.className.includes("innerReplyBtnLiked")
                           ) {
                             e.target.className = "innerReplyLikeBtn";
+
                             removeLikeFromAnInnerREply(
                               innerReply.replyId,
                               innerReply.commentId,
                               innerReply._id
                             );
-
-                            document.querySelector(
-                              ".innerReplyCounter"
-                            ).innerText = value -= 1;
                           } else {
                             e.target.className =
                               "innerReplyLikeBtn innerReplyBtnLiked";
+
                             addLikeToAnInnerReply(
                               innerReply.replyId,
                               innerReply.commentId,
                               innerReply._id
                             );
-                            document.querySelector(
-                              ".innerReplyCounter"
-                            ).innerText = value += 1;
                           }
                         }}
                       >
                         <span
-                          className={`inner-reply-${innerReply._id} counterEl`}
+                          className={`inner-reply-${innerReply._id.slice(
+                            0,
+                            5
+                          )} counterEl`}
                         >
                           {innerReply.replyLikes.length > 0
                             ? innerReply.replyLikes.length
@@ -1431,31 +1456,23 @@ const Home = ({ account, accountLevel }) => {
                           .join(" ")
                       }`}
                       onClick={(e) => {
-                        let value =
-                          document.querySelector(".innerReplyCounter");
-
                         if (e.target.className.includes("innerReplyBtnLiked")) {
                           e.target.className = "innerReplyLikeBtn";
+
                           removeLikeFromAnInnerREply(
                             innerReply.replyId,
                             innerReply.commentId,
                             innerReply._id
                           );
-
-                          document.querySelector(
-                            ".innerReplyCounter"
-                          ).innerText = value -= 1;
                         } else {
                           e.target.className =
                             "innerReplyLikeBtn innerReplyBtnLiked";
+
                           addLikeToAnInnerReply(
                             innerReply.replyId,
                             innerReply.commentId,
                             innerReply._id
                           );
-                          document.querySelector(
-                            ".innerReplyCounter"
-                          ).innerText = value += 1;
                         }
                       }}
                     >

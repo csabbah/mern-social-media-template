@@ -413,6 +413,28 @@ const resolvers = {
       return comment;
     },
 
+    updateInnerReply: async (
+      parent,
+      { commentId, replyId, innerReplyId, text }
+    ) => {
+      const comment = await Comments.findById({
+        _id: commentId,
+      });
+
+      comment.replies.forEach((reply, i) => {
+        if (reply._id == replyId) {
+          reply.replyToReply.forEach((innerReply) => {
+            if (innerReply._id == innerReplyId) {
+              innerReply.replyText = text;
+              comment.save(reply);
+            }
+          });
+        }
+      });
+
+      return comment;
+    },
+
     addCommentLike: async (parent, { commentId, userId }) => {
       const comment = await Comments.findOneAndUpdate(
         { _id: commentId },
